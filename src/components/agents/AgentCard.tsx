@@ -166,30 +166,25 @@ export function AgentCard({
       onClick={() => isSleeping ? setActivating(true) : onClick?.(agent)}
     >
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <AgentAvatar agent={agent} size="md" />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-primary font-semibold">{agent.name}</span>
-              {isSleeping && (
-                <span className="text-2xs text-text-muted border border-border rounded px-1.5 py-0.5">
-                  Durmiendo
-                </span>
-              )}
-            </div>
-            <p className="text-text-muted text-sm">{agent.role}</p>
+      <div className="flex items-center gap-3">
+        <AgentAvatar agent={agent} size="md" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary font-semibold truncate">{agent.name}</span>
+            <span
+              className="text-2xs font-medium px-1.5 py-0.5 rounded-full shrink-0"
+              style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
+            >
+              {CATEGORY_LABELS[agent.category]}
+            </span>
+            {isSleeping && (
+              <span className="text-2xs text-text-muted border border-border rounded px-1.5 py-0.5 shrink-0">
+                Durmiendo
+              </span>
+            )}
           </div>
+          <p className="text-text-muted text-sm truncate mt-0.5">{agent.role}</p>
         </div>
-        <span
-          className="text-2xs font-medium uppercase tracking-wider px-2 py-1 rounded-full shrink-0"
-          style={{
-            backgroundColor: `${accentColor}15`,
-            color: accentColor,
-          }}
-        >
-          {CATEGORY_LABELS[agent.category]}
-        </span>
       </div>
 
       {/* Descripción */}
