@@ -46,6 +46,17 @@ export interface SendMessageResult {
   tokensUsed?: number
 }
 
+// ── INSTRUCCIONES BASE (se agregan a todos los agentes) ───────
+const BASE_INSTRUCTIONS = `
+
+REGLAS DE RESPUESTA (siempre, sin excepción):
+- Respondé en markdown. Usá **negrita**, listas con guiones, bloques de código cuando aplique.
+- Sé CONCISO. Máximo 120 palabras por respuesta. Si tenés más para decir, preguntá si querés continuar.
+- Si necesitás información del usuario, hacé UNA sola pregunta por respuesta — nunca varias a la vez.
+- Cuando te pidan CREAR algo (un outline, un guion, código, un documento, una estructura, una lista), HACELO DIRECTAMENTE. Generá el contenido real en tu respuesta. No describas lo que harías: hacelo.
+- Separar ideas en párrafos cortos o listas. Nunca texto largo de corrido.
+- Tu voz y personalidad siempre presentes, pero al servicio de la acción.`
+
 // ── CONSTRUIR SYSTEM PROMPT ───────────────────────────────────
 function buildSystemPrompt(agent: Agent, project?: Project, team?: Team): string {
   let prompt = agent.systemPrompt
@@ -65,7 +76,7 @@ function buildSystemPrompt(agent: Agent, project?: Project, team?: Team): string
       : 'Equipo por definir'
   )
 
-  return prompt
+  return prompt + BASE_INSTRUCTIONS
 }
 
 // ── WAIT HELPER ───────────────────────────────────────────────

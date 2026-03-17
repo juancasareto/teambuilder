@@ -29,7 +29,7 @@ export function WelcomePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl animate-fade-up stagger-2">
         {/* FORGE */}
         <button
-          onClick={() => navigate('/catalogo')}
+          onClick={() => navigate('/catalogo?mode=forge')}
           className="group card p-8 text-left hover:border-accent/30 hover:shadow-glow-accent transition-all duration-300 cursor-pointer"
         >
           <div className="flex items-center gap-3 mb-4">

@@ -166,30 +166,46 @@ export function AgentCard({
       onClick={() => isSleeping ? setActivating(true) : onClick?.(agent)}
     >
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <AgentAvatar agent={agent} size="md" />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-primary font-semibold">{agent.name}</span>
-              {isSleeping && (
-                <span className="text-2xs text-text-muted border border-border rounded px-1.5 py-0.5">
-                  Durmiendo
-                </span>
-              )}
-            </div>
-            <p className="text-text-muted text-sm">{agent.role}</p>
+      <div className="flex items-center gap-3">
+        <AgentAvatar agent={agent} size="md" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary font-semibold truncate">{agent.name}</span>
+            <span
+              className="text-2xs font-medium px-1.5 py-0.5 rounded-full shrink-0"
+              style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
+            >
+              {CATEGORY_LABELS[agent.category]}
+            </span>
+            {isSleeping && (
+              <span className="text-2xs text-text-muted border border-border rounded px-1.5 py-0.5 shrink-0">
+                Durmiendo
+              </span>
+            )}
           </div>
+          <p className="text-text-muted text-sm truncate mt-0.5">{agent.role}</p>
         </div>
-        <span
-          className="text-2xs font-medium uppercase tracking-wider px-2 py-1 rounded-full shrink-0"
-          style={{
-            backgroundColor: `${accentColor}15`,
-            color: accentColor,
-          }}
-        >
-          {CATEGORY_LABELS[agent.category]}
-        </span>
+        {/* Botón Agregar / Quitar — arriba a la derecha */}
+        {!isSleeping && (
+          isInTeam ? (
+            <button
+              onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
+              className="shrink-0 text-xs text-accent border border-accent/30 rounded-lg px-2 py-1 hover:bg-accent/10 transition-colors"
+              title="Quitar del equipo"
+            >
+              ✓
+            </button>
+          ) : (
+            <button
+              onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
+              className="shrink-0 text-xs font-semibold border rounded-lg px-2 py-1 transition-colors hover:bg-accent/10"
+              style={{ color: accentColor, borderColor: `${accentColor}30` }}
+              title="Agregar al equipo"
+            >
+              +
+            </button>
+          )
+        )}
       </div>
 
       {/* Descripción */}
@@ -209,27 +225,7 @@ export function AgentCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-1 border-t border-border/50">
-        <span className="text-text-muted text-xs">
-          {agent.skills.length} skills
-        </span>
-        {!isSleeping && (
-          isInTeam ? (
-            <button
-              onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
-              className="text-xs text-text-muted hover:text-text-primary transition-colors"
-            >
-              Quitar del equipo
-            </button>
-          ) : (
-            <button
-              onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
-              className="text-xs font-medium transition-colors"
-              style={{ color: accentColor }}
-            >
-              + Agregar
-            </button>
-          )
-        )}
+        <span className="text-text-muted text-xs">{agent.skills.length} skills</span>
         {isSleeping && (
           <button
             onClick={e => { e.stopPropagation(); setActivating(true) }}
