@@ -5,6 +5,7 @@
 // ============================================================
 
 import { useRef, useEffect, useState, type KeyboardEvent } from 'react'
+import ReactMarkdown from 'react-markdown'
 import type { Agent } from '../../types/agent'
 import type { ChatMessage } from '../../types/project'
 import type { AgentState, ChatMode } from '../../hooks/useChat'
@@ -86,7 +87,42 @@ function ChatBubble({
           `}
           style={!isUser ? { borderColor: `${accentColor}20` } : {}}
         >
-          {message.content}
+          {isUser ? (
+            <span>{message.content}</span>
+          ) : (
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                strong: ({ children }) => <strong className="font-semibold text-text-primary">{children}</strong>,
+                ul: ({ children }) => <ul className="mt-1 mb-2 space-y-1 pl-4 list-none">{children}</ul>,
+                ol: ({ children }) => <ol className="mt-1 mb-2 space-y-1 pl-4 list-decimal">{children}</ol>,
+                li: ({ children }) => (
+                  <li className="flex gap-2 items-start">
+                    <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: accentColor }} />
+                    <span>{children}</span>
+                  </li>
+                ),
+                code: ({ children }) => (
+                  <code className="px-1.5 py-0.5 rounded text-xs font-mono bg-base border border-border text-accent">
+                    {children}
+                  </code>
+                ),
+                pre: ({ children }) => (
+                  <pre className="mt-2 mb-2 p-3 rounded-xl bg-base border border-border overflow-x-auto text-xs font-mono text-text-primary">
+                    {children}
+                  </pre>
+                ),
+                h3: ({ children }) => <h3 className="font-semibold text-text-primary mt-2 mb-1">{children}</h3>,
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-2 pl-3 my-2 italic text-text-muted" style={{ borderColor: accentColor }}>
+                    {children}
+                  </blockquote>
+                ),
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
         </div>
 
         {/* Like / Dislike */}
