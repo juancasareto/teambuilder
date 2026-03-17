@@ -38,7 +38,7 @@
 
 @layer components {
   .card {
-    @apply bg-surface border border-border rounded-2xl transition-all duration-250;
+    @apply bg-surface border border-border rounded-2xl transition-all duration-300;
   }
   .card-hover {
     @apply hover:border-accent/30 hover:shadow-glow-accent cursor-pointer;
@@ -51,11 +51,11 @@
   }
   .btn-primary {
     @apply bg-accent text-base font-semibold px-5 py-2.5 rounded-xl;
-    @apply transition-all duration-250 hover:shadow-glow-accent hover:scale-[1.02] active:scale-[0.98];
+    @apply transition-all duration-300 hover:shadow-glow-accent hover:scale-[1.02] active:scale-[0.98];
   }
   .btn-ghost {
     @apply border border-border text-text-muted px-5 py-2.5 rounded-xl;
-    @apply transition-all duration-250 hover:border-accent/30 hover:text-text-primary;
+    @apply transition-all duration-300 hover:border-accent/30 hover:text-text-primary;
   }
 }
 
