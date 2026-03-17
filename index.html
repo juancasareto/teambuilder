@@ -4,7 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>teambuilder-app</title>
+    <title>TeamBuilder — Armá tu equipo de agentes IA</title>
+    <script>
+      // GitHub Pages SPA: restaura la ruta desde el redirect de 404.html
+      (function () {
+        var p = new URLSearchParams(window.location.search).get('p');
+        var h = new URLSearchParams(window.location.search).get('h');
+        if (p) {
+          window.history.replaceState(
+            null, null,
+            window.location.pathname.replace(/\/?$/, '') + decodeURIComponent(p) + (h ? decodeURIComponent(h) : '')
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

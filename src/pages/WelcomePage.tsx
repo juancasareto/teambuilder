@@ -15,7 +15,7 @@ export function WelcomePage() {
     <div className="min-h-screen bg-base flex flex-col items-center justify-center px-6">
       {/* Headline */}
       <div className="text-center mb-16 animate-fade-up">
-        <h1 className="font-display text-5xl md:text-7xl font-bold text-text-primary mb-4 leading-tight">
+        <h1 className="font-ui text-5xl md:text-6xl font-bold text-text-primary mb-4 leading-tight tracking-tight">
           {welcome.headline}
           <br />
           <span className="text-gradient">{welcome.subheadline}</span>
@@ -29,12 +29,12 @@ export function WelcomePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl animate-fade-up stagger-2">
         {/* FORGE */}
         <button
-          onClick={() => navigate('/catalogo')}
+          onClick={() => navigate('/catalogo', { state: { mode: 'forge' } })}
           className="group card p-8 text-left hover:border-accent/30 hover:shadow-glow-accent transition-all duration-300 cursor-pointer"
         >
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">⚡</span>
-            <span className="font-display text-2xl font-bold text-text-primary">
+            <span className="font-ui text-2xl font-bold text-text-primary">
               {welcome.modes.forge.title}
             </span>
           </div>
@@ -56,7 +56,7 @@ export function WelcomePage() {
         >
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">🔍</span>
-            <span className="font-display text-2xl font-bold text-text-primary">
+            <span className="font-ui text-2xl font-bold text-text-primary">
               {welcome.modes.scout.title}
             </span>
           </div>

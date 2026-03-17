@@ -17,6 +17,7 @@ interface Props {
   onRemove?: (agent: Agent) => void
   onClick?: (agent: Agent) => void
   isSleeping?: boolean         // agentes del banco
+  showAddButton?: 'footer' | 'top-right'  // posición del botón agregar
 }
 
 // Color de acento por categoría
@@ -49,6 +50,7 @@ export function AgentCard({
   onRemove,
   onClick,
   isSleeping = false,
+  showAddButton = 'footer',
 }: Props) {
   const [activating, setActivating] = useState(false)
   const [justification, setJustification] = useState('')
@@ -185,6 +187,27 @@ export function AgentCard({
           </div>
           <p className="text-text-muted text-sm truncate mt-0.5">{agent.role}</p>
         </div>
+        {/* Botón agregar top-right (FORGE mode) */}
+        {showAddButton === 'top-right' && !isSleeping && (
+          isInTeam ? (
+            <button
+              onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
+              className="shrink-0 w-7 h-7 rounded-full border border-border text-text-muted hover:text-text-primary hover:border-text-muted transition-all text-sm flex items-center justify-center"
+              title="Quitar del equipo"
+            >
+              ✓
+            </button>
+          ) : (
+            <button
+              onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
+              className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-base font-medium transition-all hover:scale-110"
+              style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
+              title="Agregar al equipo"
+            >
+              +
+            </button>
+          )
+        )}
       </div>
 
       {/* Descripción */}
