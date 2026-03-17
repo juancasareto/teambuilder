@@ -33,7 +33,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Bricolage Grotesque', 'sans-serif'],
+        display: ['Geist', 'sans-serif'],
         ui: ['Geist', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
       },

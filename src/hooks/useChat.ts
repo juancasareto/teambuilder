@@ -8,9 +8,7 @@ import { useState, useCallback } from 'react'
 import { sendMessage, sendToTeam, toAgentMessages, MODELS } from '../lib/claude'
 import type { Agent } from '../types/agent'
 import type { ChatMessage, Project, Team } from '../types/project'
-import agentsData from '../data/agents.json'
 
-const bankAgents = (agentsData as Agent[]).filter(a => a.status === 'bank')
 
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
@@ -97,8 +95,7 @@ export function useChat(
           project,
           team,
           model,
-          apiKey,
-          bankAgents
+          apiKey
         )
 
         results.forEach(result => {
@@ -138,7 +135,6 @@ export function useChat(
           messages: [...history, userMsg],
           project,
           team,
-          bankAgents,
           model,
           apiKey,
         })
@@ -184,7 +180,6 @@ export function useChat(
               team,
               model,
               apiKey,
-              bankAgents,
               maxTokens: 200, // Opinión corta
             }).then(opinion => {
               setAgentStates(prev => ({

@@ -34,7 +34,6 @@ export interface SendMessageOptions {
   messages: AgentMessage[]
   project?: Project
   team?: Team
-  bankAgents?: Agent[]   // agentes disponibles en el banco
   model?: string
   apiKey?: string
   maxTokens?: number
@@ -47,21 +46,20 @@ export interface SendMessageResult {
   tokensUsed?: number
 }
 
-// ── INSTRUCCIÓN BASE (todos los agentes) ─────────────────────
+// ── INSTRUCCIONES BASE (se agregan a todos los agentes) ───────
 const BASE_INSTRUCTIONS = `
-REGLAS DE COMPORTAMIENTO:
-- Respondés SIEMPRE en español rioplatense (Argentina), vos/ustedes.
-- Respuestas CORTAS y DIRECTAS. Máximo 3-4 oraciones para respuestas simples.
-- Cuando el usuario pide que hagas algo (redactar, generar código, armar un plan, crear contenido), LO HACÉS. No preguntás si querés que lo hagas — simplemente lo hacés y mostrás el resultado.
-- Usás markdown: **negrita** para puntos clave, listas con guiones para múltiples ítems, \`código\` para comandos, bloques de código con triple backtick para código largo.
-- Una sola pregunta de seguimiento si es necesaria. Nunca varias preguntas al mismo tiempo.
-- Usás tu voz y personalidad en TODO momento. El tono define la identidad.
-- Si algo no es tu área, lo decís rápido y pasás con quien corresponde.
-`
+
+REGLAS DE RESPUESTA (siempre, sin excepción):
+- Respondé en markdown. Usá **negrita**, listas con guiones, bloques de código cuando aplique.
+- Sé CONCISO. Máximo 120 palabras por respuesta. Si tenés más para decir, preguntá si querés continuar.
+- Si necesitás información del usuario, hacé UNA sola pregunta por respuesta — nunca varias a la vez.
+- Cuando te pidan CREAR algo (un outline, un guion, código, un documento, una estructura, una lista), HACELO DIRECTAMENTE. Generá el contenido real en tu respuesta. No describas lo que harías: hacelo.
+- Separar ideas en párrafos cortos o listas. Nunca texto largo de corrido.
+- Tu voz y personalidad siempre presentes, pero al servicio de la acción.`
 
 // ── CONSTRUIR SYSTEM PROMPT ───────────────────────────────────
-function buildSystemPrompt(agent: Agent, project?: Project, team?: Team, bankAgents?: Agent[]): string {
-  let prompt = agent.systemPrompt + '\n\n' + BASE_INSTRUCTIONS
+function buildSystemPrompt(agent: Agent, project?: Project, team?: Team): string {
+  let prompt = agent.systemPrompt
 
   // Reemplazar placeholders
   prompt = prompt.replace(
@@ -78,15 +76,7 @@ function buildSystemPrompt(agent: Agent, project?: Project, team?: Team, bankAge
       : 'Equipo por definir'
   )
 
-  // Rodrigo: consciencia del banco de agentes
-  if (agent.id === 'rodrigo' && bankAgents && bankAgents.length > 0) {
-    const bankList = bankAgents
-      .map(a => `- ${a.name} (${a.role}): ${a.description.slice(0, 80)}...`)
-      .join('\n')
-    prompt += `\n\nBANCO DE AGENTES DISPONIBLES (no están en el equipo activo, pero pueden convocarse):\n${bankList}\n\nCuando el usuario mencione una necesidad que cubra un agente del banco, mencionalo proactivamente: "En el banco tenemos a [Nombre] que puede ayudar con eso. ¿Lo convocamos?"`
-  }
-
-  return prompt
+  return prompt + BASE_INSTRUCTIONS
 }
 
 // ── WAIT HELPER ───────────────────────────────────────────────
@@ -103,7 +93,6 @@ async function sendWithRetry(
     messages,
     project,
     team,
-    bankAgents,
     model = MODELS.free,
     apiKey,
     maxTokens = 1024,
@@ -117,7 +106,7 @@ async function sendWithRetry(
   }
 
   const client = getClient(apiKey)
-  const systemPrompt = buildSystemPrompt(agent, project, team, bankAgents)
+  const systemPrompt = buildSystemPrompt(agent, project, team)
 
   try {
     const response = await client.messages.create({
@@ -176,8 +165,7 @@ export async function sendToTeam(
   project?: Project,
   team?: Team,
   model?: string,
-  apiKey?: string,
-  bankAgentsList?: Agent[]
+  apiKey?: string
 ): Promise<SendMessageResult[]> {
   const messages: AgentMessage[] = [
     ...history.map(m => ({
@@ -190,7 +178,7 @@ export async function sendToTeam(
   // Enviar en paralelo a todos los agentes
   const results = await Promise.allSettled(
     agents.map(agent =>
-      sendMessage({ agent, messages, project, team, bankAgents: bankAgentsList, model, apiKey })
+      sendMessage({ agent, messages, project, team, model, apiKey })
     )
   )
 

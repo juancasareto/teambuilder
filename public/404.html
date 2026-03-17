@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="es">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <title>TeamBuilder</title>
     <script>
       // GitHub Pages SPA redirect hack
-      // Encodes la ruta actual y redirige al index con el path como query param
-      var l = window.location;
-      var base = '/teambuilder';
-      var path = l.pathname.slice(base.length) || '/';
+      // Encoda la ruta como query param para que index.html la restaure
+      var l = window.location
       l.replace(
-        l.protocol + '//' + l.host + base +
-        '/?p=' + encodeURIComponent(path + l.search) +
-        (l.hash ? '&h=' + encodeURIComponent(l.hash) : '')
-      );
+        l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 2).join('/') +
+        '/?/' + l.pathname.slice(1).split('/').slice(1).join('/') +
+        (l.search ? '&' + l.search.slice(1) : '') + l.hash
+      )
     </script>
   </head>
-  <body></body>
 </html>

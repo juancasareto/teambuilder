@@ -17,7 +17,6 @@ interface Props {
   onRemove?: (agent: Agent) => void
   onClick?: (agent: Agent) => void
   isSleeping?: boolean         // agentes del banco
-  showAddButton?: 'footer' | 'top-right'  // posición del botón agregar
 }
 
 // Color de acento por categoría
@@ -50,7 +49,6 @@ export function AgentCard({
   onRemove,
   onClick,
   isSleeping = false,
-  showAddButton = 'footer',
 }: Props) {
   const [activating, setActivating] = useState(false)
   const [justification, setJustification] = useState('')
@@ -187,12 +185,12 @@ export function AgentCard({
           </div>
           <p className="text-text-muted text-sm truncate mt-0.5">{agent.role}</p>
         </div>
-        {/* Botón agregar top-right (FORGE mode) */}
-        {showAddButton === 'top-right' && !isSleeping && (
+        {/* Botón Agregar / Quitar — arriba a la derecha */}
+        {!isSleeping && (
           isInTeam ? (
             <button
               onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
-              className="shrink-0 w-7 h-7 rounded-full border border-border text-text-muted hover:text-text-primary hover:border-text-muted transition-all text-sm flex items-center justify-center"
+              className="shrink-0 text-xs text-accent border border-accent/30 rounded-lg px-2 py-1 hover:bg-accent/10 transition-colors"
               title="Quitar del equipo"
             >
               ✓
@@ -200,8 +198,8 @@ export function AgentCard({
           ) : (
             <button
               onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
-              className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-base font-medium transition-all hover:scale-110"
-              style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
+              className="shrink-0 text-xs font-semibold border rounded-lg px-2 py-1 transition-colors hover:bg-accent/10"
+              style={{ color: accentColor, borderColor: `${accentColor}30` }}
               title="Agregar al equipo"
             >
               +
@@ -227,27 +225,7 @@ export function AgentCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-1 border-t border-border/50">
-        <span className="text-text-muted text-xs">
-          {agent.skills.length} skills
-        </span>
-        {!isSleeping && (
-          isInTeam ? (
-            <button
-              onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
-              className="text-xs text-text-muted hover:text-text-primary transition-colors"
-            >
-              Quitar del equipo
-            </button>
-          ) : (
-            <button
-              onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
-              className="text-xs font-medium transition-colors"
-              style={{ color: accentColor }}
-            >
-              + Agregar
-            </button>
-          )
-        )}
+        <span className="text-text-muted text-xs">{agent.skills.length} skills</span>
         {isSleeping && (
           <button
             onClick={e => { e.stopPropagation(); setActivating(true) }}
