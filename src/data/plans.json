@@ -1,0 +1,61 @@
+[
+  {
+    "tier": "free",
+    "name": "Free",
+    "maxAgents": 5,
+    "maxSessionsPerWindow": 3,
+    "windowMinutes": 30,
+    "maxMessagesPerSession": 20,
+    "maxSavedSessions": 3,
+    "model": "claude-haiku-4-5",
+    "price": 0,
+    "features": [
+      "5 agentes simultáneos + PM",
+      "3 sesiones cada 30 minutos",
+      "20 mensajes por sesión",
+      "Memoria de las últimas 3 sesiones",
+      "Modos FORGE y SCOUT",
+      "Voces básicas (Web Speech API)"
+    ]
+  },
+  {
+    "tier": "pro",
+    "name": "Pro",
+    "maxAgents": 12,
+    "maxSessionsPerWindow": -1,
+    "windowMinutes": 0,
+    "maxMessagesPerSession": -1,
+    "maxSavedSessions": -1,
+    "model": "claude-sonnet-4-6",
+    "price": 2900,
+    "features": [
+      "12 agentes simultáneos + PM",
+      "Sesiones ilimitadas",
+      "Mensajes ilimitados",
+      "Memoria ilimitada",
+      "Modelo Sonnet (máxima inteligencia)",
+      "Reuniones grupales completas",
+      "Audio con voces de alta calidad",
+      "Bring Your Own Key (BYOK)"
+    ]
+  },
+  {
+    "tier": "enterprise",
+    "name": "Enterprise",
+    "maxAgents": 20,
+    "maxSessionsPerWindow": -1,
+    "windowMinutes": 0,
+    "maxMessagesPerSession": -1,
+    "maxSavedSessions": -1,
+    "model": "claude-sonnet-4-6",
+    "price": 7900,
+    "features": [
+      "20 agentes simultáneos + PM",
+      "Todo lo de Pro",
+      "Múltiples proyectos simultáneos",
+      "API propia para integraciones",
+      "Soporte prioritario",
+      "Acceso anticipado a nuevos agentes"
+    ]
+  }
+]
