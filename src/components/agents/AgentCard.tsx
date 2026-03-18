@@ -1,43 +1,37 @@
-// ============================================================
-// TEAMBUILDER — AgentCard
-// Santiago · v0.1
-// Card de agente para Catálogo, Propuesta y Mi Equipo
-// ============================================================
+// TEAMBUILDER — AgentCard · Terminal row
 
 import { useState } from 'react'
 import type { Agent } from '../../types/agent'
-import { AgentAvatar } from './AgentAvatar'
 
 interface Props {
   agent: Agent
   variant?: 'catalog' | 'team' | 'compact' | 'proposal'
   isInTeam?: boolean
-  matchScore?: number          // 0-100, solo en variant=proposal
+  matchScore?: number
   onAdd?: (agent: Agent) => void
   onRemove?: (agent: Agent) => void
   onClick?: (agent: Agent) => void
-  isSleeping?: boolean         // agentes del banco
+  isSleeping?: boolean
 }
 
-// Color de acento por categoría
-const CATEGORY_COLORS: Record<string, string> = {
-  estrategico: '#6366F1',
-  tecnico:     '#10B981',
-  creativo:    '#F59E0B',
-  datos:       '#8B5CF6',
-  social:      '#EC4899',
-  diseno:      '#06B6D4',
-  seguridad:   '#EF4444',
+const CAT_COLOR: Record<string, string> = {
+  estrategico: '#A855F7',
+  tecnico:     '#00FF41',
+  creativo:    '#FFB000',
+  datos:       '#C084FC',
+  social:      '#FF6EB4',
+  diseno:      '#00E5FF',
+  seguridad:   '#FF3B3B',
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  estrategico: 'Estratégico',
-  tecnico:     'Técnico',
-  creativo:    'Creativo',
-  datos:       'Datos',
-  social:      'Social',
-  diseno:      'Diseño',
-  seguridad:   'Seguridad',
+const CAT_TAG: Record<string, string> = {
+  estrategico: 'STRAT',
+  tecnico:     'TECH',
+  creativo:    'CREAT',
+  datos:       'DATA',
+  social:      'SOC',
+  diseno:      'DSGN',
+  seguridad:   'SEC',
 }
 
 export function AgentCard({
@@ -52,229 +46,153 @@ export function AgentCard({
 }: Props) {
   const [activating, setActivating] = useState(false)
   const [justification, setJustification] = useState('')
-  const accentColor = CATEGORY_COLORS[agent.category] ?? '#10B981'
+  const color = CAT_COLOR[agent.category] ?? '#00FF41'
+  const tag = CAT_TAG[agent.category] ?? '???'
 
-  // ── Variante COMPACT (sidebar del deck) ─────────────────
+  // ── COMPACT (sidebar) ──────────────────────────────────────
   if (variant === 'compact') {
     return (
       <button
         onClick={() => onClick?.(agent)}
-        className={`
-          w-full flex items-center gap-3 px-3 py-2.5
-          rounded-xl transition-all duration-200
-          hover:bg-surface/80 group
-          ${isSleeping ? 'opacity-40' : ''}
-        `}
+        className="w-full text-left px-2 py-1 transition-colors hover:bg-[#0F0F0F] group"
+        style={{ opacity: isSleeping ? 0.3 : 1 }}
       >
-        <AgentAvatar agent={agent} size="sm" />
-        <div className="flex-1 text-left min-w-0">
-          <p className="text-text-primary text-sm font-medium truncate">{agent.name}</p>
-          <p className="text-text-muted text-xs truncate">{agent.role}</p>
-        </div>
-        <div
-          className="w-1.5 h-1.5 rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ backgroundColor: accentColor }}
-        />
+        <span className="text-dim group-hover:text-green text-xs mr-2">›</span>
+        <span className="text-xs text-base">{agent.name}</span>
       </button>
     )
   }
 
-  // ── Variante TEAM (Mi Equipo) ────────────────────────────
+  // ── TEAM ──────────────────────────────────────────────────
   if (variant === 'team') {
     return (
       <div
-        className="card p-4 flex items-center gap-4 cursor-pointer group"
-        style={{ borderColor: `${accentColor}20` }}
+        className="flex items-center gap-3 py-1.5 border-b border-[#111] cursor-pointer group"
         onClick={() => onClick?.(agent)}
       >
-        <AgentAvatar agent={agent} size="md" />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-text-primary font-semibold">{agent.name}</span>
-            <span
-              className="text-xs px-1.5 py-0.5 rounded-md"
-              style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
-            >
-              {CATEGORY_LABELS[agent.category]}
-            </span>
-          </div>
-          <p className="text-text-muted text-sm truncate">{agent.role}</p>
-        </div>
+        <span className="text-green text-xs w-4">›</span>
+        <span className="text-xs font-bold w-24 truncate" style={{ color }}>{agent.name}</span>
+        <span className="text-xs opacity-50 w-12" style={{ color }}>[{tag}]</span>
+        <span className="text-muted text-xs flex-1 truncate">{agent.role}</span>
         {onRemove && (
           <button
             onClick={e => { e.stopPropagation(); onRemove(agent) }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-text-primary text-xl leading-none"
+            className="text-dim hover:text-red text-xs opacity-0 group-hover:opacity-100 transition-opacity px-2"
           >
-            ×
+            [×]
           </button>
         )}
       </div>
     )
   }
 
-  // ── Variante PROPOSAL (match score) ─────────────────────
+  // ── PROPOSAL ──────────────────────────────────────────────
   if (variant === 'proposal') {
     return (
-      <div
-        className="card card-hover p-5 flex flex-col gap-4 animate-fade-up"
-        onClick={() => onClick?.(agent)}
-      >
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <AgentAvatar agent={agent} size="md" />
-            <div>
-              <p className="text-text-primary font-semibold">{agent.name}</p>
-              <p className="text-text-muted text-sm">{agent.role}</p>
-            </div>
-          </div>
+      <div className="term-box cursor-pointer mb-2" onClick={() => onClick?.(agent)}>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold" style={{ color }}>{agent.name}</span>
+          <span className="text-dim text-xs">[{tag}]</span>
+          <span className="text-muted text-xs flex-1">{agent.role}</span>
           {matchScore !== undefined && (
-            <span
-              className="text-sm font-mono font-bold px-2 py-1 rounded-lg"
-              style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
-            >
-              {matchScore}%
-            </span>
+            <span className="text-xs font-bold" style={{ color }}>{matchScore}%</span>
           )}
         </div>
-        <p className="text-text-muted text-sm line-clamp-2">{agent.description}</p>
+        <div className="mt-1.5 text-xs text-muted line-clamp-1">{agent.description}</div>
         {onAdd && !isInTeam && (
           <button
             onClick={e => { e.stopPropagation(); onAdd(agent) }}
-            className="btn-primary w-full text-sm py-2"
+            className="mt-2 term-btn term-btn-primary text-xs py-1"
           >
-            Agregar al equipo
+            + agregar
           </button>
         )}
-        {isInTeam && (
-          <span className="text-center text-sm text-accent font-medium">✓ En el equipo</span>
-        )}
+        {isInTeam && <span className="mt-1.5 inline-block text-xs text-green">[✓ en equipo]</span>}
       </div>
     )
   }
 
-  // ── Variante CATALOG (default) ───────────────────────────
+  // ── CATALOG — sleeping ─────────────────────────────────────
+  if (isSleeping) {
+    if (activating) {
+      return (
+        <div className="py-2 px-0 border-b border-[#1A1A1A]">
+          <div className="text-amber text-xs mb-1.5">
+            &gt; wake {agent.name} — justify:
+          </div>
+          <div className="flex gap-2 items-center">
+            <span className="text-green text-xs">$</span>
+            <input
+              autoFocus
+              value={justification}
+              onChange={e => setJustification(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && justification.trim()) { onAdd?.(agent); setActivating(false) }
+                if (e.key === 'Escape') setActivating(false)
+              }}
+              placeholder="una línea es suficiente..."
+              className="term-input text-xs flex-1"
+            />
+            <button
+              onClick={() => { if (justification.trim()) { onAdd?.(agent); setActivating(false) } }}
+              disabled={!justification.trim()}
+              className="term-btn term-btn-primary text-xs py-0.5 px-2 disabled:opacity-30"
+            >
+              [↵]
+            </button>
+            <button onClick={() => setActivating(false)} className="term-btn text-xs py-0.5 px-2">[esc]</button>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div
+        className="flex items-center gap-3 py-1.5 border-b border-[#0F0F0F] cursor-pointer group"
+        onClick={() => setActivating(true)}
+      >
+        <span className="text-xs w-4" style={{ color: '#1E1E1E' }}>○</span>
+        <span className="text-xs w-24 truncate" style={{ color: '#222' }}>{agent.name}</span>
+        <span className="text-xs w-14" style={{ color: '#1A1A1A' }}>[{tag}]</span>
+        <span className="text-xs flex-1 truncate" style={{ color: '#1E1E1E' }}>{agent.role}</span>
+        <span className="text-xs text-dim opacity-0 group-hover:opacity-60 transition-opacity">[wake]</span>
+      </div>
+    )
+  }
+
+  // ── CATALOG — active ───────────────────────────────────────
   return (
     <div
-      className={`
-        card p-5 flex flex-col gap-4 cursor-pointer
-        transition-all duration-300 group
-        ${isSleeping
-          ? 'opacity-50 saturate-0 hover:opacity-70 hover:saturate-50'
-          : 'card-hover animate-fade-up'}
-      `}
-      style={!isSleeping ? { '--tw-shadow-color': `${accentColor}20` } as React.CSSProperties : {}}
-      onClick={() => isSleeping ? setActivating(true) : onClick?.(agent)}
+      className="flex items-center gap-3 py-1.5 border-b border-[#111] cursor-pointer group hover:bg-[#0A0A0A] transition-colors"
+      onClick={() => onClick?.(agent)}
     >
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <AgentAvatar agent={agent} size="md" />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-text-primary font-semibold truncate">{agent.name}</span>
-            <span
-              className="text-2xs font-medium px-1.5 py-0.5 rounded-full shrink-0"
-              style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
-            >
-              {CATEGORY_LABELS[agent.category]}
-            </span>
-            {isSleeping && (
-              <span className="text-2xs text-text-muted border border-border rounded px-1.5 py-0.5 shrink-0">
-                Durmiendo
-              </span>
-            )}
-          </div>
-          <p className="text-text-muted text-sm truncate mt-0.5">{agent.role}</p>
-        </div>
-        {/* Botón Agregar / Quitar — arriba a la derecha */}
-        {!isSleeping && (
-          isInTeam ? (
-            <button
-              onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
-              className="shrink-0 text-xs text-accent border border-accent/30 rounded-lg px-2 py-1 hover:bg-accent/10 transition-colors"
-              title="Quitar del equipo"
-            >
-              ✓
-            </button>
-          ) : (
-            <button
-              onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
-              className="shrink-0 text-xs font-semibold border rounded-lg px-2 py-1 transition-colors hover:bg-accent/10"
-              style={{ color: accentColor, borderColor: `${accentColor}30` }}
-              title="Agregar al equipo"
-            >
-              +
-            </button>
-          )
-        )}
-      </div>
-
-      {/* Descripción */}
-      <p className="text-text-muted text-sm line-clamp-2">{agent.description}</p>
-
-      {/* Voice samples */}
-      <div className="flex flex-wrap gap-1.5">
-        {agent.voiceSample.slice(0, 2).map((phrase, i) => (
-          <span
-            key={i}
-            className="text-xs text-text-muted border border-border/50 rounded-lg px-2 py-1 italic"
-          >
-            "{phrase}"
-          </span>
-        ))}
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-1 border-t border-border/50">
-        <span className="text-text-muted text-xs">{agent.skills.length} skills</span>
-        {isSleeping && (
+      <span className="text-xs w-4 group-hover:glow-green transition-all" style={{ color }}>●</span>
+      <span className="text-xs font-bold w-24 truncate group-hover:text-green transition-colors" style={{ color }}>
+        {agent.name}
+      </span>
+      <span className="text-xs w-14 opacity-50" style={{ color }}>[{tag}]</span>
+      <span className="text-muted text-xs w-40 truncate">{agent.role}</span>
+      <span className="text-dim text-xs flex-1 truncate hidden md:block italic">
+        "{agent.voiceSample[0]?.slice(0, 38)}"
+      </span>
+      <span className="text-dim text-xs w-14 text-right">{agent.skills.length}sk</span>
+      <div className="w-14 text-right shrink-0">
+        {isInTeam ? (
           <button
-            onClick={e => { e.stopPropagation(); setActivating(true) }}
-            className="text-xs text-text-muted hover:text-accent transition-colors"
+            onClick={e => { e.stopPropagation(); onRemove?.(agent) }}
+            className="text-xs text-green hover:text-red transition-colors"
           >
-            Despertar →
+            [✓ out]
+          </button>
+        ) : (
+          <button
+            onClick={e => { e.stopPropagation(); onAdd?.(agent) }}
+            className="text-xs text-dim hover:text-green transition-colors opacity-0 group-hover:opacity-100"
+          >
+            [+add]
           </button>
         )}
       </div>
-
-      {/* Modal de activación (banco) */}
-      {activating && isSleeping && (
-        <div
-          className="absolute inset-0 bg-surface/95 backdrop-blur-sm rounded-2xl p-5 flex flex-col gap-4 z-10"
-          onClick={e => e.stopPropagation()}
-        >
-          <p className="text-text-primary font-semibold text-sm">
-            ¿Por qué necesitás a {agent.name}?
-          </p>
-          <textarea
-            autoFocus
-            value={justification}
-            onChange={e => setJustification(e.target.value)}
-            placeholder="Una línea es suficiente..."
-            className="flex-1 bg-base border border-border rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-accent/50"
-            rows={3}
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActivating(false)}
-              className="btn-ghost flex-1 text-sm py-2"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={() => {
-                if (justification.trim()) {
-                  onAdd?.(agent)
-                  setActivating(false)
-                }
-              }}
-              disabled={!justification.trim()}
-              className="btn-primary flex-1 text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Despertar
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

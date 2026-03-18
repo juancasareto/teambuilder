@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAMBUILDER</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#00FF41;--amber:#FFB000;--cyan:#00E5FF;--red:#FF3B3B;
+  --purple:#A855F7;--pink:#FF6EB4;--violet:#C084FC;
+  --bg:#080808;--dim:#444;--muted:#888;--base:#CCCCCC;
+  --border:#1A1A1A;--border2:#111;
+}
+html,body{background:var(--bg);color:var(--base);font-family:'Geist Mono','Courier New',monospace;font-size:12px;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px)}
+#app{max-width:860px;margin:0 auto;padding:2rem 1.25rem;min-height:100vh}
+button{cursor:pointer;background:none;border:none;font-family:inherit;font-size:inherit;color:inherit}
+input,textarea{font-family:inherit;font-size:inherit;background:none;color:var(--base);border:none;outline:none}
+.g{color:var(--green)} .a{color:var(--amber)} .d{color:var(--dim)} .m{color:var(--muted)} .r{color:var(--red)} .c{color:var(--cyan)}
+.term-btn{border:1px solid var(--dim);color:var(--muted);padding:.2rem .6rem;transition:all .15s;font-size:11px;display:inline-block}
+.term-btn:hover{border-color:var(--green);color:var(--green)}
+.term-btn-p{border-color:var(--green);color:var(--green)}
+.term-btn-p:hover{background:rgba(0,255,65,.08)}
+.term-input{border-bottom:1px solid var(--border);padding:.2rem 0;color:var(--base);transition:border-color .15s;width:100%}
+.term-input:focus{border-color:var(--green)}
+.term-input::placeholder{color:var(--dim)}
+.term-box{border:1px solid var(--border);padding:1rem}
+hr.sep{border:none;border-top:1px solid var(--border);margin:.4rem 0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gp{0%,100%{text-shadow:0 0 8px rgba(0,255,65,.6),0 0 20px rgba(0,255,65,.2)}50%{text-shadow:0 0 14px rgba(0,255,65,.95),0 0 32px rgba(0,255,65,.45)}}
+.blink{animation:blink 1s step-end infinite}
+.glow{animation:gp 3s ease-in-out infinite;color:var(--green)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ─── AGENT DATA ────────────────────────────────────────────────────────────────
+const AGENTS=[
+{id:"rodrigo",name:"Rodrigo",cat:"estrategico",role:"Project Manager",voice:["el foco está en","cerremos esto"],skills:["npx skillsadd obra/superpowers/writing-plans","npx skillsadd obra/superpowers/executing-plans","npx skillsadd supercent-io/skills-template/task-planning","npx skillsadd github/awesome-copilot/prd","npx skillsadd obra/superpowers/subagent-driven-development"]},
+{id:"facundo",name:"Facundo",cat:"estrategico",role:"Arquitecto de Software",voice:["esperá, primero necesito entender la estructura","¿cómo escala esto?"],skills:["npx skillsadd wshobson/agents/architecture-patterns","npx skillsadd wshobson/agents/api-design-principles","npx skillsadd supercent-io/skills-template/database-schema-design","npx skillsadd supercent-io/skills-template/technical-writing"]},
+{id:"matias",name:"Matías",cat:"tecnico",role:"Backend Developer",voice:["eso lo resuelvo con tres líneas","¿ya tiene tests?"],skills:["npx skillsadd wshobson/agents/nodejs-backend-patterns","npx skillsadd supercent-io/skills-template/api-design","npx skillsadd supercent-io/skills-template/backend-testing","npx skillsadd supercent-io/skills-template/security-best-practices"]},
+{id:"santiago",name:"Santiago",cat:"tecnico",role:"Frontend Developer",voice:["esto necesita más espacio en blanco","¿probaste en mobile?"],skills:["npx skillsadd anthropics/skills/frontend-design","npx skillsadd vercel-labs/agent-skills/vercel-react-best-practices","npx skillsadd wshobson/agents/tailwind-design-system","npx skillsadd supercent-io/skills-template/web-accessibility","npx skillsadd shadcn/ui/shadcn"]},
+{id:"tomas",name:"Tomás",cat:"tecnico",role:"QA / Tester",voice:["dejame probarlo yo primero","¿qué pasa si el usuario escribe un emoji ahí?"],skills:["npx skillsadd obra/superpowers/test-driven-development","npx skillsadd anthropics/skills/webapp-testing","npx skillsadd currents-dev/playwright-best-practices-skill/playwright-best-practices","npx skillsadd obra/superpowers/systematic-debugging"]},
+{id:"bautista",name:"Bautista",cat:"creativo",role:"Creative Brainstormer",voice:["¿y si lo pensamos como un juego?","el problema real no es el que describiste"],skills:["npx skillsadd obra/superpowers/brainstorming","npx skillsadd coreyhaines31/marketingskills/marketing-ideas","npx skillsadd coreyhaines31/marketingskills/free-tool-strategy","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"ramiro",name:"Ramiro",cat:"creativo",role:"Guionista / Story Maker",voice:["¿cuál es el conflicto central?","necesitamos un antagonista"],skills:["npx skillsadd coreyhaines31/marketingskills/copywriting","npx skillsadd obra/superpowers/writing-skills","npx skillsadd coreyhaines31/marketingskills/content-strategy","npx skillsadd anthropics/skills/pptx"]},
+{id:"gonzalo",name:"Gonzalo",cat:"tecnico",role:"Integration Engineer",voice:["¿y esto cómo se conecta con lo demás?","el webhook necesita retry logic"],skills:["npx skillsadd anthropics/skills/mcp-builder","npx skillsadd supercent-io/skills-template/api-design","npx skillsadd better-auth/skills/better-auth-best-practices","npx skillsadd vercel/ai/ai-sdk"]},
+{id:"lucia",name:"Lucía",cat:"diseno",role:"UX Designer",voice:["¿cómo se siente esto para el usuario?","el flujo no respira"],skills:["npx skillsadd nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max","npx skillsadd anthropics/skills/canvas-design","npx skillsadd dammyjay93/interface-design/interface-design","npx skillsadd vercel-labs/agent-skills/web-design-guidelines","npx skillsadd bencium/bencium-claude-code-design-skill/bencium-innovative-ux-designer"]},
+{id:"isabella",name:"Isabella",cat:"diseno",role:"Information Architect",voice:["antes de diseñar la pantalla, diseñemos la estructura","¿el usuario sabe dónde está?"],skills:["npx skillsadd vercel-labs/agent-skills/web-design-guidelines","npx skillsadd dammyjay93/interface-design/interface-design","npx skillsadd nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max"]},
+{id:"paula",name:"Paula",cat:"estrategico",role:"Product Owner",voice:["si no está en el backlog, no existe","¿esto genera valor para el usuario?"],skills:["npx skillsadd obra/superpowers/writing-plans","npx skillsadd github/awesome-copilot/prd","npx skillsadd supercent-io/skills-template/task-planning"]},
+{id:"hernan",name:"Hernán",cat:"estrategico",role:"Agile Coach",voice:["¿cuánto llevas sin hacer una retro?","el bloqueador no es técnico — es de comunicación"],skills:["npx skillsadd obra/superpowers/executing-plans","npx skillsadd supercent-io/skills-template/task-planning"]},
+{id:"valeria",name:"Valeria",cat:"estrategico",role:"Stakeholder Manager",voice:["lo que el CEO necesita escuchar no siempre es lo que el dev quiere decir","antes de la reunión, necesito saber qué no decir"],skills:["npx skillsadd anthropics/skills/pptx","npx skillsadd obra/superpowers/writing-plans","npx skillsadd coreyhaines31/marketingskills/copywriting"]},
+{id:"ivan",name:"Iván",cat:"tecnico",role:"Performance Engineer",voice:["¿mediste antes de optimizar?","ese render innecesario cuesta 40ms"],skills:["npx skillsadd supercent-io/skills-template/performance-optimization","npx skillsadd obra/superpowers/systematic-debugging"]},
+{id:"sebastian",name:"Sebastián",cat:"tecnico",role:"Cloud Architect",voice:["escalar no es agregar más servidores","¿cuánto cuesta esto en producción real?"],skills:["npx skillsadd supercent-io/skills-template/deployment-automation","npx skillsadd supercent-io/skills-template/vercel-deploy"]},
+{id:"jimena",name:"Jimena",cat:"tecnico",role:"Mobile Architect",voice:["el usuario no sabe si es nativa o web","en iOS esto no funciona igual que en Android"],skills:["npx skillsadd supercent-io/skills-template/performance-optimization","npx skillsadd anthropics/skills/frontend-design"]},
+{id:"federico",name:"Federico",cat:"tecnico",role:"GraphQL Specialist",voice:["si el cliente pide 200 campos y usa 12, algo está mal","ese N+1 va a matar el servidor"],skills:["npx skillsadd wshobson/agents/api-design-principles","npx skillsadd supercent-io/skills-template/api-design"]},
+{id:"lautaro",name:"Lautaro",cat:"tecnico",role:"Serverless Engineer",voice:["¿para qué mantener un servidor encendido si nadie lo usa a las 3am?","edge function en 50ms desde cualquier lugar del mundo"],skills:["npx skillsadd supercent-io/skills-template/deployment-automation","npx skillsadd vercel-labs/agent-skills/vercel-react-best-practices"]},
+{id:"miriam",name:"Miriam",cat:"tecnico",role:"Migration Specialist",voice:["una migración sin rollback es un rezo","nunca migres sin feature flag"],skills:["npx skillsadd supercent-io/skills-template/database-schema-design","npx skillsadd supabase/agent-skills/supabase-postgres-best-practices"]},
+{id:"nicolas-ws",name:"Nicolás",cat:"tecnico",role:"Realtime Engineer",voice:["si apretás F5, fallamos","WebSocket no es magia — es estado compartido"],skills:["npx skillsadd wshobson/agents/nodejs-backend-patterns","npx skillsadd vercel/ai/ai-sdk"]},
+{id:"celeste",name:"Celeste",cat:"seguridad",role:"Auth & Identity Specialist",voice:["la auth mala causa la mitad de los incidentes","ese JWT nunca expira? error gravísimo"],skills:["npx skillsadd better-auth/skills/better-auth-best-practices","npx skillsadd supercent-io/skills-template/security-best-practices"]},
+{id:"rodrigo-b",name:"Rodrigo B.",cat:"tecnico",role:"Legacy Integrator",voice:["el mundo real corre en sistemas que nadie quiere tocar","¿tiene documentación? no importa, lo leo igual"],skills:["npx skillsadd wshobson/agents/nodejs-backend-patterns","npx skillsadd supercent-io/skills-template/api-design"]},
+{id:"martin",name:"Martín",cat:"estrategico",role:"Analista de Negocio",voice:["antes de construirlo, ¿sabemos si alguien lo necesita?","¿cuál es el problema real?"],skills:["npx skillsadd obra/superpowers/brainstorming","npx skillsadd obra/superpowers/writing-plans","npx skillsadd github/awesome-copilot/prd","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"diego",name:"Diego",cat:"tecnico",role:"DevOps / Infra",voice:["¿esto ya lo probaste en staging?","el pipeline falla antes de llegar a producción"],skills:["npx skillsadd supercent-io/skills-template/deployment-automation","npx skillsadd supercent-io/skills-template/git-workflow","npx skillsadd supercent-io/skills-template/vercel-deploy","npx skillsadd github/awesome-copilot/gh-cli","npx skillsadd obra/superpowers/using-git-worktrees"]},
+{id:"ezequiel",name:"Ezequiel",cat:"seguridad",role:"Security Engineer",voice:["¿quién tiene acceso a esto?","ese input no está sanitizado"],skills:["npx skillsadd supercent-io/skills-template/security-best-practices","npx skillsadd pbakaus/impeccable/harden","npx skillsadd better-auth/skills/better-auth-best-practices","npx skillsadd supercent-io/skills-template/code-review"]},
+{id:"valentina",name:"Valentina",cat:"creativo",role:"Copywriter & Content",voice:["eso suena a manual de instrucciones","necesitamos un gancho en las primeras 3 palabras"],skills:["npx skillsadd coreyhaines31/marketingskills/copywriting","npx skillsadd coreyhaines31/marketingskills/content-strategy","npx skillsadd coreyhaines31/marketingskills/marketing-psychology","npx skillsadd obra/superpowers/writing-skills"]},
+{id:"nicolas-data",name:"Nicolás D.",cat:"datos",role:"Data Analyst",voice:["¿tenemos métricas de eso?","el CTR dice otra cosa"],skills:["npx skillsadd supercent-io/skills-template/data-analysis","npx skillsadd coreyhaines31/marketingskills/analytics-tracking","npx skillsadd obra/superpowers/brainstorming"]},
+{id:"camila",name:"Camila",cat:"datos",role:"ML Engineer",voice:["hay un paper sobre eso de la semana pasada","podemos fine-tunear para este caso específico"],skills:["npx skillsadd supercent-io/skills-template/data-analysis","npx skillsadd vercel/ai/ai-sdk","npx skillsadd supercent-io/skills-template/performance-optimization"]},
+{id:"juliana",name:"Juliana",cat:"datos",role:"DBA",voice:["eso va a hacer un full table scan","¿tienen índice esas columnas?"],skills:["npx skillsadd supabase/agent-skills/supabase-postgres-best-practices","npx skillsadd supercent-io/skills-template/database-schema-design","npx skillsadd neondatabase/agent-skills/neon-postgres"]},
+{id:"agustina",name:"Agustina",cat:"social",role:"YouTube Strategist",voice:["el gancho tiene que aparecer en los primeros 5 segundos","ese thumbnail no para el scroll"],skills:["npx skillsadd coreyhaines31/marketingskills/content-strategy","npx skillsadd coreyhaines31/marketingskills/seo-audit","npx skillsadd coreyhaines31/marketingskills/programmatic-seo","npx skillsadd coreyhaines31/marketingskills/launch-strategy"]},
+{id:"florencia",name:"Florencia",cat:"social",role:"Social Media + Email",voice:["eso suena a marca, no a persona","el hook del email decide si se abre o se borra"],skills:["npx skillsadd coreyhaines31/marketingskills/content-strategy","npx skillsadd coreyhaines31/marketingskills/marketing-psychology","npx skillsadd coreyhaines31/marketingskills/email-sequence","npx skillsadd coreyhaines31/marketingskills/launch-strategy","npx skillsadd coreyhaines31/marketingskills/product-marketing-context"]},
+{id:"nico",name:"Nico",cat:"diseno",role:"AI Image Generation",voice:["necesito ver el mood board primero","ese prompt necesita más contexto de estilo"],skills:["npx skillsadd inferen-sh/skills/ai-image-generation","npx skillsadd anthropics/skills/canvas-design","npx skillsadd anthropics/skills/brand-guidelines","npx skillsadd anthropics/skills/algorithmic-art"]},
+{id:"leandro",name:"Leandro",cat:"datos",role:"Scraper & Niche Hunter",voice:["en Reddit hay un hilo de 2019 que responde eso","ese nicho tiene demanda y poca competencia"],skills:["npx skillsadd tavily-ai/skills/search","npx skillsadd firecrawl/cli/firecrawl","npx skillsadd coreyhaines31/marketingskills/seo-audit","npx skillsadd coreyhaines31/marketingskills/programmatic-seo","npx skillsadd obra/superpowers/brainstorming"]},
+{id:"valentin",name:"Valentín",cat:"diseno",role:"UI Designer",voice:["si tengo que explicar por qué es bonito, no lo hice bien","ese margen está 4px corrido"],skills:["npx skillsadd anthropics/skills/canvas-design","npx skillsadd dammyjay93/interface-design/interface-design","npx skillsadd vercel-labs/agent-skills/web-design-guidelines"]},
+{id:"mariana",name:"Mariana",cat:"diseno",role:"UX Researcher",voice:["una hora con un usuario vale más que una semana de suposiciones","el equipo cree que sabe — yo necesito datos"],skills:["npx skillsadd nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max","npx skillsadd vercel-labs/agent-skills/web-design-guidelines"]},
+{id:"patricio",name:"Patricio",cat:"diseno",role:"Brand & Visual Identity",voice:["una marca se reconoce en medio segundo","ese logo funciona en blanco y negro también"],skills:["npx skillsadd anthropics/skills/brand-guidelines","npx skillsadd anthropics/skills/canvas-design"]},
+{id:"florencia-d",name:"Florencia D.",cat:"diseno",role:"Design Tokens & Systems",voice:["si el token no existe, el color no existe","ese hardcode en el componente es deuda técnica de diseño"],skills:["npx skillsadd wshobson/agents/tailwind-design-system","npx skillsadd vercel-labs/agent-skills/web-design-guidelines"]},
+{id:"esteban",name:"Esteban",cat:"diseno",role:"Editorial & Print Designer",voice:["un PDF mal diseñado habla mal del producto","la tipografía en print es otra cosa"],skills:["npx skillsadd anthropics/skills/pptx","npx skillsadd anthropics/skills/canvas-design"]},
+{id:"lena",name:"Lena",cat:"diseno",role:"Gamification Designer",voice:["el mejor engagement se siente como diversión","ese badge no da suficiente satisfacción"],skills:["npx skillsadd nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max","npx skillsadd obra/superpowers/brainstorming"]},
+{id:"marina",name:"Marina",cat:"seguridad",role:"Penetration Tester",voice:["si yo no lo encuentro, alguien más sí","ese endpoint no tiene rate limit — problema"],skills:["npx skillsadd pbakaus/impeccable/harden","npx skillsadd supercent-io/skills-template/security-best-practices"]},
+{id:"roberto",name:"Roberto",cat:"tecnico",role:"Load Testing Specialist",voice:["¿probaste con 10.000 usuarios a las 9am un lunes?","el sistema colapsa en el paso 3 del checkout"],skills:["npx skillsadd supercent-io/skills-template/performance-optimization","npx skillsadd obra/superpowers/systematic-debugging"]},
+{id:"ignacio",name:"Ignacio",cat:"social",role:"Growth Hacker",voice:["el mejor producto sin distribución es un secreto","ese funnel tiene una fuga en el paso 2"],skills:["npx skillsadd coreyhaines31/marketingskills/marketing-ideas","npx skillsadd coreyhaines31/marketingskills/free-tool-strategy","npx skillsadd coreyhaines31/marketingskills/launch-strategy"]},
+{id:"clara",name:"Clara",cat:"social",role:"Community Builder",voice:["la gente compra comunidades, no productos","el primer moderador es más importante que el primer empleado"],skills:["npx skillsadd coreyhaines31/marketingskills/content-strategy","npx skillsadd coreyhaines31/marketingskills/marketing-psychology"]},
+{id:"maximiliano",name:"Maximiliano",cat:"estrategico",role:"Product Futurist",voice:["si estás reaccionando, ya llegaste tarde","esa tecnología va a ser mainstream en 18 meses"],skills:["npx skillsadd obra/superpowers/brainstorming","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"elena",name:"Elena",cat:"creativo",role:"Podcast Producer",voice:["un podcast sin estructura es conversación que nadie pidió","el gancho del episodio va en los primeros 60 segundos"],skills:["npx skillsadd obra/superpowers/writing-skills","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"joaquin",name:"Joaquín",cat:"creativo",role:"Video Director",voice:["el primer segundo decide si el video existe","ese corte llega 2 segundos tarde"],skills:["npx skillsadd obra/superpowers/writing-skills","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"adriana",name:"Adriana",cat:"creativo",role:"Brand Strategist",voice:["una marca sin personalidad es un logo con colores","eso no lo diríamos nosotros"],skills:["npx skillsadd anthropics/skills/brand-guidelines","npx skillsadd coreyhaines31/marketingskills/copywriting","npx skillsadd coreyhaines31/marketingskills/content-strategy"]},
+{id:"camilo",name:"Camilo",cat:"diseno",role:"Motion Designer",voice:["la animación no es decoración","esa transición dura 100ms de más"],skills:["npx skillsadd anthropics/skills/frontend-design","npx skillsadd vercel-labs/agent-skills/vercel-react-best-practices"]},
+{id:"renata",name:"Renata",cat:"diseno",role:"Design System Engineer",voice:["un design system malo cuesta más que no tener","ese componente tiene 7 variantes no documentadas"],skills:["npx skillsadd wshobson/agents/tailwind-design-system","npx skillsadd shadcn/ui/shadcn"]},
+{id:"bruno",name:"Bruno",cat:"tecnico",role:"PWA Specialist",voice:["el 60% del mundo tiene internet lento","ese service worker no maneja el offline correctamente"],skills:["npx skillsadd vercel-labs/agent-skills/vercel-react-best-practices","npx skillsadd supercent-io/skills-template/performance-optimization"]},
+{id:"sofia",name:"Sofía",cat:"diseno",role:"Accessibility Auditor",voice:["accesibilidad no es un extra","ese contraste no pasa WCAG AA"],skills:["npx skillsadd supercent-io/skills-template/web-accessibility","npx skillsadd vercel-labs/agent-skills/web-design-guidelines"]}
+];
+
+const CAT_COLOR={estrategico:'#A855F7',tecnico:'#00FF41',creativo:'#FFB000',datos:'#C084FC',social:'#FF6EB4',diseno:'#00E5FF',seguridad:'#FF3B3B'};
+const CAT_TAG={estrategico:'STRAT',tecnico:'TECH',creativo:'CREAT',datos:'DATA',social:'SOC',diseno:'DSGN',seguridad:'SEC'};
+const MAX_TEAM=8;
+
+// ─── STATE ─────────────────────────────────────────────────────────────────────
+const S={
+  screen:'boot',
+  team:[],           // agent ids (rodrigo always included)
+  project:{nombre:'',objetivo:'',stack:''},
+  filter:'all',
+  search:'',
+  copied:false,
+  modal:null,
+};
+
+function col(cat){return CAT_COLOR[cat]||'#00FF41'}
+function tag(cat){return CAT_TAG[cat]||'???'}
+
+// ─── PROMPT BUILDER ────────────────────────────────────────────────────────────
+function buildPrompt(teamIds,project){
+  const agents=teamIds.map(id=>AGENTS.find(a=>a.id===id)).filter(Boolean);
+  const lines=[];
+  lines.push('Sos un equipo de agentes IA especializados trabajando en este proyecto.');
+  lines.push('El coordinador permanente es RODRIGO (Project Manager).');
+  lines.push('');
+  const hasProject=project.nombre||project.objetivo||project.stack;
+  if(hasProject){
+    lines.push('## PROYECTO');
+    if(project.nombre)   lines.push('Nombre: '+project.nombre);
+    if(project.objetivo) lines.push('Objetivo: '+project.objetivo);
+    if(project.stack)    lines.push('Stack: '+project.stack);
+    lines.push('');
+  }
+  lines.push('## REGLAS');
+  lines.push('- Respondé siempre desde el agente activo en primera persona.');
+  lines.push('- @Nombre invoca a ese agente directamente.');
+  lines.push('- Rodrigo coordina, no ejecuta trabajo técnico.');
+  lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco.');
+  lines.push('- Podés incorporar hasta 2 agentes extra mid-sesión (máximo).');
+  lines.push('');
+  lines.push('## EQUIPO ACTIVO');
+  const rodrigo=agents.find(a=>a.id==='rodrigo');
+  if(rodrigo) lines.push('**RODRIGO** [PM] — "'+rodrigo.voice[0]+'" · coordina y delega');
+  agents.filter(a=>a.id!=='rodrigo').forEach(a=>{
+    const t=tag(a.cat);
+    const v=a.voice.slice(0,2).map(x=>'"'+x+'"').join(' / ');
+    lines.push('**'+a.name.toUpperCase()+'** ['+t+'] — '+v+' · '+a.role);
+  });
+  lines.push('');
+  const allSkills=agents.flatMap(a=>a.skills).filter(Boolean);
+  if(allSkills.length>0){
+    lines.push('## SKILLS');
+    allSkills.slice(0,12).forEach(s=>lines.push('$ '+s));
+    lines.push('');
+  }
+  lines.push('## ARRANQUE');
+  lines.push('Al recibir este prompt:');
+  lines.push('1. Escribí CLAUDE.md en el directorio actual con el equipo y proyecto.');
+  lines.push('2. Adoptá el rol de Rodrigo.');
+  lines.push('3. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.');
+  lines.push('No expliques qué estás haciendo. Ejecutá y presentate.');
+  return lines.join('\n');
+}
+
+// ─── RENDER ────────────────────────────────────────────────────────────────────
+const app=document.getElementById('app');
+
+function render(){
+  if(S.screen==='boot') renderBoot();
+  else if(S.screen==='catalog') renderCatalog();
+  else if(S.screen==='team') renderTeam();
+}
+
+// ─── BOOT SCREEN ──────────────────────────────────────────────────────────────
+const LOGO=` ████████╗███████╗ █████╗ ███╗   ███╗
+    ██╔══╝██╔════╝██╔══██╗████╗ ████║
+    ██║   █████╗  ███████║██╔████╔██║
+    ██║   ██╔══╝  ██╔══██║██║╚██╔╝██║
+    ██║   ███████╗██║  ██║██║ ╚═╝ ██║
+    ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
+ ██████╗ ██╗   ██╗██╗██╗     ██████╗ ███████╗██████╗
+ ██╔══██╗██║   ██║██║██║     ██╔══██╗██╔════╝██╔══██╗
+ ██████╔╝██║   ██║██║██║     ██║  ██║█████╗  ██████╔╝
+ ██╔══██╗██║   ██║██║██║     ██║  ██║██╔══╝  ██╔══██╗
+ ██████╔╝╚██████╔╝██║███████╗██████╔╝███████╗██║  ██║
+ ╚═════╝  ╚═════╝ ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝`.trim();
+
+const BOOT_LINES=[
+  {text:'TEAMBUILDER v0.2',color:'#00FF41',delay:0},
+  {text:'─'.repeat(48),color:'#1A1A1A',delay:80},
+  {text:'Initializing agent registry...',color:'#444',delay:160},
+  {text:'[OK] 51 agents loaded',color:'#00FF41',delay:280},
+  {text:'[OK] Skills catalog ready',color:'#00FF41',delay:380},
+  {text:'[OK] Prompt engine online',color:'#00FF41',delay:480},
+  {text:'─'.repeat(48),color:'#1A1A1A',delay:560},
+  {text:'Select mode to continue.',color:'#555',delay:640},
+];
+
+function renderBoot(){
+  app.innerHTML=`
+<div style="max-width:560px;margin:0 auto">
+  <pre id="logo" style="font-size:10px;line-height:1.2;margin-bottom:1.5rem;overflow-x:auto">${LOGO}</pre>
+  <div id="boot-lines" style="margin-bottom:1.5rem;line-height:1.8"></div>
+  <div id="boot-menu" style="display:none">
+    <div style="display:flex;flex-direction:column;gap:.75rem">
+      <button id="btn-forge" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#1A1A1A'">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem">
+          <span class="g" style="font-weight:700;letter-spacing:.1em">[1] FORGE</span>
+          <span class="d" style="font-size:11px">─── manual mode</span>
+        </div>
+        <div class="m" style="font-size:11px;padding-left:1rem">
+          Explorás el catálogo y elegís tu equipo.<br>
+          Output: prompt listo para Claude Code.
+        </div>
+        <div style="margin-top:.6rem;font-size:11px;color:#444">&gt; Armar mi equipo →</div>
+      </button>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between" class="d">
+      <span>teambuilder.sh</span>
+      <span class="g blink" style="font-size:14px">█</span>
+    </div>
+  </div>
+  <div id="boot-cursor" class="g blink" style="font-size:13px">_</div>
+</div>`;
+
+  const logoEl=document.getElementById('logo');
+  logoEl.className='glow';
+
+  const linesEl=document.getElementById('boot-lines');
+  let shown=0;
+  BOOT_LINES.forEach((line,i)=>{
+    setTimeout(()=>{
+      const div=document.createElement('div');
+      div.textContent=line.text;
+      div.style.color=line.color;
+      div.style.fontSize='11px';
+      linesEl.appendChild(div);
+      shown++;
+      if(shown===BOOT_LINES.length){
+        setTimeout(()=>{
+          document.getElementById('boot-cursor').style.display='none';
+          document.getElementById('boot-menu').style.display='block';
+          document.getElementById('btn-forge').addEventListener('click',()=>{
+            S.team=[];
+            // rodrigo always in team
+            if(!S.team.includes('rodrigo')) S.team=['rodrigo'];
+            S.screen='catalog';
+            render();
+          });
+        },200);
+      }
+    },line.delay);
+  });
+}
+
+// ─── CATALOG SCREEN ────────────────────────────────────────────────────────────
+const FILTERS=[
+  {key:'all',tag:'ALL'},
+  {key:'estrategico',tag:'STRAT'},
+  {key:'tecnico',tag:'TECH'},
+  {key:'creativo',tag:'CREAT'},
+  {key:'datos',tag:'DATA'},
+  {key:'social',tag:'SOC'},
+  {key:'diseno',tag:'DSGN'},
+  {key:'seguridad',tag:'SEC'},
+];
+
+function renderCatalog(){
+  const teamSize=S.team.filter(id=>id!=='rodrigo').length;
+  const filtered=AGENTS.filter(a=>{
+    if(a.id==='rodrigo') return false;
+    const matchCat=S.filter==='all'||a.cat===S.filter;
+    const matchSearch=!S.search||
+      a.name.toLowerCase().includes(S.search.toLowerCase())||
+      a.role.toLowerCase().includes(S.search.toLowerCase());
+    return matchCat&&matchSearch;
+  });
+
+  const renderRow=a=>{
+    const inTeam=S.team.includes(a.id);
+    const c=col(a.cat);
+    const t=tag(a.cat);
+    const canAdd=!inTeam&&teamSize<MAX_TEAM;
+    const voice=(a.voice[0]||'').slice(0,36);
+    return `<div class="agent-row" data-id="${a.id}" style="display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid #111;cursor:pointer;transition:background .1s" onmouseenter="this.style.background='#0A0A0A'" onmouseleave="this.style.background='transparent'">
+      <span style="color:${c};font-size:11px;width:14px;flex-shrink:0">●</span>
+      <span style="color:${c};font-weight:700;font-size:11px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
+      <span style="color:${c};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[${t}]</span>
+      <span class="m" style="font-size:11px;width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.role)}</span>
+      <span class="d" style="font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic;display:none" id="voice-${a.id}">"${esc(voice)}"</span>
+      <span class="d" style="font-size:10px;width:30px;text-align:right;flex-shrink:0">${a.skills.length}sk</span>
+      <span style="width:60px;text-align:right;flex-shrink:0;font-size:11px">
+        ${inTeam
+          ? `<button class="remove-agent" data-id="${a.id}" style="color:#00FF41" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#00FF41'">[✓ out]</button>`
+          : canAdd
+            ? `<button class="add-agent" data-id="${a.id}" style="color:#444;opacity:0" class="add-btn">[+add]</button>`
+            : teamSize>=MAX_TEAM
+              ? `<span style="color:#333;font-size:10px">[full]</span>`
+              : `<button class="add-agent" data-id="${a.id}" style="color:#444;opacity:0">[+add]</button>`
+        }
+      </span>
+    </div>`;
+  };
+
+  const teamCount=teamSize;
+  app.innerHTML=`
+<div>
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <button id="nav-home" class="d" style="font-size:11px">← /home</button>
+      <span class="d" style="font-size:11px">/</span>
+      <span class="g" style="font-size:11px">catalogo</span>
+      <span class="a" style="font-size:11px">[FORGE]</span>
+    </div>
+    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p" style="font-size:11px">mi equipo [${teamCount}/${MAX_TEAM}] →</button>`:''}
+  </div>
+
+  <!-- Rodrigo notice -->
+  <div style="font-size:10px;color:#333;margin-bottom:.75rem">› rodrigo [PM] siempre activo · seleccioná hasta ${MAX_TEAM} agentes adicionales</div>
+
+  <!-- Filter + Search -->
+  <div style="display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;margin-bottom:.25rem">
+    <span class="d" style="font-size:11px;margin-right:.25rem">--filter</span>
+    ${FILTERS.map(f=>`<button class="filter-btn" data-key="${f.key}" style="font-size:11px;padding:.15rem .4rem;color:${S.filter===f.key?'#00FF41':'#444'};border-bottom:1px solid ${S.filter===f.key?'#00FF41':'transparent'}">${f.tag}</button>`).join('')}
+    <div style="margin-left:auto;display:flex;align-items:center;gap:.4rem">
+      <span class="d" style="font-size:11px">--grep</span>
+      <input id="search-input" class="term-input" value="${esc(S.search)}" placeholder="nombre / rol" style="width:130px;font-size:11px">
+    </div>
+  </div>
+  <hr class="sep" style="margin-bottom:.75rem">
+
+  <!-- Column headers -->
+  <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:10px;border-bottom:1px solid #1A1A1A;margin-bottom:.25rem">
+    <span style="width:14px;flex-shrink:0">ST</span>
+    <span style="width:90px;flex-shrink:0">NAME</span>
+    <span style="width:50px;flex-shrink:0">CAT</span>
+    <span style="width:140px;flex-shrink:0">ROLE</span>
+    <span style="flex:1">VOICE</span>
+    <span style="width:30px;text-align:right;flex-shrink:0">SK</span>
+    <span style="width:60px;text-align:right;flex-shrink:0">ACTION</span>
+  </div>
+
+  <!-- Agent list -->
+  <div id="agent-list">
+    ${filtered.map(renderRow).join('')}
+    ${filtered.length===0?`<div class="d" style="font-size:11px;padding:1rem 0">sin resultados</div>`:''}
+  </div>
+
+  ${teamSize>=MAX_TEAM?`<div class="a" style="font-size:11px;margin-top:.75rem">[!] equipo completo (${MAX_TEAM}/${MAX_TEAM}) — remové un agente para agregar otro</div>`:''}
+
+  <!-- Footer -->
+  <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between">
+    <span class="d" style="font-size:11px">${filtered.length} agentes · ${teamCount}/${MAX_TEAM} seleccionados</span>
+    ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p" style="font-size:11px">generar prompt →</button>`:''}
+  </div>
+</div>`;
+
+  // Show voice on medium+ screens (we'll just always show them)
+  document.querySelectorAll('[id^="voice-"]').forEach(el=>{el.style.display='block'});
+
+  // Hover: show [+add] buttons
+  document.querySelectorAll('.agent-row').forEach(row=>{
+    const addBtn=row.querySelector('.add-agent');
+    if(addBtn){
+      row.addEventListener('mouseenter',()=>{addBtn.style.opacity='1'});
+      row.addEventListener('mouseleave',()=>{addBtn.style.opacity='0'});
+    }
+  });
+
+  // Events
+  document.getElementById('nav-home')?.addEventListener('click',()=>{S.screen='boot';render()});
+  document.getElementById('nav-team')?.addEventListener('click',()=>{S.screen='team';render()});
+  document.getElementById('nav-team-2')?.addEventListener('click',()=>{S.screen='team';render()});
+
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{S.filter=btn.dataset.key;render()});
+  });
+
+  document.getElementById('search-input')?.addEventListener('input',e=>{
+    S.search=e.target.value;render();
+  });
+
+  document.querySelectorAll('.add-agent').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const id=btn.dataset.id;
+      if(!S.team.includes(id)&&S.team.filter(x=>x!=='rodrigo').length<MAX_TEAM){
+        S.team=[...S.team,id];
+        render();
+      }
+    });
+  });
+
+  document.querySelectorAll('.remove-agent').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      S.team=S.team.filter(id=>id!==btn.dataset.id);
+      render();
+    });
+  });
+}
+
+// ─── TEAM SCREEN ──────────────────────────────────────────────────────────────
+function renderTeam(){
+  const teamAgents=S.team.map(id=>AGENTS.find(a=>a.id===id)).filter(Boolean);
+  const prompt=buildPrompt(S.team,S.project);
+
+  if(teamAgents.length===0){
+    app.innerHTML=`
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center">
+  <div style="text-align:center">
+    <div class="d" style="font-size:11px;margin-bottom:.75rem">[!] equipo vacío</div>
+    <p class="m" style="font-size:11px;margin-bottom:1rem">Seleccioná agentes en el catálogo.</p>
+    <button id="go-catalog" class="term-btn term-btn-p" style="font-size:11px">→ ir al catálogo</button>
+  </div>
+</div>`;
+    document.getElementById('go-catalog').addEventListener('click',()=>{S.screen='catalog';render()});
+    return;
+  }
+
+  const rodrigo=AGENTS.find(a=>a.id==='rodrigo');
+  const others=teamAgents.filter(a=>a.id!=='rodrigo');
+
+  app.innerHTML=`
+<div>
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem">
+    <button id="nav-catalog" class="d" style="font-size:11px">← /catalogo</button>
+    <span class="d" style="font-size:11px">/</span>
+    <span class="g" style="font-size:11px">mi-equipo</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+    <!-- Left: team + form -->
+    <div>
+      <!-- Team list -->
+      <div style="margin-bottom:1.5rem">
+        <div class="d" style="font-size:11px;margin-bottom:.5rem">equipo — ${others.length}/${MAX_TEAM}</div>
+
+        <!-- Column headers -->
+        <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:10px;border-bottom:1px solid #1A1A1A;margin-bottom:.2rem">
+          <span style="width:14px;flex-shrink:0"> </span>
+          <span style="width:90px;flex-shrink:0">NAME</span>
+          <span style="width:50px;flex-shrink:0">CAT</span>
+          <span style="flex:1">ROLE</span>
+        </div>
+
+        <!-- Rodrigo row (fixed) -->
+        ${rodrigo?`<div style="display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid #0F0F0F">
+          <span style="color:${col(rodrigo.cat)};font-size:11px;width:14px;flex-shrink:0">●</span>
+          <span style="color:${col(rodrigo.cat)};font-weight:700;font-size:11px;width:90px;flex-shrink:0">${esc(rodrigo.name)}</span>
+          <span style="color:${col(rodrigo.cat)};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[PM]</span>
+          <span class="m" style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(rodrigo.role)}</span>
+        </div>`:''}
+
+        <!-- Other agents -->
+        ${others.map(a=>`<div style="display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid #0F0F0F" class="team-row">
+          <span style="color:${col(a.cat)};font-size:11px;width:14px;flex-shrink:0">●</span>
+          <span style="color:${col(a.cat)};font-weight:700;font-size:11px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
+          <span style="color:${col(a.cat)};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[${tag(a.cat)}]</span>
+          <span class="m" style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.role)}</span>
+          <button class="remove-team" data-id="${a.id}" style="font-size:11px;color:#444;opacity:0;transition:opacity .15s" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#444'">[×]</button>
+        </div>`).join('')}
+
+        <div style="margin-top:.75rem">
+          <button id="edit-team" class="term-btn" style="font-size:11px">+ editar equipo</button>
+        </div>
+      </div>
+
+      <!-- Project form -->
+      <div>
+        <div class="d" style="font-size:11px;margin-bottom:.75rem">proyecto — completar para generar el prompt</div>
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">nombre</span>
+            <input id="f-nombre" class="term-input" value="${esc(S.project.nombre)}" placeholder="ej: MiApp" style="font-size:11px;flex:1">
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">objetivo</span>
+            <input id="f-objetivo" class="term-input" value="${esc(S.project.objetivo)}" placeholder="ej: plataforma de ventas B2B" style="font-size:11px;flex:1">
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">stack</span>
+            <input id="f-stack" class="term-input" value="${esc(S.project.stack)}" placeholder="ej: React + Node + Postgres" style="font-size:11px;flex:1">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: prompt output -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <span class="d" style="font-size:11px">output</span>
+        <button id="copy-btn" class="term-btn term-btn-p" style="font-size:11px">${S.copied?'[✓ copiado]':'[copiar prompt]'}</button>
+      </div>
+      <div class="term-box" style="max-height:65vh;overflow-y:auto;border-color:#1A1A1A">
+        <pre id="prompt-output" style="font-size:10px;color:#888;white-space:pre-wrap;line-height:1.6">${esc(prompt)}</pre>
+      </div>
+      <div style="margin-top:.6rem;color:#444;font-size:10px;line-height:1.8">
+        <div>› copiá el prompt</div>
+        <div>› abrí Claude Code en tu proyecto</div>
+        <div>› pegalo como primer mensaje</div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  // Hover on team rows to show remove btn
+  document.querySelectorAll('.team-row').forEach(row=>{
+    const btn=row.querySelector('.remove-team');
+    row.addEventListener('mouseenter',()=>{if(btn)btn.style.opacity='1'});
+    row.addEventListener('mouseleave',()=>{if(btn)btn.style.opacity='0'});
+  });
+
+  // Remove from team
+  document.querySelectorAll('.remove-team').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      S.team=S.team.filter(id=>id!==btn.dataset.id);
+      render();
+    });
+  });
+
+  document.getElementById('nav-catalog')?.addEventListener('click',()=>{S.screen='catalog';render()});
+  document.getElementById('edit-team')?.addEventListener('click',()=>{S.screen='catalog';render()});
+
+  // Copy prompt
+  document.getElementById('copy-btn')?.addEventListener('click',()=>{
+    const text=document.getElementById('prompt-output').textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+      S.copied=true;
+      render();
+      setTimeout(()=>{S.copied=false;render()},2000);
+    });
+  });
+
+  // Live form updates
+  const updateProject=()=>{
+    S.project.nombre=document.getElementById('f-nombre')?.value||'';
+    S.project.objetivo=document.getElementById('f-objetivo')?.value||'';
+    S.project.stack=document.getElementById('f-stack')?.value||'';
+    const newPrompt=buildPrompt(S.team,S.project);
+    const out=document.getElementById('prompt-output');
+    if(out) out.textContent=newPrompt;
+  };
+  document.getElementById('f-nombre')?.addEventListener('input',updateProject);
+  document.getElementById('f-objetivo')?.addEventListener('input',updateProject);
+  document.getElementById('f-stack')?.addEventListener('input',updateProject);
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+// Rodrigo always in team
+if(!S.team.includes('rodrigo')) S.team=['rodrigo'];
+render();
+</script>
+</body>
+</html>

@@ -1,299 +1,249 @@
-// ============================================================
-// TEAMBUILDER — CatalogPage
-// Santiago + Isabella · v0.1
-// Catálogo + Banco · FORGE mode (todos despiertos) vs normal
-// ============================================================
+// TEAMBUILDER — CatalogPage · Terminal listing
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import agentsData from '../data/agents.json'
 import type { Agent, AgentCategory } from '../types/agent'
 import { AgentCard } from '../components/agents/AgentCard'
-import { AgentAvatar } from '../components/agents/AgentAvatar'
-import { copy } from '../data/copy'
 
 const allAgents = agentsData as Agent[]
-const { headline, filters } = copy.catalog
 
-type FilterKey = 'all' | AgentCategory
+const MAX_TEAM = 8
 
-const FILTER_OPTIONS: { key: FilterKey; label: string }[] = [
-  { key: 'all',         label: filters.all },
-  { key: 'estrategico', label: filters.estrategico },
-  { key: 'tecnico',     label: filters.tecnico },
-  { key: 'creativo',    label: filters.creativo },
-  { key: 'datos',       label: filters.datos },
-  { key: 'social',      label: filters.social },
-  { key: 'diseno',      label: filters.diseno },
-  { key: 'seguridad',   label: filters.seguridad },
+const FILTERS: { key: 'all' | AgentCategory; label: string; tag: string }[] = [
+  { key: 'all',         label: 'todos',      tag: 'ALL'   },
+  { key: 'estrategico', label: 'estratégico', tag: 'STRAT' },
+  { key: 'tecnico',     label: 'técnico',    tag: 'TECH'  },
+  { key: 'creativo',    label: 'creativo',   tag: 'CREAT' },
+  { key: 'datos',       label: 'datos',      tag: 'DATA'  },
+  { key: 'social',      label: 'social',     tag: 'SOC'   },
+  { key: 'diseno',      label: 'diseño',     tag: 'DSGN'  },
+  { key: 'seguridad',   label: 'seguridad',  tag: 'SEC'   },
 ]
 
-const CATEGORY_COLORS: Record<string, string> = {
-  estrategico: '#6366F1', tecnico: '#10B981', creativo: '#F59E0B',
-  datos: '#8B5CF6', social: '#EC4899', diseno: '#06B6D4', seguridad: '#EF4444',
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  estrategico: 'Estratégico', tecnico: 'Técnico', creativo: 'Creativo',
-  datos: 'Datos', social: 'Social', diseno: 'Diseño', seguridad: 'Seguridad',
-}
-
-// ── Modal de descripción de agente ────────────────────────────
-function AgentModal({ agent, isInTeam, onAdd, onRemove, onClose }: {
-  agent: Agent
-  isInTeam: boolean
-  onAdd: (a: Agent) => void
-  onRemove: (a: Agent) => void
-  onClose: () => void
-}) {
-  const accentColor = CATEGORY_COLORS[agent.category] ?? '#10B981'
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-base/80 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="bg-surface border border-border rounded-2xl p-6 max-w-md w-full flex flex-col gap-4 animate-fade-up"
-        style={{ borderColor: `${accentColor}30` }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <AgentAvatar agent={agent} size="lg" showDot={false} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-text-primary font-bold text-lg">{agent.name}</span>
-              <span
-                className="text-2xs px-1.5 py-0.5 rounded-full font-medium"
-                style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
-              >
-                {CATEGORY_LABELS[agent.category]}
-              </span>
-            </div>
-            <p className="text-text-muted text-sm">{agent.role}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-text-muted hover:text-text-primary text-xl leading-none shrink-0"
-          >
-            ×
-          </button>
-        </div>
-
-        {/* Descripción */}
-        <p className="text-text-muted text-sm leading-relaxed">{agent.description}</p>
-
-        {/* Voice samples */}
-        <div className="flex flex-col gap-1.5">
-          {agent.voiceSample.slice(0, 3).map((phrase, i) => (
-            <span
-              key={i}
-              className="text-xs text-text-muted border border-border/40 rounded-lg px-3 py-1.5 italic"
-            >
-              "{phrase}"
-            </span>
-          ))}
-        </div>
-
-        {/* Skills */}
-        {agent.skills.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {agent.skills.slice(0, 4).map((skill, i) => (
-              <span
-                key={i}
-                className="text-xs font-mono px-2 py-1 rounded-lg bg-base border border-border text-accent"
-              >
-                {skill}
-              </span>
-            ))}
-            {agent.skills.length > 4 && (
-              <span className="text-xs text-text-muted px-2 py-1">
-                +{agent.skills.length - 4} más
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Acción */}
-        {isInTeam ? (
-          <button
-            onClick={() => { onRemove(agent); onClose() }}
-            className="btn-ghost w-full text-sm py-2.5"
-          >
-            Quitar del equipo
-          </button>
-        ) : (
-          <button
-            onClick={() => { onAdd(agent); onClose() }}
-            className="btn-primary w-full text-sm py-2.5"
-          >
-            + Agregar al equipo
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ── Página principal ──────────────────────────────────────────
 export function CatalogPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const isForge = searchParams.get('mode') === 'forge'
+  const [params] = useSearchParams()
+  const isForge = params.get('mode') === 'forge'
 
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
-
+  const [filter, setFilter] = useState<'all' | AgentCategory>('all')
+  const [search, setSearch] = useState('')
   const [teamIds, setTeamIds] = useState<string[]>(() => {
     const raw = sessionStorage.getItem('team_agents')
-    return raw ? JSON.parse(raw) : ['rodrigo']
+    return raw ? JSON.parse(raw) : []
   })
+  const [modalAgent, setModalAgent] = useState<Agent | null>(null)
 
-  const addToTeam = (agent: Agent) => {
-    const next = [...teamIds, agent.id]
-    setTeamIds(next)
-    sessionStorage.setItem('team_agents', JSON.stringify(next))
+  const saveTeam = (ids: string[]) => {
+    setTeamIds(ids)
+    sessionStorage.setItem('team_agents', JSON.stringify(ids))
   }
 
-  const removeFromTeam = (agent: Agent) => {
-    const next = teamIds.filter(id => id !== agent.id)
-    setTeamIds(next)
-    sessionStorage.setItem('team_agents', JSON.stringify(next))
+  const addAgent = (agent: Agent) => {
+    if (teamIds.length >= MAX_TEAM) return
+    if (!teamIds.includes(agent.id)) saveTeam([...teamIds, agent.id])
   }
 
-  // En FORGE: todos los agentes aparecen despiertos
-  const filtered = allAgents.filter(a =>
-    activeFilter === 'all' || a.category === activeFilter
-  )
+  const removeAgent = (agent: Agent) => {
+    saveTeam(teamIds.filter(id => id !== agent.id))
+  }
 
-  const activeAgents = isForge
-    ? filtered
-    : filtered.filter(a => a.status === 'active')
+  const filtered = useMemo(() => {
+    return allAgents.filter(a => {
+      const matchCat = filter === 'all' || a.category === filter
+      const matchSearch = !search || a.name.toLowerCase().includes(search.toLowerCase()) || a.role.toLowerCase().includes(search.toLowerCase())
+      return matchCat && matchSearch
+    })
+  }, [filter, search])
 
-  const bankAgents = isForge
-    ? []
-    : filtered.filter(a => a.status === 'bank')
+  const active = filtered.filter(a => isForge || a.status === 'active')
+  const sleeping = filtered.filter(a => !isForge && a.status !== 'active')
 
   return (
-    <div className="min-h-screen bg-base">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-base/90 backdrop-blur-sm border-b border-border px-6 py-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <button
-                onClick={() => navigate('/')}
-                className="text-text-muted text-sm hover:text-text-primary transition-colors mb-1"
-              >
-                ← Inicio
-              </button>
-              <h1 className="font-display text-2xl font-bold text-text-primary">
-                {isForge ? 'Elegí tu equipo' : headline}
-              </h1>
-              {isForge && (
-                <p className="text-text-muted text-sm mt-0.5">
-                  Todos los agentes están disponibles. Clickeá para ver el perfil.
-                </p>
-              )}
-            </div>
-            {teamIds.length > 0 && (
-              <button
-                onClick={() => navigate('/equipo')}
-                className="btn-primary text-sm py-2"
-              >
-                Mi equipo ({teamIds.length}) →
-              </button>
-            )}
+    <div className="min-h-screen bg-[#080808] p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+
+        {/* Header bar */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/')} className="text-dim text-xs hover:text-green transition-colors">
+              ← /home
+            </button>
+            <span className="text-dim text-xs">/</span>
+            <span className="text-green text-xs">catalogo</span>
+            {isForge && <span className="text-amber text-xs">[FORGE]</span>}
           </div>
 
-          {/* Filtros */}
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {FILTER_OPTIONS.map(f => (
-              <button
-                key={f.key}
-                onClick={() => setActiveFilter(f.key)}
-                className={`
-                  whitespace-nowrap px-3 py-1.5 rounded-lg text-sm transition-all duration-200
-                  ${activeFilter === f.key
-                    ? 'bg-accent text-base font-medium'
-                    : 'border border-border text-text-muted hover:border-accent/30 hover:text-text-primary'}
-                `}
-              >
-                {f.label}
-              </button>
-            ))}
+          {/* Team counter */}
+          {teamIds.length > 0 && (
+            <button
+              onClick={() => navigate('/equipo')}
+              className="term-btn term-btn-primary text-xs py-1"
+            >
+              mi equipo [{teamIds.length}/{MAX_TEAM}] →
+            </button>
+          )}
+        </div>
+
+        {/* Filter bar */}
+        <div className="flex items-center gap-1 mb-1 flex-wrap">
+          <span className="text-dim text-xs mr-2">--filter</span>
+          {FILTERS.map(f => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className="text-xs px-2 py-0.5 transition-colors"
+              style={{
+                color: filter === f.key ? '#00FF41' : '#444',
+                borderBottom: filter === f.key ? '1px solid #00FF41' : '1px solid transparent',
+              }}
+            >
+              {f.tag}
+            </button>
+          ))}
+
+          {/* Search */}
+          <div className="ml-auto flex items-center gap-1">
+            <span className="text-dim text-xs">--grep</span>
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="nombre / rol"
+              className="term-input text-xs w-36"
+            />
           </div>
         </div>
-      </div>
 
-      {/* Contenido */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Agentes activos */}
-        {activeAgents.length > 0 && (
-          <section className="mb-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {activeAgents.map((agent, i) => (
-                <div key={agent.id} className="relative" style={{ animationDelay: `${i * 50}ms` }}>
-                  <AgentCard
-                    agent={agent}
-                    isInTeam={teamIds.includes(agent.id)}
-                    onAdd={addToTeam}
-                    onRemove={removeFromTeam}
-                    onClick={() => setSelectedAgent(agent)}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <hr className="term-hr mb-4" />
 
-        {/* Banco (solo en modo normal) */}
-        {bankAgents.length > 0 && (
+        {/* Column headers */}
+        <div className="flex items-center gap-3 py-1 text-dim text-xs border-b border-[#1A1A1A] mb-1">
+          <span className="w-4">ST</span>
+          <span className="w-24">NAME</span>
+          <span className="w-14">CAT</span>
+          <span className="w-40">ROLE</span>
+          <span className="flex-1 hidden md:block">VOICE</span>
+          <span className="w-14 text-right">SKILLS</span>
+          <span className="w-14 text-right">ACTION</span>
+        </div>
+
+        {/* Active agents */}
+        {active.map(agent => (
+          <AgentCard
+            key={agent.id}
+            agent={agent}
+            isInTeam={teamIds.includes(agent.id)}
+            onAdd={teamIds.length < MAX_TEAM ? addAgent : undefined}
+            onRemove={removeAgent}
+            onClick={setModalAgent}
+          />
+        ))}
+
+        {/* Sleeping agents */}
+        {sleeping.length > 0 && (
           <>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-px flex-1 bg-border" />
-              <div className="text-center">
-                <p className="text-text-muted font-medium text-sm">{copy.catalog.bankSection}</p>
-                <p className="text-text-muted/60 text-xs mt-0.5">{copy.catalog.bankDescription}</p>
-              </div>
-              <div className="h-px flex-1 bg-border" />
+            <div className="flex items-center gap-3 mt-6 mb-2">
+              <span className="text-dim text-xs">── sleeping ({sleeping.length})</span>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {bankAgents.map((agent, i) => (
-                <div key={agent.id} className="relative" style={{ animationDelay: `${i * 50}ms` }}>
-                  <AgentCard
-                    agent={agent}
-                    isSleeping
-                    isInTeam={teamIds.includes(agent.id)}
-                    onAdd={addToTeam}
-                    onClick={() => setSelectedAgent(agent)}
-                  />
-                </div>
-              ))}
-            </div>
+            {sleeping.map(agent => (
+              <AgentCard
+                key={agent.id}
+                agent={agent}
+                isSleeping
+                isInTeam={teamIds.includes(agent.id)}
+                onAdd={teamIds.length < MAX_TEAM ? addAgent : undefined}
+              />
+            ))}
           </>
         )}
 
-        {/* Estado vacío */}
-        {activeAgents.length === 0 && bankAgents.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-text-muted">{copy.catalog.emptyState.title}</p>
-            <p className="text-text-muted/60 text-sm mt-1">{copy.catalog.emptyState.description}</p>
+        {/* Team limit warning */}
+        {teamIds.length >= MAX_TEAM && (
+          <div className="mt-4 text-amber text-xs">
+            [!] equipo completo ({MAX_TEAM}/{MAX_TEAM}) — remové un agente para agregar otro
           </div>
         )}
+
+        {/* Footer */}
+        <div className="mt-8 flex items-center justify-between text-dim text-xs">
+          <span>{filtered.length} agentes · {teamIds.length}/{MAX_TEAM} seleccionados</span>
+          {teamIds.length > 0 && (
+            <button onClick={() => navigate('/equipo')} className="term-btn term-btn-primary text-xs py-1">
+              generar prompt →
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Modal de descripción */}
-      {selectedAgent && (
-        <AgentModal
-          agent={selectedAgent}
-          isInTeam={teamIds.includes(selectedAgent.id)}
-          onAdd={addToTeam}
-          onRemove={removeFromTeam}
-          onClose={() => setSelectedAgent(null)}
-        />
+      {/* Agent detail modal */}
+      {modalAgent && (
+        <div
+          className="fixed inset-0 bg-[#080808]/90 flex items-center justify-center p-4 z-50"
+          onClick={() => setModalAgent(null)}
+        >
+          <div
+            className="term-box max-w-lg w-full"
+            style={{ borderColor: '#1E1E1E' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#1A1A1A]">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-green">{modalAgent.name}</span>
+                <span className="text-dim text-xs">{modalAgent.role}</span>
+              </div>
+              <button onClick={() => setModalAgent(null)} className="text-dim hover:text-base text-xs">[esc]</button>
+            </div>
+
+            {/* Description */}
+            <p className="text-muted text-xs mb-3 leading-relaxed">{modalAgent.description}</p>
+
+            {/* Voice samples */}
+            <div className="space-y-1 mb-3">
+              {modalAgent.voiceSample.slice(0, 3).map((phrase, i) => (
+                <div key={i} className="text-xs text-dim italic">› "{phrase}"</div>
+              ))}
+            </div>
+
+            {/* Skills */}
+            {modalAgent.skills.length > 0 && (
+              <div className="border-t border-[#1A1A1A] pt-3 mb-3">
+                <div className="text-dim text-xs mb-2">skills ({modalAgent.skills.length}):</div>
+                <div className="space-y-1">
+                  {modalAgent.skills.slice(0, 5).map((skill, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      <span className="text-green">$</span>
+                      <span className="text-cyan font-mono">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 mt-3">
+              {teamIds.includes(modalAgent.id) ? (
+                <button
+                  onClick={() => { removeAgent(modalAgent); setModalAgent(null) }}
+                  className="term-btn text-xs py-1"
+                  style={{ borderColor: '#FF3B3B', color: '#FF3B3B' }}
+                >
+                  [× remover]
+                </button>
+              ) : teamIds.length < MAX_TEAM ? (
+                <button
+                  onClick={() => { addAgent(modalAgent); setModalAgent(null) }}
+                  className="term-btn term-btn-primary text-xs py-1"
+                >
+                  [+ agregar al equipo]
+                </button>
+              ) : (
+                <span className="text-amber text-xs">[!] equipo completo</span>
+              )}
+              <button onClick={() => setModalAgent(null)} className="term-btn text-xs py-1">[cerrar]</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
