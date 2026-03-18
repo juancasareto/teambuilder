@@ -107,7 +107,7 @@ function buildPrompt(teamIds,project){
   lines.push('');
 
   if(bankAgents.length>0){
-    lines.push('## BANCO DISPONIBLE (mid-sesi\u00f3n, m\u00e1x 2)');
+    lines.push('## BANCO (todos los no seleccionados · mid-sesi\u00f3n, m\u00e1x 2 activos a la vez)');
     lines.push(bankAgents.map(a=>a.name+' \u00b7 '+a.role).join(' | '));
     lines.push('');
   }
@@ -140,7 +140,7 @@ function buildPrompt(teamIds,project){
   lines.push('## EQUIPO');
   lines.push(teamBlock);
   lines.push('');
-  lines.push('## BANCO');
+  lines.push('## BANCO (no seleccionados — disponibles mid-sesión)');
   lines.push(bankBlock);
   lines.push('');
   lines.push('## REGLAS');
@@ -164,6 +164,47 @@ function buildPrompt(teamIds,project){
   }
   lines.push('No expliques qu\u00e9 est\u00e1s haciendo. Ejecut\u00e1 y present\u00e1te.');
   return lines.join('\n');
+}
+
+
+// ─── DOWNLOAD AGENTS BANK ──────────────────────────────────────────────────────
+function downloadBank(){
+  const lines=[];
+  lines.push('# TEAMBUILDER — BANCO DE AGENTES');
+  lines.push('> Archivo de referencia para sesiones de Claude Code.');
+  lines.push('> Cargalo con: @agents-bank.md o pegá su contenido como contexto.');
+  lines.push('');
+  lines.push('Total: '+AGENTS.length+' agentes · 7 categorías');
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+  AGENTS.forEach(a=>{
+    const t=CAT_TAG[a.cat]||'???';
+    lines.push('## '+a.name.toUpperCase()+' — '+a.role+' ['+t+']');
+    lines.push('');
+    if(a.personality){ lines.push('**Personalidad:** '+a.personality); lines.push(''); }
+    if(a.description){ lines.push('**Bio:** '+a.description); lines.push(''); }
+    if(a.tags&&a.tags.length){ lines.push('**Expertise:** '+a.tags.join(', ')); lines.push(''); }
+    if(a.examples&&a.examples.length){
+      lines.push('**Ejemplos de uso:**');
+      a.examples.forEach(ex=>lines.push('- '+ex));
+      lines.push('');
+    }
+    if(a.skills&&a.skills.length){
+      lines.push('**Skills:**');
+      a.skills.forEach(s=>lines.push('- `'+s+'`'));
+      lines.push('');
+    }
+    lines.push('**Invocar:** '+(a.invokeWith||['@'+a.name]).join(' / '));
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const el=document.createElement('a');
+  el.href=url; el.download='agents-bank.md'; el.click();
+  URL.revokeObjectURL(url);
 }
 
 // ─── RENDER ────────────────────────────────────────────────────────────────────
@@ -355,7 +396,10 @@ function renderCatalog(){
 
   <!-- Footer -->
   <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between">
-    <span class="d" style="font-size:11px">${filtered.length} agentes · ${teamCount}/${MAX_TEAM} seleccionados</span>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span class="d" style="font-size:11px">${filtered.length} agentes · ${teamCount}/${MAX_TEAM} seleccionados</span>
+      <button onclick="downloadBank()" style="border:1px solid #333;color:#555;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:10px;background:none" onmouseenter="this.style.borderColor='#00FF41';this.style.color='#00FF41'" onmouseleave="this.style.borderColor='#333';this.style.color='#555'">[↓ agents-bank.md]</button>
+    </div>
     ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p" style="font-size:11px">generar prompt →</button>`:''}
   </div>
 </div>`;
