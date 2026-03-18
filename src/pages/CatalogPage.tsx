@@ -8,6 +8,72 @@ import { AgentCard } from '../components/agents/AgentCard'
 
 const allAgents = agentsData as Agent[]
 
+const CAT_TAG_MAP: Record<string, string> = {
+  estrategico: 'STRAT',
+  tecnico:     'TECH',
+  creativo:    'CREAT',
+  datos:       'DATA',
+  social:      'SOC',
+  diseno:      'DSGN',
+  seguridad:   'SEC',
+}
+
+function downloadAgentsBank() {
+  const lines: string[] = []
+  lines.push('# TEAMBUILDER — BANCO DE AGENTES')
+  lines.push('> Archivo de referencia para sesiones de Claude Code.')
+  lines.push('> Cargalo con: @agents-bank.md o pegá su contenido como contexto.')
+  lines.push('')
+  lines.push(`Total: ${allAgents.length} agentes · 7 categorías`)
+  lines.push('')
+  lines.push('---')
+  lines.push('')
+
+  allAgents.forEach(a => {
+    const tag = CAT_TAG_MAP[a.category] ?? '???'
+    lines.push(`## ${a.name.toUpperCase()} — ${a.role} [${tag}]`)
+    lines.push('')
+    if (a.personality) {
+      lines.push(`**Personalidad:** ${a.personality}`)
+      lines.push('')
+    }
+    if (a.description) {
+      lines.push(`**Bio:** ${a.description}`)
+      lines.push('')
+    }
+    if (a.voiceSample?.length) {
+      lines.push(`**Frases:** ${a.voiceSample.map(v => `"${v}"`).join(' / ')}`)
+      lines.push('')
+    }
+    if (a.tags?.length) {
+      lines.push(`**Expertise:** ${a.tags.join(', ')}`)
+      lines.push('')
+    }
+    if (a.examples?.length) {
+      lines.push('**Ejemplos de uso:**')
+      a.examples.forEach(ex => lines.push(`- ${ex}`))
+      lines.push('')
+    }
+    if (a.skills?.length) {
+      lines.push('**Skills:**')
+      a.skills.forEach(s => lines.push(`- \`${s}\``))
+      lines.push('')
+    }
+    lines.push(`**Invocar:** ${(a.invokeWith ?? [`@${a.name}`]).join(' / ')}`)
+    lines.push('')
+    lines.push('---')
+    lines.push('')
+  })
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'agents-bank.md'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 const MAX_TEAM = 8
 
 const FILTERS: { key: 'all' | AgentCategory; label: string; tag: string }[] = [
@@ -166,7 +232,16 @@ export function CatalogPage() {
 
         {/* Footer */}
         <div className="mt-8 flex items-center justify-between text-dim text-xs">
-          <span>{filtered.length} agentes · {teamIds.length}/{MAX_TEAM} seleccionados</span>
+          <div className="flex items-center gap-3">
+            <span>{filtered.length} agentes · {teamIds.length}/{MAX_TEAM} seleccionados</span>
+            <button
+              onClick={downloadAgentsBank}
+              className="term-btn text-xs py-0.5"
+              title="Descargá el banco completo como .md para usarlo en cualquier sesión de Claude Code"
+            >
+              [↓ agents-bank.md]
+            </button>
+          </div>
           {teamIds.length > 0 && (
             <button onClick={() => navigate('/equipo')} className="term-btn term-btn-primary text-xs py-1">
               generar prompt →
@@ -175,60 +250,128 @@ export function CatalogPage() {
         </div>
       </div>
 
-      {/* Agent detail modal */}
+      {/* Agent profile modal */}
       {modalAgent && (
         <div
-          className="fixed inset-0 bg-[#080808]/90 flex items-center justify-center p-4 z-50"
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: 'rgba(8,8,8,0.94)', zIndex: 1000 }}
           onClick={() => setModalAgent(null)}
         >
           <div
-            className="term-box max-w-lg w-full"
-            style={{ borderColor: '#1E1E1E' }}
+            className="term-box w-full overflow-y-auto"
+            style={{ borderColor: '#2A2A2A', maxWidth: '580px', maxHeight: '88vh' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Modal header */}
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#1A1A1A]">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-bold text-green">{modalAgent.name}</span>
-                <span className="text-dim text-xs">{modalAgent.role}</span>
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4 pb-3 border-b border-[#1A1A1A]">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-bold" style={{ color: modalAgent.color ?? '#00FF41' }}>
+                    {modalAgent.emoji} {modalAgent.name}
+                  </span>
+                  <span className="text-dim text-xs">[{CAT_TAG_MAP[modalAgent.category] ?? '???'}]</span>
+                </div>
+                <div className="text-muted text-xs">{modalAgent.role}</div>
               </div>
-              <button onClick={() => setModalAgent(null)} className="text-dim hover:text-base text-xs">[esc]</button>
+              <button onClick={() => setModalAgent(null)} className="text-dim hover:text-base text-xs ml-4 shrink-0">[esc]</button>
             </div>
 
-            {/* Description */}
-            <p className="text-muted text-xs mb-3 leading-relaxed">{modalAgent.description}</p>
+            {/* Personalidad */}
+            {modalAgent.personality && (
+              <div className="mb-4">
+                <div className="text-dim text-xs mb-1">personalidad</div>
+                <p className="text-xs leading-relaxed" style={{ color: modalAgent.color ?? '#00FF41' }}>
+                  {modalAgent.personality}
+                </p>
+              </div>
+            )}
+
+            {/* Bio */}
+            {modalAgent.description && (
+              <div className="mb-4">
+                <div className="text-dim text-xs mb-1">bio</div>
+                <p className="text-muted text-xs leading-relaxed">{modalAgent.description}</p>
+              </div>
+            )}
 
             {/* Voice samples */}
-            <div className="space-y-1 mb-3">
-              {modalAgent.voiceSample.slice(0, 3).map((phrase, i) => (
-                <div key={i} className="text-xs text-dim italic">› "{phrase}"</div>
-              ))}
-            </div>
-
-            {/* Skills */}
-            {modalAgent.skills.length > 0 && (
-              <div className="border-t border-[#1A1A1A] pt-3 mb-3">
-                <div className="text-dim text-xs mb-2">skills ({modalAgent.skills.length}):</div>
+            {modalAgent.voiceSample.length > 0 && (
+              <div className="mb-4">
+                <div className="text-dim text-xs mb-1">frases características</div>
                 <div className="space-y-1">
-                  {modalAgent.skills.slice(0, 5).map((skill, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs">
-                      <span className="text-green">$</span>
-                      <span className="text-cyan font-mono">{skill}</span>
+                  {modalAgent.voiceSample.map((phrase, i) => (
+                    <div key={i} className="text-xs text-muted italic pl-2 border-l border-[#222]">
+                      "{phrase}"
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
+            {/* Tags / Expertise */}
+            {modalAgent.tags?.length > 0 && (
+              <div className="mb-4">
+                <div className="text-dim text-xs mb-1">expertise</div>
+                <div className="flex flex-wrap gap-1">
+                  {modalAgent.tags.map((tag, i) => (
+                    <span key={i} className="text-xs px-1.5 py-0.5 border border-[#1E1E1E] text-dim">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Ejemplos de uso */}
+            {modalAgent.examples?.length > 0 && (
+              <div className="mb-4 border-t border-[#1A1A1A] pt-3">
+                <div className="text-dim text-xs mb-1">ejemplos de uso</div>
+                <div className="space-y-1">
+                  {modalAgent.examples.map((ex, i) => (
+                    <div key={i} className="text-xs text-muted">
+                      <span className="text-green mr-1">›</span>{ex}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Skills */}
+            {modalAgent.skills.length > 0 && (
+              <div className="mb-4 border-t border-[#1A1A1A] pt-3">
+                <div className="text-dim text-xs mb-1">skills ({modalAgent.skills.length})</div>
+                <div className="space-y-1">
+                  {modalAgent.skills.map((skill, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      <span className="text-green shrink-0">$</span>
+                      <span className="text-cyan font-mono break-all">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Invocar */}
+            {modalAgent.invokeWith?.length > 0 && (
+              <div className="mb-4 border-t border-[#1A1A1A] pt-3">
+                <div className="text-dim text-xs mb-1">cómo invocarlo</div>
+                <div className="flex gap-2">
+                  {modalAgent.invokeWith.map((inv, i) => (
+                    <span key={i} className="text-xs text-green font-bold">{inv}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Actions */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 pt-3 border-t border-[#1A1A1A]">
               {teamIds.includes(modalAgent.id) ? (
                 <button
                   onClick={() => { removeAgent(modalAgent); setModalAgent(null) }}
                   className="term-btn text-xs py-1"
                   style={{ borderColor: '#FF3B3B', color: '#FF3B3B' }}
                 >
-                  [× remover]
+                  [× remover del equipo]
                 </button>
               ) : teamIds.length < MAX_TEAM ? (
                 <button
@@ -238,7 +381,7 @@ export function CatalogPage() {
                   [+ agregar al equipo]
                 </button>
               ) : (
-                <span className="text-amber text-xs">[!] equipo completo</span>
+                <span className="text-amber text-xs self-center">[!] equipo completo</span>
               )}
               <button onClick={() => setModalAgent(null)} className="term-btn text-xs py-1">[cerrar]</button>
             </div>
