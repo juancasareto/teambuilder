@@ -135,13 +135,11 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('')
 
   // Project state JSON
-  const teamNames = agents.filter(a => a.id !== 'rodrigo').map(a => a.name.toLowerCase())
   const projectStateJson = JSON.stringify({
     project: project.nombre || null,
     objetivo: project.objetivo || null,
     stack: project.stack || null,
     stage: 'kickoff',
-    team: ['rodrigo', ...teamNames],
     decisions: [],
     last_updated: new Date().toISOString().split('T')[0]
   }, null, 2)
@@ -152,16 +150,11 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('```')
   lines.push('')
 
-  // Folder structure
-  const agentFolders = ['rodrigo', ...teamNames].map(n => `  /${n}/`).join('\n')
-  lines.push('## ESTRUCTURA DE CARPETAS — CREÁ ESTO EN LA RAÍZ DEL PROYECTO')
+  lines.push('## ESTRUCTURA DE CARPETAS')
   lines.push('```')
-  lines.push('/agents')
-  lines.push(agentFolders)
-  lines.push('/shared')
-  lines.push('  /context/')
-  lines.push('  /memory/')
-  lines.push('    project-state.json')
+  lines.push('/agents/{un directorio por agente del equipo}')
+  lines.push('/shared/context/')
+  lines.push('/shared/memory/project-state.json')
   lines.push('/skills/')
   lines.push('TEAM.md')
   lines.push('```')
