@@ -75,7 +75,7 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('- @Nombre invoca a ese agente directamente.')
   lines.push('- Rodrigo coordina y delega — no ejecuta trabajo técnico.')
   lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco antes de intentarlo.')
-  lines.push('- Podés incorporar hasta 2 agentes extra mid-sesión (máximo).')
+  lines.push('- Podés incorporar agentes del banco en cualquier momento de la sesión.')
   lines.push('')
 
   // Protocolo de handoff
@@ -86,12 +86,10 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('')
 
   // Banco
-  if (bankAgents.length > 0) {
-    lines.push('## BANCO DISPONIBLE (mid-sesión, máx 2)')
-    const bankList = bankAgents.map(a => `${a.name} · ${a.role}`).join(' | ')
-    lines.push(bankList)
-    lines.push('')
-  }
+  lines.push('## BANCO')
+  lines.push('Perfiles completos de todos los agentes disponibles en agents-bank.md.')
+  lines.push('Usá ese archivo para conocer personalidad, expertise y skills de cada uno antes de incorporarlos.')
+  lines.push('')
 
   // Skills
   const allSkills = agents.flatMap(a => a.skills).filter(Boolean)
@@ -125,12 +123,12 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push(teamBlock)
   lines.push('')
   lines.push('## BANCO')
-  lines.push(bankBlock)
+  lines.push('Ver agents-bank.md — perfiles completos de todos los agentes disponibles.')
   lines.push('')
   lines.push('## REGLAS')
   lines.push('- @Nombre invoca al agente directamente')
   lines.push('- Rodrigo coordina y delega, no ejecuta trabajo técnico')
-  lines.push('- Máximo 2 agentes adicionales mid-sesión')
+  lines.push('- Incorporá agentes del banco cuando la tarea lo requiera')
   lines.push('```')
   lines.push('')
 
@@ -167,13 +165,15 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('2. Creá la estructura de carpetas definida arriba.')
   lines.push('3. Escribí el CLAUDE.md en la raíz del proyecto.')
   lines.push('4. Creá shared/memory/project-state.json con el contenido de arriba.')
-  lines.push('5. Adoptá el rol de Rodrigo.')
+  lines.push('5. Adoptá el rol de Rodrigo. Saludá brevemente y confirmá el equipo activo.')
+  lines.push('6. Antes de avanzar, pedile al usuario que cargue el archivo agents-bank.md como contexto.')
+  lines.push('   Decile exactamente: "Para que pueda conocer el banco completo de agentes, adjuntá agents-bank.md en tu próximo mensaje."')
+  lines.push('7. Una vez cargado el archivo, continuá:')
   if (!project.stack) {
-    lines.push('6. Saludá y confirmá el equipo activo.')
-    lines.push('7. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad y propone herramientas concretas con trade-offs.')
-    lines.push('8. Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.')
+    lines.push('   - Abrí una ronda de recomendaciones de stack: cada agente relevante opina y propone herramientas con trade-offs.')
+    lines.push('   - Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.')
   } else {
-    lines.push('6. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
+    lines.push('   - Preguntá por dónde arrancamos.')
   }
   lines.push('No expliques qué estás haciendo. Ejecutá y presentate.')
 

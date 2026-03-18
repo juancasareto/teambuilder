@@ -99,7 +99,7 @@ function buildPrompt(teamIds,project){
   lines.push('- @Nombre invoca a ese agente directamente.');
   lines.push('- Rodrigo coordina y delega \u2014 no ejecuta trabajo t\u00e9cnico.');
   lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco antes de intentarlo.');
-  lines.push('- Pod\u00e9s incorporar hasta 2 agentes extra mid-sesi\u00f3n (m\u00e1ximo).');
+  lines.push('- Pod\u00e9s incorporar agentes del banco en cualquier momento de la sesi\u00f3n.');
   lines.push('');
 
   lines.push('## PROTOCOLO DE HANDOFF');
@@ -108,11 +108,10 @@ function buildPrompt(teamIds,project){
   lines.push('- Para volver a Rodrigo: "**Rodrigo retoma.**"');
   lines.push('');
 
-  if(bankAgents.length>0){
-    lines.push('## BANCO (todos los no seleccionados · mid-sesi\u00f3n, m\u00e1x 2 activos a la vez)');
-    lines.push(bankAgents.map(a=>a.name+' \u00b7 '+a.role).join(' | '));
-    lines.push('');
-  }
+  lines.push('## BANCO');
+  lines.push('Perfiles completos de todos los agentes disponibles en agents-bank.md.');
+  lines.push('Us\u00e1 ese archivo para conocer personalidad, expertise y skills de cada uno antes de incorporarlos.');
+  lines.push('');
 
   const allSkills=agents.flatMap(a=>a.skills).filter(Boolean);
   if(allSkills.length>0){
@@ -142,13 +141,13 @@ function buildPrompt(teamIds,project){
   lines.push('## EQUIPO');
   lines.push(teamBlock);
   lines.push('');
-  lines.push('## BANCO (no seleccionados — disponibles mid-sesión)');
-  lines.push(bankBlock);
+  lines.push('## BANCO');
+  lines.push('Ver agents-bank.md — perfiles completos de todos los agentes disponibles.');
   lines.push('');
   lines.push('## REGLAS');
   lines.push('- @Nombre invoca al agente directamente');
   lines.push('- Rodrigo coordina y delega, no ejecuta trabajo t\u00e9cnico');
-  lines.push('- M\u00e1ximo 2 agentes adicionales mid-sesi\u00f3n');
+  lines.push('- Incorpor\u00e1 agentes del banco cuando la tarea lo requiera');
   lines.push('```');
   lines.push('');
 
@@ -183,13 +182,15 @@ function buildPrompt(teamIds,project){
   lines.push('2. Cre\u00e1 la estructura de carpetas definida arriba.');
   lines.push('3. Escrib\u00ed el CLAUDE.md en la ra\u00edz del proyecto.');
   lines.push('4. Cre\u00e1 shared/memory/project-state.json con el contenido de arriba.');
-  lines.push('5. Adopt\u00e1 el rol de Rodrigo.');
+  lines.push('5. Adopt\u00e1 el rol de Rodrigo. Salud\u00e1 brevemente y confirm\u00e1 el equipo activo.');
+  lines.push('6. Antes de avanzar, pedile al usuario que cargue el archivo agents-bank.md como contexto.');
+  lines.push('   Dec\u00edl exactamente: "Para que pueda conocer el banco completo de agentes, adjunt\u00e1 agents-bank.md en tu pr\u00f3ximo mensaje."');
+  lines.push('7. Una vez cargado el archivo, continu\u00e1:');
   if(!project.stack){
-    lines.push('6. Salud\u00e1 y confirm\u00e1 el equipo activo.');
-    lines.push('7. Abr\u00ed una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad y propone herramientas concretas con trade-offs.');
-    lines.push('8. Rodrigo consolida y presenta las 2-3 mejores opciones. Esper\u00e1 la decisi\u00f3n antes de continuar.');
+    lines.push('   - Abr\u00ed una ronda de recomendaciones de stack: cada agente relevante opina y propone herramientas con trade-offs.');
+    lines.push('   - Rodrigo consolida y presenta las 2-3 mejores opciones. Esper\u00e1 la decisi\u00f3n antes de continuar.');
   } else {
-    lines.push('6. Salud\u00e1, confirm\u00e1 el equipo activo y pregunt\u00e1 por d\u00f3nde arrancamos.');
+    lines.push('   - Pregunt\u00e1 por d\u00f3nde arrancamos.');
   }
   lines.push('No expliques qu\u00e9 est\u00e1s haciendo. Ejecut\u00e1 y present\u00e1te.');
   return lines.join('\n');
