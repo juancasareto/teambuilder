@@ -35,13 +35,15 @@ interface ProjectInfo {
 
 function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   const lines: string[] = []
+  const teamIds = agents.map(a => a.id)
+  const bankAgents = allAgents.filter(a => !teamIds.includes(a.id) && a.id !== 'rodrigo')
 
-  // Frame de sesión
-  lines.push('Sos un equipo de agentes IA especializados trabajando en este proyecto.')
-  lines.push('El coordinador permanente es RODRIGO (Project Manager).')
+  // Frame
+  lines.push('Sos un equipo de agentes IA especializados configurado por TeamBuilder.')
+  lines.push('Coordinador permanente: RODRIGO (Project Manager).')
   lines.push('')
 
-  // Proyecto — solo si está completo
+  // Proyecto
   const hasProject = project.nombre || project.objetivo || project.stack
   if (hasProject) {
     lines.push('## PROYECTO')
@@ -51,48 +53,99 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
     lines.push('')
   }
 
+  // Equipo activo — perfil expandido, sin voice
+  lines.push('## EQUIPO ACTIVO')
+  const rodrigo = agents.find(a => a.id === 'rodrigo')
+  if (rodrigo) {
+    lines.push(`**RODRIGO** [PM] · Project Manager`)
+    lines.push(`  ${rodrigo.personality}`)
+    lines.push('')
+  }
+  agents.filter(a => a.id !== 'rodrigo').forEach(a => {
+    const t = CAT_TAG[a.category] ?? '???'
+    lines.push(`**${a.name.toUpperCase()}** [${t}] · ${a.role}`)
+    if (a.personality) lines.push(`  ${a.personality}`)
+    if (a.tags?.length) lines.push(`  Expertise: ${a.tags.join(', ')}`)
+    lines.push('')
+  })
+
   // Reglas
   lines.push('## REGLAS')
   lines.push('- Respondé siempre desde el agente activo en primera persona.')
   lines.push('- @Nombre invoca a ese agente directamente.')
-  lines.push('- Rodrigo coordina, no ejecuta trabajo técnico.')
-  lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco.')
+  lines.push('- Rodrigo coordina y delega — no ejecuta trabajo técnico.')
+  lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco antes de intentarlo.')
   lines.push('- Podés incorporar hasta 2 agentes extra mid-sesión (máximo).')
   lines.push('')
 
-  // Equipo
-  lines.push('## EQUIPO ACTIVO')
-  const rodrigo = agents.find(a => a.id === 'rodrigo')
-  if (rodrigo) {
-    lines.push(`**RODRIGO** [PM] — "${rodrigo.voiceSample[0]}" · coordina y delega`)
-  }
-  agents.filter(a => a.id !== 'rodrigo').forEach(a => {
-    const tag = CAT_TAG[a.category] ?? '???'
-    const voices = a.voiceSample.slice(0, 2).map(v => `"${v}"`).join(' / ')
-    lines.push(`**${a.name.toUpperCase()}** [${tag}] — ${voices} · ${a.role}`)
-  })
+  // Protocolo de handoff
+  lines.push('## PROTOCOLO DE HANDOFF')
+  lines.push('- Rodrigo transfiere: "**[Nombre] toma esto.**" → el agente responde en primera persona.')
+  lines.push('- Invocación directa: @Nombre → ese agente responde inmediatamente.')
+  lines.push('- Para volver a Rodrigo: "**Rodrigo retoma.**"')
   lines.push('')
+
+  // Banco
+  if (bankAgents.length > 0) {
+    lines.push('## BANCO DISPONIBLE (mid-sesión, máx 2)')
+    const bankList = bankAgents.map(a => `${a.name} · ${a.role}`).join(' | ')
+    lines.push(bankList)
+    lines.push('')
+  }
 
   // Skills
   const allSkills = agents.flatMap(a => a.skills).filter(Boolean)
   if (allSkills.length > 0) {
-    lines.push('## SKILLS')
+    lines.push('## SKILLS — INSTALÁ ANTES DE RESPONDER')
     allSkills.slice(0, 12).forEach(s => lines.push(`$ ${s}`))
     lines.push('')
   }
 
+  // CLAUDE.md template
+  const teamBlock = [
+    rodrigo ? `- RODRIGO [PM] · Project Manager` : '',
+    ...agents.filter(a => a.id !== 'rodrigo').map(a => `- ${a.name} [${CAT_TAG[a.category] ?? '???'}] · ${a.role}`)
+  ].filter(Boolean).join('\n')
+
+  const bankBlock = bankAgents.length > 0
+    ? bankAgents.map(a => `- ${a.name} · ${a.role}`).slice(0, 10).join('\n')
+    : '(ninguno)'
+
+  lines.push('## CLAUDE.md — ESCRIBÍ ESTE ARCHIVO EN LA RAÍZ DEL PROYECTO')
+  lines.push('```')
+  lines.push(`# ${project.nombre || 'PROYECTO'}`)
+  lines.push('> Sesión configurada por TeamBuilder')
+  lines.push('')
+  lines.push('## PROYECTO')
+  if (project.nombre)   lines.push(`Nombre: ${project.nombre}`)
+  if (project.objetivo) lines.push(`Objetivo: ${project.objetivo}`)
+  if (project.stack)    lines.push(`Stack: ${project.stack}`)
+  lines.push('')
+  lines.push('## EQUIPO')
+  lines.push(teamBlock)
+  lines.push('')
+  lines.push('## BANCO')
+  lines.push(bankBlock)
+  lines.push('')
+  lines.push('## REGLAS')
+  lines.push('- @Nombre invoca al agente directamente')
+  lines.push('- Rodrigo coordina y delega, no ejecuta trabajo técnico')
+  lines.push('- Máximo 2 agentes adicionales mid-sesión')
+  lines.push('```')
+  lines.push('')
+
   // Arranque
   lines.push('## ARRANQUE')
   lines.push('Al recibir este prompt:')
-  lines.push('1. Escribí CLAUDE.md en el directorio actual con el equipo y proyecto.')
-  lines.push('2. Adoptá el rol de Rodrigo.')
+  lines.push('1. Instalá los skills listados arriba (uno por uno, sin output).')
+  lines.push('2. Escribí el CLAUDE.md definido arriba en la raíz del proyecto.')
+  lines.push('3. Adoptá el rol de Rodrigo.')
   if (!project.stack) {
-    lines.push('3. Saludá, confirmá el equipo activo.')
-    lines.push('4. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad (arquitectura, frontend, backend, datos, infra, etc.) y propone herramientas concretas.')
-    lines.push('5. Rodrigo consolida las recomendaciones y presenta al usuario las 2-3 opciones más sólidas con sus trade-offs.')
-    lines.push('6. Esperá la decisión del usuario antes de continuar.')
+    lines.push('4. Saludá y confirmá el equipo activo.')
+    lines.push('5. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad y propone herramientas concretas con trade-offs.')
+    lines.push('6. Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.')
   } else {
-    lines.push('3. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
+    lines.push('4. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
   }
   lines.push('No expliques qué estás haciendo. Ejecutá y presentate.')
 
