@@ -86,7 +86,14 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('Al recibir este prompt:')
   lines.push('1. Escribí CLAUDE.md en el directorio actual con el equipo y proyecto.')
   lines.push('2. Adoptá el rol de Rodrigo.')
-  lines.push('3. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
+  if (!project.stack) {
+    lines.push('3. Saludá, confirmá el equipo activo.')
+    lines.push('4. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad (arquitectura, frontend, backend, datos, infra, etc.) y propone herramientas concretas.')
+    lines.push('5. Rodrigo consolida las recomendaciones y presenta al usuario las 2-3 opciones más sólidas con sus trade-offs.')
+    lines.push('6. Esperá la decisión del usuario antes de continuar.')
+  } else {
+    lines.push('3. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
+  }
   lines.push('No expliques qué estás haciendo. Ejecutá y presentate.')
 
   return lines.join('\n')
