@@ -134,18 +134,53 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
   lines.push('```')
   lines.push('')
 
+  // Project state JSON
+  const teamNames = agents.filter(a => a.id !== 'rodrigo').map(a => a.name.toLowerCase())
+  const projectStateJson = JSON.stringify({
+    project: project.nombre || null,
+    objetivo: project.objetivo || null,
+    stack: project.stack || null,
+    stage: 'kickoff',
+    team: ['rodrigo', ...teamNames],
+    decisions: [],
+    last_updated: new Date().toISOString().split('T')[0]
+  }, null, 2)
+
+  lines.push('## PROJECT-STATE.JSON — CREÁ ESTE ARCHIVO EN shared/memory/')
+  lines.push('```json')
+  lines.push(projectStateJson)
+  lines.push('```')
+  lines.push('')
+
+  // Folder structure
+  const agentFolders = ['rodrigo', ...teamNames].map(n => `  /${n}/`).join('\n')
+  lines.push('## ESTRUCTURA DE CARPETAS — CREÁ ESTO EN LA RAÍZ DEL PROYECTO')
+  lines.push('```')
+  lines.push('/agents')
+  lines.push(agentFolders)
+  lines.push('/shared')
+  lines.push('  /context/')
+  lines.push('  /memory/')
+  lines.push('    project-state.json')
+  lines.push('/skills/')
+  lines.push('TEAM.md')
+  lines.push('```')
+  lines.push('')
+
   // Arranque
   lines.push('## ARRANQUE')
   lines.push('Al recibir este prompt:')
   lines.push('1. Instalá los skills listados arriba (uno por uno, sin output).')
-  lines.push('2. Escribí el CLAUDE.md definido arriba en la raíz del proyecto.')
-  lines.push('3. Adoptá el rol de Rodrigo.')
+  lines.push('2. Creá la estructura de carpetas definida arriba.')
+  lines.push('3. Escribí el CLAUDE.md en la raíz del proyecto.')
+  lines.push('4. Creá shared/memory/project-state.json con el contenido de arriba.')
+  lines.push('5. Adoptá el rol de Rodrigo.')
   if (!project.stack) {
-    lines.push('4. Saludá y confirmá el equipo activo.')
-    lines.push('5. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad y propone herramientas concretas con trade-offs.')
-    lines.push('6. Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.')
+    lines.push('6. Saludá y confirmá el equipo activo.')
+    lines.push('7. Abrí una ronda de recomendaciones de stack: cada agente relevante opina desde su especialidad y propone herramientas concretas con trade-offs.')
+    lines.push('8. Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.')
   } else {
-    lines.push('4. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
+    lines.push('6. Saludá, confirmá el equipo activo y preguntá por dónde arrancamos.')
   }
   lines.push('No expliques qué estás haciendo. Ejecutá y presentate.')
 
