@@ -118,6 +118,10 @@ function buildPrompt(teamIds,project){
     lines.push('## SKILLS \u2014 INSTAL\u00c1 ANTES DE RESPONDER');
     allSkills.slice(0,12).forEach(s=>lines.push('$ '+s));
     lines.push('');
+    lines.push('Si necesitás skills adicionales durante la sesión:');
+    lines.push('  npx skills find [query]   ← busca en 89.000+ skills disponibles');
+    lines.push('  Catálogo completo: https://skills.sh');
+    lines.push('');
   }
 
   const teamBlock=[
@@ -293,6 +297,13 @@ function buildPromptSolo(agentId, project){
     agent.skills.forEach(s=>lines.push('$ '+s));
     lines.push('');
   }
+
+  lines.push('## DISCOVERY DE SKILLS ADICIONALES');
+  lines.push('Si necesitás una skill que no está en la lista de arriba:');
+  lines.push('  npx skills find [query]   ← busca en los 89.000+ skills del ecosistema');
+  lines.push('  npx skills add <owner/repo> --skill <nombre> -y');
+  lines.push('Explorá el catálogo completo en: https://skills.sh');
+  lines.push('');
 
   lines.push('## ARRANQUE');
   lines.push('Al recibir este prompt:');
@@ -662,6 +673,12 @@ ${skillNames}
 \`\`\`
 ${installLines}
 \`\`\`
+
+## DISCOVERY DE SKILLS ADICIONALES
+Si durante la sesión necesitás una skill que no está en la lista:
+  npx skills find [query]   ← busca en 89.000+ skills del ecosistema
+  npx skills add <owner/repo> --skill <nombre> -y
+  Catálogo completo: https://skills.sh
 
 ## ARRANQUE
 1. Instalá los skills listados arriba

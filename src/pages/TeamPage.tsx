@@ -97,6 +97,10 @@ function buildPrompt(agents: Agent[], project: ProjectInfo): string {
     lines.push('## SKILLS — INSTALÁ ANTES DE RESPONDER')
     allSkills.slice(0, 12).forEach(s => lines.push(`$ ${s}`))
     lines.push('')
+    lines.push('Si necesitás skills adicionales durante la sesión:')
+    lines.push('  npx skills find [query]   ← busca en 89.000+ skills disponibles')
+    lines.push('  Catálogo completo: https://skills.sh')
+    lines.push('')
   }
 
   // CLAUDE.md template
