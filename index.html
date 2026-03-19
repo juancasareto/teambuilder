@@ -10,16 +10,16 @@
 :root{
   --green:#00FF41;--amber:#FFB000;--cyan:#00E5FF;--red:#FF3B3B;
   --purple:#A855F7;--pink:#FF6EB4;--violet:#C084FC;
-  --bg:#080808;--dim:#444;--muted:#888;--base:#CCCCCC;
+  --bg:#080808;--dim:#888;--muted:#888;--base:#CCCCCC;
   --border:#1A1A1A;--border2:#111;
 }
-html,body{background:var(--bg);color:var(--base);font-family:'Geist Mono','Courier New',monospace;font-size:12px;min-height:100vh;line-height:1.5}
+html,body{background:var(--bg);color:var(--base);font-family:'Geist Mono','Courier New',monospace;font-size:14px;min-height:100vh;line-height:1.5}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px)}
 #app{max-width:860px;margin:0 auto;padding:2rem 1.25rem;min-height:100vh}
 button{cursor:pointer;background:none;border:none;font-family:inherit;font-size:inherit;color:inherit}
 input,textarea{font-family:inherit;font-size:inherit;background:none;color:var(--base);border:none;outline:none}
 .g{color:var(--green)} .a{color:var(--amber)} .d{color:var(--dim)} .m{color:var(--muted)} .r{color:var(--red)} .c{color:var(--cyan)}
-.term-btn{border:1px solid var(--dim);color:var(--muted);padding:.2rem .6rem;transition:all .15s;font-size:11px;display:inline-block}
+.term-btn{border:1px solid var(--dim);color:var(--muted);padding:.2rem .6rem;transition:all .15s;font-size:13px;display:inline-block}
 .term-btn:hover{border-color:var(--green);color:var(--green)}
 .term-btn-p{border-color:var(--green);color:var(--green)}
 .term-btn-p:hover{background:rgba(0,255,65,.08)}
@@ -361,62 +361,62 @@ const LOGO=` ████████╗███████╗ █████
 
 const BOOT_LINES=[
   {text:'TEAMBUILDER v0.2',color:'#00FF41',delay:0},
-  {text:'─'.repeat(48),color:'#1A1A1A',delay:80},
-  {text:'Initializing agent registry...',color:'#444',delay:160},
+  {text:'─'.repeat(48),color:'#333',delay:80},
+  {text:'Initializing agent registry...',color:'#888',delay:160},
   {text:'[OK] '+AGENTS.length+' agents loaded',color:'#00FF41',delay:280},
   {text:'[OK] Skills catalog ready',color:'#00FF41',delay:380},
   {text:'[OK] Prompt engine online',color:'#00FF41',delay:480},
-  {text:'─'.repeat(48),color:'#1A1A1A',delay:560},
+  {text:'─'.repeat(48),color:'#333',delay:560},
   {text:'Select mode to continue.',color:'#555',delay:640},
 ];
 
 function renderBoot(){
   app.innerHTML=`
 <div style="max-width:560px;margin:0 auto">
-  <pre id="logo" style="font-size:10px;line-height:1.2;margin-bottom:1.5rem;overflow-x:auto">${LOGO}</pre>
+  <pre id="logo" style="font-size:12px;line-height:1.2;margin-bottom:1.5rem;overflow-x:auto">${LOGO}</pre>
   <div id="boot-lines" style="margin-bottom:1.5rem;line-height:1.8"></div>
   <div id="boot-menu" style="display:none">
     <div style="display:flex;flex-direction:column;gap:.75rem">
-      <button id="btn-solo" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#1A1A1A'">
+      <button id="btn-solo" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#2a2a2a'">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem">
           <span class="g" style="font-weight:700;letter-spacing:.1em">[1] SOLO</span>
-          <span class="d" style="font-size:11px">─── un agente</span>
+          <span class="d" style="font-size:13px">─── un agente</span>
         </div>
-        <div class="m" style="font-size:11px;padding-left:1rem">
+        <div class="m" style="font-size:13px;padding-left:1rem">
           Elegís un agente y hablás directamente con él.<br>
           Output: prompt de conversación directa.
         </div>
-        <div style="margin-top:.6rem;font-size:11px;color:#444">&gt; Elegir agente →</div>
+        <div style="margin-top:.6rem;font-size:13px;color:#888">&gt; Elegir agente →</div>
       </button>
-      <button id="btn-equipo" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#1A1A1A'">
+      <button id="btn-equipo" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#2a2a2a'">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem">
           <span class="g" style="font-weight:700;letter-spacing:.1em">[2] EQUIPO</span>
-          <span class="d" style="font-size:11px">─── múltiples agentes</span>
+          <span class="d" style="font-size:13px">─── múltiples agentes</span>
         </div>
-        <div class="m" style="font-size:11px;padding-left:1rem">
+        <div class="m" style="font-size:13px;padding-left:1rem">
           Armás un equipo coordinado por Rodrigo (PM).<br>
           Output: prompt con roles, banco y handoff.
         </div>
-        <div style="margin-top:.6rem;font-size:11px;color:#444">&gt; Armar equipo →</div>
+        <div style="margin-top:.6rem;font-size:13px;color:#888">&gt; Armar equipo →</div>
       </button>
-      <button id="btn-crear" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#1A1A1A'">
+      <button id="btn-crear" class="term-box" style="text-align:left;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='#00FF41'" onmouseleave="this.style.borderColor='#2a2a2a'">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem">
           <span class="g" style="font-weight:700;letter-spacing:.1em">[3] CREAR AGENTE</span>
-          <span class="d" style="font-size:11px">─── agente personalizado</span>
+          <span class="d" style="font-size:13px">─── agente personalizado</span>
         </div>
-        <div class="m" style="font-size:11px;padding-left:1rem">
+        <div class="m" style="font-size:13px;padding-left:1rem">
           Describís las características del agente.<br>
           Output: skills recomendadas + prompt listo para usar.
         </div>
-        <div style="margin-top:.6rem;font-size:11px;color:#444">&gt; Diseñar agente →</div>
+        <div style="margin-top:.6rem;font-size:13px;color:#888">&gt; Diseñar agente →</div>
       </button>
     </div>
     <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between" class="d">
       <span>teambuilder.sh</span>
-      <span class="g blink" style="font-size:14px">█</span>
+      <span class="g blink" style="font-size:16px">█</span>
     </div>
   </div>
-  <div id="boot-cursor" class="g blink" style="font-size:13px">_</div>
+  <div id="boot-cursor" class="g blink" style="font-size:15px">_</div>
 </div>`;
 
   const logoEl=document.getElementById('logo');
@@ -555,30 +555,30 @@ function renderCreator(){
   app.innerHTML=`
 <div style="max-width:640px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
-    <button id="nav-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:.08em">← HOME</button>
-    <span class="d" style="font-size:11px">─────────────────────────</span>
-    <span class="g" style="font-size:11px;letter-spacing:.1em;font-weight:700">CREAR AGENTE</span>
+    <button id="nav-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
+    <span class="d" style="font-size:13px">─────────────────────────</span>
+    <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">CREAR AGENTE</span>
   </div>
 
   <div class="term-box" style="margin-bottom:1rem">
-    <div class="d" style="font-size:10px;margin-bottom:.75rem;letter-spacing:.08em">▸ DEFINÍ TU AGENTE — te recomendamos las mejores skills</div>
+    <div class="d" style="font-size:12px;margin-bottom:.75rem;letter-spacing:.08em">▸ DEFINÍ TU AGENTE — te recomendamos las mejores skills</div>
 
     <div style="margin-bottom:.75rem">
-      <label class="m" style="font-size:10px;display:block;margin-bottom:.3rem;letter-spacing:.08em">NOMBRE</label>
-      <input id="cr-name" type="text" placeholder="ej: Elena, DataBot, Guardian..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:12px;padding:.5rem .75rem;outline:none;border-radius:2px" />
+      <label class="m" style="font-size:12px;display:block;margin-bottom:.3rem;letter-spacing:.08em">NOMBRE</label>
+      <input id="cr-name" type="text" placeholder="ej: Elena, DataBot, Guardian..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:14px;padding:.5rem .75rem;outline:none;border-radius:2px" />
     </div>
 
     <div style="margin-bottom:.75rem">
-      <label class="m" style="font-size:10px;display:block;margin-bottom:.3rem;letter-spacing:.08em">ROL / FUNCIÓN PRINCIPAL</label>
-      <input id="cr-role" type="text" placeholder="ej: Analista de datos, DevOps, Copywriter, Agente de seguridad..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:12px;padding:.5rem .75rem;outline:none;border-radius:2px" />
+      <label class="m" style="font-size:12px;display:block;margin-bottom:.3rem;letter-spacing:.08em">ROL / FUNCIÓN PRINCIPAL</label>
+      <input id="cr-role" type="text" placeholder="ej: Analista de datos, DevOps, Copywriter, Agente de seguridad..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:14px;padding:.5rem .75rem;outline:none;border-radius:2px" />
     </div>
 
     <div style="margin-bottom:1rem">
-      <label class="m" style="font-size:10px;display:block;margin-bottom:.3rem;letter-spacing:.08em">DESCRIPCIÓN — ¿qué hace? ¿en qué proyectos?</label>
-      <textarea id="cr-desc" rows="4" placeholder="ej: Revisa código en busca de vulnerabilidades, implementa autenticación, gestiona permisos y audita APIs antes de producción..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:12px;padding:.5rem .75rem;outline:none;border-radius:2px;resize:vertical"></textarea>
+      <label class="m" style="font-size:12px;display:block;margin-bottom:.3rem;letter-spacing:.08em">DESCRIPCIÓN — ¿qué hace? ¿en qué proyectos?</label>
+      <textarea id="cr-desc" rows="4" placeholder="ej: Revisa código en busca de vulnerabilidades, implementa autenticación, gestiona permisos y audita APIs antes de producción..." style="width:100%;box-sizing:border-box;background:#0f0f0f;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:14px;padding:.5rem .75rem;outline:none;border-radius:2px;resize:vertical"></textarea>
     </div>
 
-    <button id="btn-match" class="g" style="background:none;border:1px solid #00FF41;color:#00FF41;font-family:'Geist Mono',monospace;font-size:11px;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.1em;width:100%;transition:all .15s" onmouseenter="this.style.background='#00FF41';this.style.color='#080808'" onmouseleave="this.style.background='none';this.style.color='#00FF41'">
+    <button id="btn-match" class="g" style="background:none;border:1px solid #00FF41;color:#00FF41;font-family:'Geist Mono',monospace;font-size:13px;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.1em;width:100%;transition:all .15s" onmouseenter="this.style.background='#00FF41';this.style.color='#080808'" onmouseleave="this.style.background='none';this.style.color='#00FF41'">
       → RECOMENDAR SKILLS
     </button>
   </div>
@@ -601,7 +601,7 @@ function renderCreator(){
 
     if(matched.length === 0){
       resultsEl.style.display='block';
-      resultsEl.innerHTML=`<div class="term-box d" style="font-size:11px">No encontramos matches. Probá con palabras clave más específicas o explorá skills en <a href="https://skills.sh" target="_blank" class="g">skills.sh →</a></div>`;
+      resultsEl.innerHTML=`<div class="term-box d" style="font-size:13px">No encontramos matches. Probá con palabras clave más específicas o explorá skills en <a href="https://skills.sh" target="_blank" class="g">skills.sh →</a></div>`;
       return;
     }
 
@@ -612,31 +612,31 @@ function renderCreator(){
     resultsEl.innerHTML=`
 <div class="term-box" style="margin-bottom:1rem">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-    <span class="g" style="font-size:11px;letter-spacing:.1em;font-weight:700">▸ SKILLS RECOMENDADAS — ${agentName.toUpperCase()}</span>
-    <a href="https://skills.sh" target="_blank" class="d" style="font-size:10px;text-decoration:none;letter-spacing:.06em">+ explorar skills.sh →</a>
+    <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">▸ SKILLS RECOMENDADAS — ${agentName.toUpperCase()}</span>
+    <a href="https://skills.sh" target="_blank" class="d" style="font-size:12px;text-decoration:none;letter-spacing:.06em">+ explorar skills.sh →</a>
   </div>
   <div id="cr-skills-list">
     ${matched.map((s,i)=>`
     <div style="margin-bottom:.75rem;padding:.6rem .75rem;background:#0f0f0f;border-left:2px solid #00FF41">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.25rem">
-        <span class="g" style="font-size:11px;font-weight:700">${String(i+1).padStart(2,'0')}. ${s.name}</span>
-        <button class="cp-skill d" data-cmd="${s.cmd.replace(/"/g,'&quot;')}" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:9px;letter-spacing:.08em;padding:0;white-space:nowrap" title="Copiar comando">[copiar]</button>
+        <span class="g" style="font-size:13px;font-weight:700">${String(i+1).padStart(2,'0')}. ${s.name}</span>
+        <button class="cp-skill d" data-cmd="${s.cmd.replace(/"/g,'&quot;')}" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:.08em;padding:0;white-space:nowrap" title="Copiar comando">[copiar]</button>
       </div>
-      <div class="m" style="font-size:10px;margin-bottom:.4rem">${s.desc}</div>
-      <code style="font-size:9px;color:#444;display:block;word-break:break-all">${s.cmd}</code>
+      <div class="m" style="font-size:12px;margin-bottom:.4rem">${s.desc}</div>
+      <code style="font-size:11px;color:#888;display:block;word-break:break-all">${s.cmd}</code>
     </div>`).join('')}
   </div>
 </div>
 
 <div class="term-box" style="margin-bottom:1rem">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-    <span class="g" style="font-size:11px;letter-spacing:.1em;font-weight:700">▸ PROMPT DEL AGENTE</span>
+    <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">▸ PROMPT DEL AGENTE</span>
     <div style="display:flex;gap:.75rem">
-      <button id="btn-cp-install" class="d" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:10px;letter-spacing:.08em">[copiar install]</button>
-      <button id="btn-cp-profile" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:10px;letter-spacing:.08em">[copiar prompt]</button>
+      <button id="btn-cp-install" class="d" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:.08em">[copiar install]</button>
+      <button id="btn-cp-profile" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:.08em">[copiar prompt]</button>
     </div>
   </div>
-  <pre style="font-size:10px;color:#666;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow-y:auto;margin:0">${escHtml(profilePrompt)}</pre>
+  <pre style="font-size:12px;color:#666;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow-y:auto;margin:0">${escHtml(profilePrompt)}</pre>
 </div>`;
 
     // copy individual skill
@@ -742,20 +742,20 @@ function renderCatalog(){
     const canAdd=!inTeam&&teamSize<maxAllowed;
     const voice=(a.voice[0]||'').slice(0,36);
     return `<div class="agent-row" data-id="${a.id}" style="display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid #111;cursor:pointer;transition:background .1s" onclick="openModal('${a.id}')" onmouseenter="this.style.background='#0A0A0A'" onmouseleave="this.style.background='transparent'">
-      <span style="color:${c};font-size:11px;width:14px;flex-shrink:0">●</span>
-      <span style="color:${c};font-weight:700;font-size:11px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
-      <span style="color:${c};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[${t}]</span>
-      <span class="m" style="font-size:11px;width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.role)}</span>
-      <span class="d" style="font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic;display:none" id="voice-${a.id}">"${esc(voice)}"</span>
-      <span class="d" style="font-size:10px;width:30px;text-align:right;flex-shrink:0">${a.skills.length}sk</span>
-      <span style="width:60px;text-align:right;flex-shrink:0;font-size:11px">
+      <span style="color:${c};font-size:13px;width:14px;flex-shrink:0">●</span>
+      <span style="color:${c};font-weight:700;font-size:13px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
+      <span style="color:${c};opacity:.5;font-size:13px;width:50px;flex-shrink:0">[${t}]</span>
+      <span class="m" style="font-size:13px;width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.role)}</span>
+      <span class="d" style="font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic;display:none" id="voice-${a.id}">"${esc(voice)}"</span>
+      <span class="d" style="font-size:12px;width:30px;text-align:right;flex-shrink:0">${a.skills.length}sk</span>
+      <span style="width:60px;text-align:right;flex-shrink:0;font-size:13px">
         ${inTeam
           ? `<button class="remove-agent" data-id="${a.id}" style="color:#00FF41" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#00FF41'">[✓ out]</button>`
           : canAdd
-            ? `<button class="add-agent" data-id="${a.id}" style="color:#444;opacity:0" class="add-btn">[+add]</button>`
+            ? `<button class="add-agent" data-id="${a.id}" style="color:#888;opacity:0" class="add-btn">[+add]</button>`
             : teamSize>=MAX_TEAM
-              ? `<span style="color:#333;font-size:10px">[${isSolo?'ya elegiste uno':'full'}]</span>`
-              : `<button class="add-agent" data-id="${a.id}" style="color:#444;opacity:0">[+add]</button>`
+              ? `<span style="color:#333;font-size:12px">[${isSolo?'ya elegiste uno':'full'}]</span>`
+              : `<button class="add-agent" data-id="${a.id}" style="color:#888;opacity:0">[+add]</button>`
         }
       </span>
     </div>`;
@@ -767,30 +767,30 @@ function renderCatalog(){
   <!-- Header -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
     <div style="display:flex;align-items:center;gap:.5rem">
-      <button id="nav-home" class="d" style="font-size:11px">← /home</button>
-      <span class="d" style="font-size:11px">/</span>
-      <span class="g" style="font-size:11px">catalogo</span>
-      <span class="a" style="font-size:11px">[${isSolo?'SOLO':'EQUIPO'}]</span>
+      <button id="nav-home" class="d" style="font-size:13px">← /home</button>
+      <span class="d" style="font-size:13px">/</span>
+      <span class="g" style="font-size:13px">catalogo</span>
+      <span class="a" style="font-size:13px">[${isSolo?'SOLO':'EQUIPO'}]</span>
     </div>
-    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p" style="font-size:11px">${isSolo?'ver prompt ['+teamCount+'/1]':'mi equipo ['+teamCount+'/'+MAX_TEAM+']'} →</button>`:''}
+    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p" style="font-size:13px">${isSolo?'ver prompt ['+teamCount+'/1]':'mi equipo ['+teamCount+'/'+MAX_TEAM+']'} →</button>`:''}
   </div>
 
   <!-- Rodrigo notice -->
-  <div style="font-size:10px;color:#333;margin-bottom:.75rem">${isSolo?'› elegí un agente para conversación directa':'› rodrigo [PM] siempre activo · seleccioná hasta '+MAX_TEAM+' agentes adicionales'}</div>
+  <div style="font-size:12px;color:#333;margin-bottom:.75rem">${isSolo?'› elegí un agente para conversación directa':'› rodrigo [PM] siempre activo · seleccioná hasta '+MAX_TEAM+' agentes adicionales'}</div>
 
   <!-- Filter + Search -->
   <div style="display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;margin-bottom:.25rem">
-    <span class="d" style="font-size:11px;margin-right:.25rem">--filter</span>
-    ${FILTERS.map(f=>`<button class="filter-btn" data-key="${f.key}" style="font-size:11px;padding:.15rem .4rem;color:${S.filter===f.key?'#00FF41':'#444'};border-bottom:1px solid ${S.filter===f.key?'#00FF41':'transparent'}">${f.tag}</button>`).join('')}
+    <span class="d" style="font-size:13px;margin-right:.25rem">--filter</span>
+    ${FILTERS.map(f=>`<button class="filter-btn" data-key="${f.key}" style="font-size:13px;padding:.15rem .4rem;color:${S.filter===f.key?'#00FF41':'#888'};border-bottom:1px solid ${S.filter===f.key?'#00FF41':'transparent'}">${f.tag}</button>`).join('')}
     <div style="margin-left:auto;display:flex;align-items:center;gap:.4rem">
-      <span class="d" style="font-size:11px">--grep</span>
-      <input id="search-input" class="term-input" value="${esc(S.search)}" placeholder="nombre / rol" style="width:130px;font-size:11px">
+      <span class="d" style="font-size:13px">--grep</span>
+      <input id="search-input" class="term-input" value="${esc(S.search)}" placeholder="nombre / rol" style="width:130px;font-size:13px">
     </div>
   </div>
   <hr class="sep" style="margin-bottom:.75rem">
 
   <!-- Column headers -->
-  <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:10px;border-bottom:1px solid #1A1A1A;margin-bottom:.25rem">
+  <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:12px;border-bottom:1px solid #1A1A1A;margin-bottom:.25rem">
     <span style="width:14px;flex-shrink:0">ST</span>
     <span style="width:90px;flex-shrink:0">NAME</span>
     <span style="width:50px;flex-shrink:0">CAT</span>
@@ -803,18 +803,18 @@ function renderCatalog(){
   <!-- Agent list -->
   <div id="agent-list">
     ${filtered.map(renderRow).join('')}
-    ${filtered.length===0?`<div class="d" style="font-size:11px;padding:1rem 0">sin resultados</div>`:''}
+    ${filtered.length===0?`<div class="d" style="font-size:13px;padding:1rem 0">sin resultados</div>`:''}
   </div>
 
-  ${teamSize>=MAX_TEAM?`<div class="a" style="font-size:11px;margin-top:.75rem">[!] equipo completo (${MAX_TEAM}/${MAX_TEAM}) — remové un agente para agregar otro</div>`:''}
+  ${teamSize>=MAX_TEAM?`<div class="a" style="font-size:13px;margin-top:.75rem">[!] equipo completo (${MAX_TEAM}/${MAX_TEAM}) — remové un agente para agregar otro</div>`:''}
 
   <!-- Footer -->
   <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between">
     <div style="display:flex;align-items:center;gap:.75rem">
-      <span class="d" style="font-size:11px">${filtered.length} agentes · ${teamCount}/${MAX_TEAM} seleccionados</span>
-      <button onclick="downloadBank()" style="border:1px solid #333;color:#555;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:10px;background:none" onmouseenter="this.style.borderColor='#00FF41';this.style.color='#00FF41'" onmouseleave="this.style.borderColor='#333';this.style.color='#555'">[↓ agents-bank.md]</button>
+      <span class="d" style="font-size:13px">${filtered.length} agentes · ${teamCount}/${MAX_TEAM} seleccionados</span>
+      <button onclick="downloadBank()" style="border:1px solid #333;color:#555;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:12px;background:none" onmouseenter="this.style.borderColor='#00FF41';this.style.color='#00FF41'" onmouseleave="this.style.borderColor='#333';this.style.color='#555'">[↓ agents-bank.md]</button>
     </div>
-    ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p" style="font-size:11px">generar prompt →</button>`:''}
+    ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p" style="font-size:13px">generar prompt →</button>`:''}
   </div>
 </div>`;
 
@@ -877,9 +877,9 @@ function renderTeam(){
     app.innerHTML=`
 <div style="min-height:60vh;display:flex;align-items:center;justify-content:center">
   <div style="text-align:center">
-    <div class="d" style="font-size:11px;margin-bottom:.75rem">[!] ${isSolo?'ningún agente seleccionado':'equipo vacío'}</div>
-    <p class="m" style="font-size:11px;margin-bottom:1rem">${isSolo?'Elegí un agente en el catálogo.':'Seleccioná agentes en el catálogo.'}</p>
-    <button id="go-catalog" class="term-btn term-btn-p" style="font-size:11px">→ ir al catálogo</button>
+    <div class="d" style="font-size:13px;margin-bottom:.75rem">[!] ${isSolo?'ningún agente seleccionado':'equipo vacío'}</div>
+    <p class="m" style="font-size:13px;margin-bottom:1rem">${isSolo?'Elegí un agente en el catálogo.':'Seleccioná agentes en el catálogo.'}</p>
+    <button id="go-catalog" class="term-btn term-btn-p" style="font-size:13px">→ ir al catálogo</button>
   </div>
 </div>`;
     document.getElementById('go-catalog').addEventListener('click',()=>{S.screen='catalog';render()});
@@ -893,9 +893,9 @@ function renderTeam(){
 <div>
   <!-- Header -->
   <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem">
-    <button id="nav-catalog" class="d" style="font-size:11px">← /catalogo</button>
-    <span class="d" style="font-size:11px">/</span>
-    <span class="g" style="font-size:11px">mi-equipo</span>
+    <button id="nav-catalog" class="d" style="font-size:13px">← /catalogo</button>
+    <span class="d" style="font-size:13px">/</span>
+    <span class="g" style="font-size:13px">mi-equipo</span>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
@@ -904,10 +904,10 @@ function renderTeam(){
     <div>
       <!-- Team list -->
       <div style="margin-bottom:1.5rem">
-        <div class="d" style="font-size:11px;margin-bottom:.5rem">${isSolo?'agente seleccionado':'equipo — '+others.length+'/'+MAX_TEAM}</div>
+        <div class="d" style="font-size:13px;margin-bottom:.5rem">${isSolo?'agente seleccionado':'equipo — '+others.length+'/'+MAX_TEAM}</div>
 
         <!-- Column headers -->
-        <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:10px;border-bottom:1px solid #1A1A1A;margin-bottom:.2rem">
+        <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333;font-size:12px;border-bottom:1px solid #1A1A1A;margin-bottom:.2rem">
           <span style="width:14px;flex-shrink:0"> </span>
           <span style="width:90px;flex-shrink:0">NAME</span>
           <span style="width:50px;flex-shrink:0">CAT</span>
@@ -916,41 +916,41 @@ function renderTeam(){
 
         <!-- Rodrigo row (fixed) -->
         ${rodrigo?`<div style="display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid #0F0F0F">
-          <span style="color:${col(rodrigo.cat)};font-size:11px;width:14px;flex-shrink:0">●</span>
-          <span style="color:${col(rodrigo.cat)};font-weight:700;font-size:11px;width:90px;flex-shrink:0">${esc(rodrigo.name)}</span>
-          <span style="color:${col(rodrigo.cat)};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[PM]</span>
-          <span class="m" style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(rodrigo.role)}</span>
+          <span style="color:${col(rodrigo.cat)};font-size:13px;width:14px;flex-shrink:0">●</span>
+          <span style="color:${col(rodrigo.cat)};font-weight:700;font-size:13px;width:90px;flex-shrink:0">${esc(rodrigo.name)}</span>
+          <span style="color:${col(rodrigo.cat)};opacity:.5;font-size:13px;width:50px;flex-shrink:0">[PM]</span>
+          <span class="m" style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(rodrigo.role)}</span>
         </div>`:''}
 
         <!-- Other agents -->
         ${others.map(a=>`<div style="display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid #0F0F0F" class="team-row">
-          <span style="color:${col(a.cat)};font-size:11px;width:14px;flex-shrink:0">●</span>
-          <span style="color:${col(a.cat)};font-weight:700;font-size:11px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
-          <span style="color:${col(a.cat)};opacity:.5;font-size:11px;width:50px;flex-shrink:0">[${tag(a.cat)}]</span>
-          <span class="m" style="font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.role)}</span>
-          <button class="remove-team" data-id="${a.id}" style="font-size:11px;color:#444;opacity:0;transition:opacity .15s" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#444'">[×]</button>
+          <span style="color:${col(a.cat)};font-size:13px;width:14px;flex-shrink:0">●</span>
+          <span style="color:${col(a.cat)};font-weight:700;font-size:13px;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0">${esc(a.name)}</span>
+          <span style="color:${col(a.cat)};opacity:.5;font-size:13px;width:50px;flex-shrink:0">[${tag(a.cat)}]</span>
+          <span class="m" style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.role)}</span>
+          <button class="remove-team" data-id="${a.id}" style="font-size:13px;color:#888;opacity:0;transition:opacity .15s" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#888'">[×]</button>
         </div>`).join('')}
 
         <div style="margin-top:.75rem">
-          <button id="edit-team" class="term-btn" style="font-size:11px">+ editar equipo</button>
+          <button id="edit-team" class="term-btn" style="font-size:13px">+ editar equipo</button>
         </div>
       </div>
 
       <!-- Project form -->
       <div>
-        <div class="d" style="font-size:11px;margin-bottom:.75rem">proyecto — completar para generar el prompt</div>
+        <div class="d" style="font-size:13px;margin-bottom:.75rem">proyecto — completar para generar el prompt</div>
         <div style="display:flex;flex-direction:column;gap:.6rem">
           <div style="display:flex;align-items:center;gap:.5rem">
-            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">nombre</span>
-            <input id="f-nombre" class="term-input" value="${esc(S.project.nombre)}" placeholder="ej: MiApp" style="font-size:11px;flex:1">
+            <span class="g" style="font-size:13px;width:70px;flex-shrink:0">nombre</span>
+            <input id="f-nombre" class="term-input" value="${esc(S.project.nombre)}" placeholder="ej: MiApp" style="font-size:13px;flex:1">
           </div>
           <div style="display:flex;align-items:center;gap:.5rem">
-            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">objetivo</span>
-            <input id="f-objetivo" class="term-input" value="${esc(S.project.objetivo)}" placeholder="ej: plataforma de ventas B2B" style="font-size:11px;flex:1">
+            <span class="g" style="font-size:13px;width:70px;flex-shrink:0">objetivo</span>
+            <input id="f-objetivo" class="term-input" value="${esc(S.project.objetivo)}" placeholder="ej: plataforma de ventas B2B" style="font-size:13px;flex:1">
           </div>
           <div style="display:flex;align-items:center;gap:.5rem">
-            <span class="g" style="font-size:11px;width:70px;flex-shrink:0">stack</span>
-            <input id="f-stack" class="term-input" value="${esc(S.project.stack)}" placeholder="ej: React + Node + Postgres" style="font-size:11px;flex:1">
+            <span class="g" style="font-size:13px;width:70px;flex-shrink:0">stack</span>
+            <input id="f-stack" class="term-input" value="${esc(S.project.stack)}" placeholder="ej: React + Node + Postgres" style="font-size:13px;flex:1">
           </div>
         </div>
       </div>
@@ -959,16 +959,16 @@ function renderTeam(){
     <!-- Right: prompt output -->
     <div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
-        <span class="d" style="font-size:11px">output</span>
+        <span class="d" style="font-size:13px">output</span>
         <div style="display:flex;gap:.4rem;align-items:center">
-          <button onclick="downloadBank()" style="border:1px solid #333;color:#555;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:10px;background:none" onmouseenter="this.style.borderColor='#00FF41';this.style.color='#00FF41'" onmouseleave="this.style.borderColor='#333';this.style.color='#555'">[↓ banco]</button>
-          <button id="copy-btn" class="term-btn term-btn-p" style="font-size:11px">${S.copied?'[✓ copiado]':'[copiar prompt]'}</button>
+          <button onclick="downloadBank()" style="border:1px solid #333;color:#555;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:12px;background:none" onmouseenter="this.style.borderColor='#00FF41';this.style.color='#00FF41'" onmouseleave="this.style.borderColor='#333';this.style.color='#555'">[↓ banco]</button>
+          <button id="copy-btn" class="term-btn term-btn-p" style="font-size:13px">${S.copied?'[✓ copiado]':'[copiar prompt]'}</button>
         </div>
       </div>
       <div class="term-box" style="max-height:65vh;overflow-y:auto;border-color:#1A1A1A">
-        <pre id="prompt-output" style="font-size:10px;color:#888;white-space:pre-wrap;line-height:1.6">${esc(prompt)}</pre>
+        <pre id="prompt-output" style="font-size:12px;color:#888;white-space:pre-wrap;line-height:1.6">${esc(prompt)}</pre>
       </div>
-      <div style="margin-top:.6rem;color:#444;font-size:10px;line-height:1.8">
+      <div style="margin-top:.6rem;color:#888;font-size:12px;line-height:1.8">
         <div>› copiá el prompt</div>
         <div>› abrí Claude Code en tu proyecto</div>
         <div>› pegalo como primer mensaje</div>
@@ -1036,41 +1036,41 @@ function openModal(id){
   overlay.style.cssText='position:fixed;inset:0;background:rgba(8,8,8,0.94);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem';
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
 
-  const tagsHtml=(agent.tags||[]).map(t=>`<span style="font-size:10px;padding:.15rem .4rem;border:1px solid #1E1E1E;color:#444;margin:.15rem .15rem 0 0;display:inline-block">${t}</span>`).join('');
-  const voiceHtml=(agent.voice||[]).map(v=>`<div style="font-size:11px;color:#888;font-style:italic;padding:.2rem 0 .2rem .6rem;border-left:1px solid #222">\u201c${v}\u201d</div>`).join('');
-  const exHtml=(agent.examples||[]).map(ex=>`<div style="font-size:11px;color:#888"><span style="color:#00FF41;margin-right:.25rem">›</span>${ex}</div>`).join('');
-  const skHtml=(agent.skills||[]).map(s=>`<div style="font-size:10px;display:flex;gap:.4rem"><span style="color:#00FF41;flex-shrink:0">$</span><span style="color:#00E5FF;word-break:break-all">${s}</span></div>`).join('');
-  const invHtml=(agent.invokeWith||['@'+agent.name]).map(x=>`<span style="color:#00FF41;font-weight:700;font-size:11px;margin-right:.5rem">${x}</span>`).join('');
+  const tagsHtml=(agent.tags||[]).map(t=>`<span style="font-size:12px;padding:.15rem .4rem;border:1px solid #1E1E1E;color:#888;margin:.15rem .15rem 0 0;display:inline-block">${t}</span>`).join('');
+  const voiceHtml=(agent.voice||[]).map(v=>`<div style="font-size:13px;color:#888;font-style:italic;padding:.2rem 0 .2rem .6rem;border-left:1px solid #222">\u201c${v}\u201d</div>`).join('');
+  const exHtml=(agent.examples||[]).map(ex=>`<div style="font-size:13px;color:#888"><span style="color:#00FF41;margin-right:.25rem">›</span>${ex}</div>`).join('');
+  const skHtml=(agent.skills||[]).map(s=>`<div style="font-size:12px;display:flex;gap:.4rem"><span style="color:#00FF41;flex-shrink:0">$</span><span style="color:#00E5FF;word-break:break-all">${s}</span></div>`).join('');
+  const invHtml=(agent.invokeWith||['@'+agent.name]).map(x=>`<span style="color:#00FF41;font-weight:700;font-size:13px;margin-right:.5rem">${x}</span>`).join('');
   const actionHtml=inTeam
-    ? `<button onclick="removeFromModal('${agent.id}')" style="border:1px solid #FF3B3B;color:#FF3B3B;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:11px;background:none">[× remover del equipo]</button>`
+    ? `<button onclick="removeFromModal('${agent.id}')" style="border:1px solid #FF3B3B;color:#FF3B3B;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:13px;background:none">[× remover del equipo]</button>`
     : canAdd
-      ? `<button onclick="addFromModal('${agent.id}')" style="border:1px solid #00FF41;color:#00FF41;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:11px;background:none">[+ agregar al equipo]</button>`
-      : `<span style="color:#FFB000;font-size:11px">[!] equipo completo</span>`;
+      ? `<button onclick="addFromModal('${agent.id}')" style="border:1px solid #00FF41;color:#00FF41;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:13px;background:none">[+ agregar al equipo]</button>`
+      : `<span style="color:#FFB000;font-size:13px">[!] equipo completo</span>`;
 
   overlay.innerHTML=`
   <div style="background:#080808;border:1px solid #2A2A2A;padding:1.25rem;width:100%;max-width:560px;max-height:86vh;overflow-y:auto;font-family:'Geist Mono',monospace">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid #1A1A1A">
       <div>
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem">
-          <span style="font-size:13px;font-weight:700;color:${c}">${agent.emoji} ${agent.name}</span>
-          <span style="font-size:11px;color:#444">[${t}]</span>
+          <span style="font-size:15px;font-weight:700;color:${c}">${agent.emoji} ${agent.name}</span>
+          <span style="font-size:13px;color:#888">[${t}]</span>
         </div>
-        <div style="font-size:11px;color:#888">${agent.role}</div>
+        <div style="font-size:13px;color:#888">${agent.role}</div>
       </div>
-      <button onclick="closeModal()" style="color:#444;font-size:11px;cursor:pointer;font-family:inherit;background:none;border:none;flex-shrink:0;margin-left:1rem">[esc]</button>
+      <button onclick="closeModal()" style="color:#888;font-size:13px;cursor:pointer;font-family:inherit;background:none;border:none;flex-shrink:0;margin-left:1rem">[esc]</button>
     </div>
 
-    ${agent.personality?`<div style="margin-bottom:1rem"><div style="font-size:10px;color:#444;margin-bottom:.3rem">personalidad</div><p style="font-size:11px;color:${c};line-height:1.6">${agent.personality}</p></div>`:''}
-    ${agent.description?`<div style="margin-bottom:1rem"><div style="font-size:10px;color:#444;margin-bottom:.3rem">bio</div><p style="font-size:11px;color:#888;line-height:1.6">${agent.description}</p></div>`:''}
-    ${voiceHtml?`<div style="margin-bottom:1rem"><div style="font-size:10px;color:#444;margin-bottom:.3rem">frases características</div><div style="display:flex;flex-direction:column;gap:.25rem">${voiceHtml}</div></div>`:''}
-    ${tagsHtml?`<div style="margin-bottom:1rem"><div style="font-size:10px;color:#444;margin-bottom:.3rem">expertise</div><div>${tagsHtml}</div></div>`:''}
-    ${exHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:10px;color:#444;margin-bottom:.3rem">ejemplos de uso</div><div style="display:flex;flex-direction:column;gap:.25rem">${exHtml}</div></div>`:''}
-    ${skHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:10px;color:#444;margin-bottom:.3rem">skills (${(agent.skills||[]).length})</div><div style="display:flex;flex-direction:column;gap:.3rem">${skHtml}</div></div>`:''}
-    ${invHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:10px;color:#444;margin-bottom:.3rem">cómo invocarlo</div>${invHtml}</div>`:''}
+    ${agent.personality?`<div style="margin-bottom:1rem"><div style="font-size:12px;color:#888;margin-bottom:.3rem">personalidad</div><p style="font-size:13px;color:${c};line-height:1.6">${agent.personality}</p></div>`:''}
+    ${agent.description?`<div style="margin-bottom:1rem"><div style="font-size:12px;color:#888;margin-bottom:.3rem">bio</div><p style="font-size:13px;color:#888;line-height:1.6">${agent.description}</p></div>`:''}
+    ${voiceHtml?`<div style="margin-bottom:1rem"><div style="font-size:12px;color:#888;margin-bottom:.3rem">frases características</div><div style="display:flex;flex-direction:column;gap:.25rem">${voiceHtml}</div></div>`:''}
+    ${tagsHtml?`<div style="margin-bottom:1rem"><div style="font-size:12px;color:#888;margin-bottom:.3rem">expertise</div><div>${tagsHtml}</div></div>`:''}
+    ${exHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:12px;color:#888;margin-bottom:.3rem">ejemplos de uso</div><div style="display:flex;flex-direction:column;gap:.25rem">${exHtml}</div></div>`:''}
+    ${skHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:12px;color:#888;margin-bottom:.3rem">skills (${(agent.skills||[]).length})</div><div style="display:flex;flex-direction:column;gap:.3rem">${skHtml}</div></div>`:''}
+    ${invHtml?`<div style="margin-bottom:1rem;padding-top:.75rem;border-top:1px solid #1A1A1A"><div style="font-size:12px;color:#888;margin-bottom:.3rem">cómo invocarlo</div>${invHtml}</div>`:''}
 
     <div style="padding-top:.75rem;border-top:1px solid #1A1A1A;display:flex;gap:.5rem">
       ${actionHtml}
-      <button onclick="closeModal()" style="border:1px solid #333;color:#666;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:11px;background:none">[cerrar]</button>
+      <button onclick="closeModal()" style="border:1px solid #333;color:#666;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:13px;background:none">[cerrar]</button>
     </div>
   </div>`;
 
