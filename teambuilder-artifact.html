@@ -931,8 +931,14 @@ function renderTeam(){
           <button class="remove-team" data-id="${a.id}" style="font-size:13px;color:#888;opacity:0;transition:opacity .15s" onmouseenter="this.style.color='#FF3B3B'" onmouseleave="this.style.color='#888'">[×]</button>
         </div>`).join('')}
 
+        <!-- Quick-add search -->
         <div style="margin-top:.75rem">
-          <button id="edit-team" class="term-btn" style="font-size:13px">+ editar equipo</button>
+          <div style="position:relative">
+            <input id="team-search" type="text" placeholder="buscar agente para agregar..." autocomplete="off"
+              style="width:100%;box-sizing:border-box;background:#0a0a0a;border:1px solid #2a2a2a;color:#E0E0E0;font-family:'Geist Mono',monospace;font-size:13px;padding:.4rem .75rem;outline:none;border-radius:2px;transition:border-color .15s"
+              onfocus="this.style.borderColor='#00FF41'" onblur="setTimeout(()=>{document.getElementById('team-search-results').innerHTML=''},200)" />
+          </div>
+          <div id="team-search-results" style="background:#0a0a0a;border:1px solid #2a2a2a;border-top:none;max-height:180px;overflow-y:auto;display:none"></div>
         </div>
       </div>
 
@@ -994,6 +1000,49 @@ function renderTeam(){
 
   document.getElementById('nav-catalog')?.addEventListener('click',()=>{S.screen='catalog';render()});
   document.getElementById('edit-team')?.addEventListener('click',()=>{S.screen='catalog';render()});
+
+  // Quick-add search
+  const tsInput = document.getElementById('team-search');
+  const tsResults = document.getElementById('team-search-results');
+  if(tsInput){
+    tsInput.addEventListener('input', ()=>{
+      const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const q = norm(tsInput.value.trim());
+      if(!q){ tsResults.style.display='none'; tsResults.innerHTML=''; return; }
+      const isSolo = S.mode==='solo';
+      const maxA = isSolo ? 1 : MAX_TEAM;
+      const teamSize = isSolo ? S.team.length : S.team.filter(id=>id!=='rodrigo').length;
+      const hits = AGENTS.filter(a =>
+        a.id !== 'rodrigo' &&
+        !S.team.includes(a.id) &&
+        (norm(a.name).includes(q) || norm(a.role).includes(q) || (a.tags||[]).some(t=>norm(t).includes(q)))
+      ).slice(0, 6);
+      if(!hits.length){ tsResults.style.display='none'; tsResults.innerHTML=''; return; }
+      tsResults.style.display='block';
+      tsResults.innerHTML = hits.map(a => {
+        const canAdd = teamSize < maxA;
+        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.35rem .75rem;cursor:${canAdd?'pointer':'default'};border-bottom:1px solid #111;transition:background .1s"
+          onmouseenter="this.style.background='#111'" onmouseleave="this.style.background='transparent'">
+          <span style="color:${col(a.cat)};font-size:13px;flex-shrink:0">●</span>
+          <span style="color:${col(a.cat)};font-weight:700;font-size:13px;width:85px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.name)}</span>
+          <span style="color:#888;font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.role)}</span>
+          ${canAdd
+            ? `<button class="ts-add" data-id="${a.id}" style="color:#00FF41;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;flex-shrink:0">[+]</button>`
+            : `<span style="color:#333;font-size:12px;flex-shrink:0">[full]</span>`
+          }
+        </div>`;
+      }).join('');
+      tsResults.querySelectorAll('.ts-add').forEach(btn => {
+        btn.addEventListener('click', ()=>{
+          S.team.push(btn.dataset.id);
+          tsInput.value='';
+          tsResults.style.display='none';
+          tsResults.innerHTML='';
+          render();
+        });
+      });
+    });
+  }
 
   // Copy prompt
   document.getElementById('copy-btn')?.addEventListener('click',()=>{
