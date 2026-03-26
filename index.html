@@ -154,6 +154,7 @@ function buildPrompt(teamIds,project){
   lines.push('- Rodrigo coordina y delega \u2014 no ejecuta trabajo t\u00e9cnico.');
   lines.push('- Si la tarea requiere un perfil ausente, Rodrigo lo sugiere del banco antes de intentarlo.');
   lines.push('- Pod\u00e9s incorporar agentes del banco en cualquier momento de la sesi\u00f3n.');
+  lines.push('- Ante ambig\u00fcedad o suposici\u00f3n impl\u00edcita, pregunt\u00e1 antes de asumir.');
   lines.push('');
 
   lines.push('## PROTOCOLO DE HANDOFF');
@@ -236,6 +237,16 @@ function buildPrompt(teamIds,project){
   lines.push('/skills/');
   lines.push('TEAM.md');
   lines.push('```');
+  lines.push('');
+
+  // Skills base universales + karpathy para equipos con agentes t\u00e9cnicos
+  const techCats = ['tecnico','datos','seguridad','ai-eng','ops','web3'];
+  const hasTech = agents.some(a => techCats.includes(a.cat));
+  lines.push('## SKILLS BASE \u2014 ejecut\u00e1 siempre, antes del equipo');
+  lines.push('npx skillsadd vercel-labs/skills/find-skills');
+  lines.push('npx skillsadd obra/superpowers/writing-plans');
+  lines.push('npx skillsadd obra/superpowers/executing-plans');
+  if(hasTech) lines.push('npx playbooks add skill forrestchang/andrej-karpathy-skills --skill karpathy-guidelines');
   lines.push('');
 
   lines.push('## ARRANQUE');
@@ -348,6 +359,7 @@ function buildPromptSolo(agentId, project){
   lines.push('- Respondé siempre en primera persona como '+agent.name+'.');
   lines.push('- Hablá desde tu especialidad con profundidad y criterio propio.');
   lines.push('- Si la pregunta está fuera de tu expertise, decilo claramente.');
+  lines.push('- Ante ambigüedad o suposición implícita, preguntá antes de asumir.');
   lines.push('');
 
   if(agent.skills&&agent.skills.length){
@@ -363,6 +375,15 @@ function buildPromptSolo(agentId, project){
   lines.push('  npx skills find [query]   \u2190 busca en los 89.000+ skills del ecosistema');
   lines.push('  npx skills add <owner/repo> --skill <nombre> -y');
   lines.push('Explor\u00e1 el cat\u00e1logo completo en: https://skills.sh');
+  lines.push('');
+
+  // Skills base universales + karpathy para agentes t\u00e9cnicos
+  const techCatsSolo = ['tecnico','datos','seguridad','ai-eng','ops','web3'];
+  lines.push('## SKILLS BASE \u2014 ejecut\u00e1 siempre');
+  lines.push('npx skillsadd vercel-labs/skills/find-skills');
+  lines.push('npx skillsadd obra/superpowers/writing-plans');
+  lines.push('npx skillsadd obra/superpowers/executing-plans');
+  if(techCatsSolo.includes(agent.cat)) lines.push('npx playbooks add skill forrestchang/andrej-karpathy-skills --skill karpathy-guidelines');
   lines.push('');
 
   lines.push('## ARRANQUE');
