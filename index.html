@@ -435,26 +435,26 @@ function renderBoot(){
   <div id="boot-lines" style="margin-bottom:1.75rem;line-height:1.8"></div>
   <div id="boot-menu" style="display:none">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem">
-      <button id="btn-solo" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">SOLO</div>
-        <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
+      <button id="btn-solo" class="card" style="display:flex;flex-direction:column;text-align:center;border:1px solid #2D2218;min-height:160px" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.75rem;letter-spacing:-.01em">SOLO</div>
+        <div style="font-size:13px;color:#7A6E68;line-height:1.6;flex:1">
           Un agente, conversación directa.<br>Output: prompt listo para pegar.
         </div>
-        <div style="font-size:13px;color:#C96442;font-weight:500">Elegir agente →</div>
+        <div style="margin-top:1rem;background:#C96442;color:#0F0B09;font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:4px;letter-spacing:.06em">Elegir agente →</div>
       </button>
-      <button id="btn-equipo" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">EQUIPO</div>
-        <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
+      <button id="btn-equipo" class="card" style="display:flex;flex-direction:column;text-align:center;border:1px solid #2D2218;min-height:160px" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.75rem;letter-spacing:-.01em">EQUIPO</div>
+        <div style="font-size:13px;color:#7A6E68;line-height:1.6;flex:1">
           Equipo coordinado por Rodrigo (PM).<br>Output: prompt con roles, banco y handoff.
         </div>
-        <div style="font-size:13px;color:#C96442;font-weight:500">Armar equipo →</div>
+        <div style="margin-top:1rem;background:#C96442;color:#0F0B09;font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:4px;letter-spacing:.06em">Armar equipo →</div>
       </button>
-      <button id="btn-crear" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">CREAR AGENTE</div>
-        <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
+      <button id="btn-crear" class="card" style="display:flex;flex-direction:column;text-align:center;border:1px solid #2D2218;min-height:160px" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.75rem;letter-spacing:-.01em">CREAR AGENTE</div>
+        <div style="font-size:13px;color:#7A6E68;line-height:1.6;flex:1">
           Describís el agente, recibís skills recomendadas.<br>Output: prompt personalizado.
         </div>
-        <div style="font-size:13px;color:#C96442;font-weight:500">Diseñar agente →</div>
+        <div style="margin-top:1rem;background:#C96442;color:#0F0B09;font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:4px;letter-spacing:.06em">Diseñar agente →</div>
       </button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;color:#7A6E68;font-size:13px">
