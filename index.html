@@ -95,6 +95,7 @@ const AGENTS=[{"id":"rodrigo","name":"Rodrigo","cat":"estrategico","role":"Proje
 
 const CAT_COLOR={estrategico:'#A855F7',tecnico:'#C96442',creativo:'#E8A04A',datos:'#C084FC',social:'#FF6EB4',diseno:'#00E5FF',seguridad:'#EF4444','ai-eng':'#A855F7',gaming:'#F97316',legal:'#0EA5E9',finanzas:'#22C55E',rrhh:'#F43F5E',web3:'#7C3AED',ops:'#78716C',psicologia:'#EC4899'};
 const CAT_TAG={estrategico:'STRAT',tecnico:'TECH',creativo:'CREAT',datos:'DATA',social:'SOC',diseno:'DSGN',seguridad:'SEC','ai-eng':'AI',gaming:'GAME',legal:'LEGAL',finanzas:'FIN',rrhh:'RRHH',web3:'WEB3',ops:'OPS',psicologia:'PSY'};
+const CAT_ICON={estrategico:'🧭',tecnico:'⚙️',creativo:'🎨',datos:'📊',social:'💬',diseno:'🖌️',seguridad:'🛡️','ai-eng':'🤖',gaming:'🎮',legal:'⚖️',finanzas:'💰',rrhh:'👥',ops:'🔧',web3:'🔗',psicologia:'🧠'};
 const MAX_TEAM=8;
 
 // ─── STATE ─────────────────────────────────────────────────────────────────────
@@ -112,6 +113,7 @@ const S={
 
 function col(cat){return CAT_COLOR[cat]||'#C96442'}
 function tag(cat){return CAT_TAG[cat]||'???'}
+function icon(cat){return CAT_ICON[cat]||'🤖'}
 
 // ─── PROMPT BUILDER ────────────────────────────────────────────────────────────
 function buildPrompt(teamIds,project){
@@ -433,24 +435,21 @@ function renderBoot(){
   <div id="boot-lines" style="margin-bottom:1.75rem;line-height:1.8"></div>
   <div id="boot-menu" style="display:none">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem">
-      <button id="btn-solo" class="card" style="text-align:left;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-size:24px;margin-bottom:.75rem">⚡</div>
+      <button id="btn-solo" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
         <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">SOLO</div>
         <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
           Un agente, conversación directa.<br>Output: prompt listo para pegar.
         </div>
         <div style="font-size:13px;color:#C96442;font-weight:500">Elegir agente →</div>
       </button>
-      <button id="btn-equipo" class="card" style="text-align:left;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-size:24px;margin-bottom:.75rem">🤝</div>
+      <button id="btn-equipo" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
         <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">EQUIPO</div>
         <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
           Equipo coordinado por Rodrigo (PM).<br>Output: prompt con roles, banco y handoff.
         </div>
         <div style="font-size:13px;color:#C96442;font-weight:500">Armar equipo →</div>
       </button>
-      <button id="btn-crear" class="card" style="text-align:left;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="font-size:24px;margin-bottom:.75rem">🧬</div>
+      <button id="btn-crear" class="card" style="text-align:center;border:1px solid #2D2218" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
         <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.5rem;letter-spacing:-.01em">CREAR AGENTE</div>
         <div style="font-size:13px;color:#7A6E68;line-height:1.6;margin-bottom:1rem">
           Describís el agente, recibís skills recomendadas.<br>Output: prompt personalizado.
@@ -846,7 +845,7 @@ function renderCatalog(){
     return `<div class="agent-card${inTeam?' in-team':''}" data-id="${a.id}" onclick="openModal('${a.id}')">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.6rem">
         <div style="display:flex;align-items:center;gap:.5rem">
-          <span style="font-size:20px">${a.emoji}</span>
+          <span style="font-size:20px">${icon(a.cat)}</span>
           <div>
             <div style="font-weight:600;font-size:14px;color:${c}">${esc(a.name)}</div>
             <div style="font-size:11px;color:${c};opacity:.6;letter-spacing:.06em;font-family:'Geist Mono',monospace">${t}</div>
@@ -1211,7 +1210,7 @@ function openModal(id){
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid #2D2218">
       <div>
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem">
-          <span style="font-size:15px;font-weight:700;color:${c}">${agent.emoji} ${agent.name}</span>
+          <span style="font-size:15px;font-weight:700;color:${c}">${icon(agent.cat)} ${agent.name}</span>
           <span style="font-size:13px;color:#7A6E68">[${t}]</span>
         </div>
         <div style="font-size:13px;color:#7A6E68">${agent.role}</div>
