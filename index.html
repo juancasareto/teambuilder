@@ -107,6 +107,7 @@ const S={
   search:'',
   copied:false,
   modal:null,
+  personality:[],    // selected personality traits for creator
 };
 
 function col(cat){return CAT_COLOR[cat]||'#C96442'}
@@ -608,6 +609,14 @@ function renderCreator(){
       <textarea id="cr-desc" rows="4" placeholder="ej: Revisa código en busca de vulnerabilidades, implementa autenticación, gestiona permisos y audita APIs antes de producción..." style="width:100%;box-sizing:border-box;background:#150F0B;border:1px solid #3A2D25;color:#F0EAE2;font-family:'Geist','Inter',sans-serif;font-size:14px;padding:.5rem .75rem;outline:none;border-radius:2px;resize:vertical"></textarea>
     </div>
 
+    <div style="margin-bottom:1rem">
+      <label class="m" style="font-size:12px;display:block;margin-bottom:.5rem;letter-spacing:.08em">PERSONALIDAD — elegí hasta 5 rasgos</label>
+      <div id="personality-chips" style="display:flex;flex-wrap:wrap;gap:.4rem">
+        ${PERSONALITY_TRAITS.map(t=>{const sel=S.personality.includes(t);return '<button class=\"personality-chip\" data-trait=\"'+t+'\" style=\"font-size:12px;padding:.25rem .65rem;border-radius:99px;border:1px solid '+(sel?'#C96442':'#2D2218')+';color:'+(sel?'#C96442':'#7A6E68')+';background:'+(sel?'rgba(201,100,66,.10)':'transparent')+';cursor:pointer;transition:all .15s\">'+t+'</button>';}).join('')}
+      </div>
+      <div id="personality-count" style="font-size:11px;color:#4A3C34;margin-top:.4rem">${S.personality.length}/5 seleccionados</div>
+    </div>
+
     <button id="btn-match" class="g" style="background:none;border:1px solid #C96442;color:#C96442;font-family:'Geist','Inter',sans-serif;font-size:13px;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.1em;width:100%;transition:all .15s" onmouseenter="this.style.background='#C96442';this.style.color='#0F0B09'" onmouseleave="this.style.background='none';this.style.color='#C96442'">
       → RECOMENDAR SKILLS
     </button>
@@ -617,6 +626,23 @@ function renderCreator(){
 </div>`;
 
   document.getElementById('nav-home').addEventListener('click',()=>{S.screen='boot';render()});
+
+  // Personality chips (toggle, max 5) — no full re-render needed
+  document.querySelectorAll('.personality-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const trait=chip.dataset.trait;
+      const idx=S.personality.indexOf(trait);
+      if(idx>=0){
+        S.personality.splice(idx,1);
+        chip.style.borderColor='#2D2218';chip.style.color='#7A6E68';chip.style.background='transparent';
+      } else if(S.personality.length<5){
+        S.personality.push(trait);
+        chip.style.borderColor='#C96442';chip.style.color='#C96442';chip.style.background='rgba(201,100,66,.10)';
+      }
+      const cnt=document.getElementById('personality-count');
+      if(cnt) cnt.textContent=S.personality.length+'/5 seleccionados';
+    });
+  });
 
   document.getElementById('btn-match').addEventListener('click',()=>{
     const name = document.getElementById('cr-name').value.trim();
@@ -636,7 +662,7 @@ function renderCreator(){
     }
 
     const installCmds = matched.map(s => s.cmd).join('\n');
-    const profilePrompt = buildPromptCreator(agentName, role, desc, matched);
+    const profilePrompt = buildPromptCreator(agentName, role, desc, matched, S.personality);
 
     resultsEl.style.display='block';
     resultsEl.innerHTML=`
@@ -697,9 +723,12 @@ function renderCreator(){
 
 function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function buildPromptCreator(name, role, desc, skills){
+function buildPromptCreator(name, role, desc, skills, personality){
   const skillNames = skills.map(s=>s.name).join(', ');
   const installLines = skills.map(s=>`  ${s.cmd}`).join('\n');
+  const personalityStr = (personality&&personality.length>0)
+    ? personality.join(' · ')
+    : '[Definí aquí la voz y estilo de '+name+': cómo habla, cómo piensa, qué prioriza]';
   return `# AGENTE: ${name.toUpperCase()}
 
 ## ROL
@@ -709,7 +738,7 @@ ${role || 'Agente especializado'}
 ${desc || 'Sin descripción.'}
 
 ## PERSONALIDAD
-[Definí aquí la voz y estilo de ${name}: cómo habla, cómo piensa, qué prioriza]
+${personalityStr}
 
 ## EXPERTISE
 ${skillNames}
@@ -755,6 +784,14 @@ const FILTERS=[
   {key:'web3',tag:'WEB3'},
   {key:'psicologia',tag:'PSY'},
 ];
+const PERSONALITY_TRAITS=[
+  'analítico','directo','creativo','empático','metódico',
+  'disruptivo','detallista','estratégico','escéptico','pragmático',
+  'colaborativo','curioso','sistemático','provocador','reflexivo',
+  'orientado a resultados','humano','preciso','visionario','cauteloso',
+  'narrativo','técnico','optimista','independiente','ágil'
+];
+
 
 function renderCatalog(){
   const isSolo=S.mode==='solo';
@@ -810,7 +847,7 @@ function renderCatalog(){
       <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:600;color:#F0EAE2">Catálogo</span>
       <span style="font-size:12px;color:#C96442;background:rgba(201,100,66,.12);padding:.1rem .45rem;border-radius:99px;margin-left:.25rem">${isSolo?'SOLO':'EQUIPO'}</span>
     </div>
-    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p">${isSolo?'ver prompt ['+teamCount+'/1]':'mi equipo ['+teamCount+'/'+MAX_TEAM+'] →'}</button>`:''}
+    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p">${isSolo?'activar agente':'activar equipo ['+teamCount+'/'+MAX_TEAM+']'}</button>`:''}
   </div>
 
   <!-- Rodrigo notice -->
@@ -838,7 +875,7 @@ function renderCatalog(){
       <span class="d" style="font-size:13px">${filtered.length} agentes · ${teamCount}/${isSolo?1:MAX_TEAM} seleccionados</span>
       <button onclick="downloadBank()" style="border:1px solid #4A3C34;color:#5C4D44;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:12px;background:none;border-radius:4px" onmouseenter="this.style.borderColor='#C96442';this.style.color='#C96442'" onmouseleave="this.style.borderColor='#4A3C34';this.style.color='#5C4D44'">[↓ banco]</button>
     </div>
-    ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p">generar prompt →</button>`:''}
+    ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p">activar equipo →</button>`:''}
   </div>
 </div>`;
 
@@ -852,7 +889,11 @@ function renderCatalog(){
   });
 
   document.getElementById('search-input')?.addEventListener('input',e=>{
-    S.search=e.target.value;render();
+    const val=e.target.value;
+    const selStart=e.target.selectionStart;
+    S.search=val;render();
+    const inp=document.getElementById('search-input');
+    if(inp){inp.focus();try{inp.setSelectionRange(selStart,selStart);}catch(x){}}
   });
 
   document.querySelectorAll('.add-agent').forEach(btn=>{
@@ -948,7 +989,7 @@ function renderTeam(){
           <div style="position:relative">
             <input id="team-search" type="text" placeholder="buscar agente para agregar..." autocomplete="off"
               style="width:100%;box-sizing:border-box;background:#120D09;border:1px solid #3A2D25;color:#F0EAE2;font-family:'Geist','Inter',sans-serif;font-size:13px;padding:.4rem .75rem;outline:none;border-radius:2px;transition:border-color .15s"
-              onfocus="this.style.borderColor='#C96442'" onblur="setTimeout(()=>{document.getElementById('team-search-results').innerHTML=''},200)" />
+              onfocus="this.style.borderColor='#C96442'" />
           </div>
           <div id="team-search-results" style="background:#120D09;border:1px solid #3A2D25;border-top:none;max-height:180px;overflow-y:auto;display:none"></div>
         </div>
@@ -1033,8 +1074,8 @@ function renderTeam(){
       tsResults.style.display='block';
       tsResults.innerHTML = hits.map(a => {
         const canAdd = teamSize < maxA;
-        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.35rem .75rem;cursor:${canAdd?'pointer':'default'};border-bottom:1px solid #201810;transition:background .1s"
-          onmouseenter="this.style.background='#111'" onmouseleave="this.style.background='transparent'">
+        return `<div data-row-id="${a.id}" style="display:flex;align-items:center;gap:.5rem;padding:.35rem .75rem;cursor:${canAdd?'pointer':'default'};border-bottom:1px solid #201810;transition:background .1s"
+          onmouseenter="this.style.background='#1E1510'" onmouseleave="this.style.background='transparent'">
           <span style="color:${col(a.cat)};font-size:13px;flex-shrink:0">●</span>
           <span style="color:${col(a.cat)};font-weight:700;font-size:13px;width:85px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.name)}</span>
           <span style="color:#7A6E68;font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.role)}</span>
@@ -1045,7 +1086,8 @@ function renderTeam(){
         </div>`;
       }).join('');
       tsResults.querySelectorAll('.ts-add').forEach(btn => {
-        btn.addEventListener('click', ()=>{
+        btn.addEventListener('mousedown', e=>{
+          e.preventDefault(); // prevent blur firing before action
           S.team.push(btn.dataset.id);
           tsInput.value='';
           tsResults.style.display='none';
@@ -1053,6 +1095,31 @@ function renderTeam(){
           render();
         });
       });
+      // Also allow clicking the row itself (not just the + btn) to add
+      tsResults.querySelectorAll('[data-row-id]').forEach(row => {
+        row.addEventListener('mousedown', e=>{
+          if(e.target.classList.contains('ts-add')) return; // handled above
+          e.preventDefault();
+          const id = row.dataset.rowId;
+          const isSolo2 = S.mode==='solo';
+          const maxA2 = isSolo2 ? 1 : MAX_TEAM;
+          const teamSize2 = isSolo2 ? S.team.length : S.team.filter(x=>x!=='rodrigo').length;
+          if(!S.team.includes(id) && teamSize2 < maxA2){
+            S.team.push(id);
+            tsInput.value='';
+            tsResults.style.display='none';
+            tsResults.innerHTML='';
+            render();
+          }
+        });
+      });
+    });
+    // Close dropdown when clicking outside
+    document.addEventListener('mousedown', e=>{
+      if(tsInput && tsResults && !tsInput.contains(e.target) && !tsResults.contains(e.target)){
+        tsResults.style.display='none';
+        tsResults.innerHTML='';
+      }
     });
   }
 
