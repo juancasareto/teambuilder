@@ -514,50 +514,39 @@ function renderBoot(){
 
 // ─── STARTER KITS SCREEN ───────────────────────────────────────────────────────
 function renderStarterKits(){
-  app.innerHTML=`
-<div style="max-width:900px;margin:0 auto">
-  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
-    <button id="sk-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
-    <span class="d" style="font-size:13px">─────────────────────────</span>
-    <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">STARTER KITS</span>
-    <span class="d" style="font-size:12px;margin-left:auto">${STARTER_KITS.length} equipos prearmados</span>
-  </div>
+  app.innerHTML='<div style="max-width:900px;margin:0 auto"><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem"><button id="sk-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">\u2190 HOME</button><span class="d" style="font-size:13px">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span><span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">STARTER KITS</span><span class="d" style="font-size:12px;margin-left:auto">'+STARTER_KITS.length+' equipos prearmados</span></div><div id="sk-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem"></div></div>';
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem">
-    ${STARTER_KITS.map(kit=>{
-      const agents=kit.agents.map(id=>AGENTS.find(a=>a.id===id)).filter(Boolean);
-      return \`<div class="card" data-kit="\${kit.id}" style="border:1px solid #2D2218;cursor:pointer;display:flex;flex-direction:column;gap:.6rem"
-        onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#F0EAE2;letter-spacing:-.01em">\${kit.name}</div>
-          <span style="font-size:10px;color:#7A6E68;border:1px solid #2D2218;padding:.15rem .4rem;border-radius:3px;white-space:nowrap;flex-shrink:0">\${kit.team}</span>
-        </div>
-        <div style="font-size:12px;color:#7A6E68;line-height:1.5;flex:1">\${kit.desc}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.2rem">
-          \${agents.map(a=>\`<span style="font-size:11px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);color:#C96442;padding:.15rem .45rem;border-radius:99px">\${icon(a.cat)}\${a.name}</span>\`).join('')}
-        </div>
-        <div style="margin-top:.4rem;background:#C96442;color:#0F0B09;font-size:12px;font-weight:700;padding:.4rem .75rem;border-radius:4px;text-align:center;letter-spacing:.06em">
-          Armar este equipo →
-        </div>
-      </div>\`;
-    }).join('')}
-  </div>
-</div>\`;
-
-  document.getElementById('sk-home').addEventListener('click',()=>{S.screen='boot';render()});
-
-  document.querySelectorAll('[data-kit]').forEach(card=>{
+  const grid=document.getElementById('sk-grid');
+  STARTER_KITS.forEach(kit=>{
+    const agents=kit.agents.map(id=>AGENTS.find(a=>a.id===id)).filter(Boolean);
+    const badgesHtml=agents.map(a=>'<span style="font-size:11px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);color:#C96442;padding:.15rem .45rem;border-radius:99px">'+icon(a.cat)+' '+a.name+'</span>').join('');
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.kit=kit.id;
+    card.style.cssText='border:1px solid #2D2218;cursor:pointer;display:flex;flex-direction:column;gap:.6rem';
+    card.innerHTML=
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem">'+
+        '<div style="font-family:\'Bricolage Grotesque\',sans-serif;font-size:15px;font-weight:700;color:#F0EAE2;letter-spacing:-.01em">'+esc(kit.name)+'</div>'+
+        '<span style="font-size:10px;color:#7A6E68;border:1px solid #2D2218;padding:.15rem .4rem;border-radius:3px;white-space:nowrap;flex-shrink:0">'+esc(kit.team)+'</span>'+
+      '</div>'+
+      '<div style="font-size:12px;color:#7A6E68;line-height:1.5;flex:1">'+esc(kit.desc)+'</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.2rem">'+badgesHtml+'</div>'+
+      '<div style="margin-top:.4rem;background:#C96442;color:#0F0B09;font-size:12px;font-weight:700;padding:.4rem .75rem;border-radius:4px;text-align:center;letter-spacing:.06em">Armar este equipo \u2192</div>';
+    card.addEventListener('mouseenter',()=>card.style.borderColor='#C96442');
+    card.addEventListener('mouseleave',()=>card.style.borderColor='#2D2218');
     card.addEventListener('click',()=>{
-      const kit=STARTER_KITS.find(k=>k.id===card.dataset.kit);
-      if(!kit) return;
       S.team=['rodrigo',...kit.agents];
       S.activeKit=kit.name;
       S.mode='equipo';
       S.screen='team';
       render();
     });
+    grid.appendChild(card);
   });
+
+  document.getElementById('sk-home').addEventListener('click',()=>{S.screen='boot';render()});
 }
+
 
 
 // ─── SKILLS CATALOG (para CREAR AGENTE) ────────────────────────────────────────
