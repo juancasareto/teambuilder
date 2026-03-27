@@ -859,6 +859,28 @@ function openKitModal(id){
   header.appendChild(closeBtn);
   modal.appendChild(header);
 
+  // Objetivo (highlighted box — goes into the prompt)
+  if(kit.objective){
+    const objBlock=document.createElement('div');
+    objBlock.style.cssText='background:rgba(62,207,142,.07);border:1px solid rgba(62,207,142,.25);border-radius:6px;padding:.85rem 1rem';
+    const objTopRow=document.createElement('div');
+    objTopRow.style.cssText='display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem';
+    const objLabel=document.createElement('span');
+    objLabel.style.cssText='font-size:11px;color:#3ECF8E;letter-spacing:.1em;text-transform:uppercase;font-weight:600';
+    objLabel.textContent='Objetivo';
+    const objBadge=document.createElement('span');
+    objBadge.style.cssText='font-size:10px;color:#3ECF8E;opacity:.6;border:1px solid rgba(62,207,142,.3);padding:.05rem .4rem;border-radius:99px;letter-spacing:.05em';
+    objBadge.textContent='se incluye en el prompt';
+    objTopRow.appendChild(objLabel);
+    objTopRow.appendChild(objBadge);
+    const objText=document.createElement('p');
+    objText.style.cssText='font-size:13px;color:#E0E0E0;line-height:1.65;margin:0;font-weight:500';
+    objText.textContent=kit.objective;
+    objBlock.appendChild(objTopRow);
+    objBlock.appendChild(objText);
+    modal.appendChild(objBlock);
+  }
+
   // About
   const aboutBlock=document.createElement('div');
   const aboutLabel=document.createElement('div');
@@ -957,6 +979,7 @@ function openKitModal(id){
     S.activeKit=kit.name;
     S.mode='equipo';
     S.screen='team';
+    if(kit.objective) S.project=kit.objective;
     closeKitModal();
     render();
   });
@@ -1299,6 +1322,7 @@ const FILTERS=[
 const STARTER_KITS=[
   {id:'full-stack',name:'The Full Stack',team:'Web App Completa',
    desc:'Ciclo completo desde arquitectura hasta QA. Para proyectos web serios que necesitan estructura desde el día 1.',
+   objective:'Construir una web app completa desde arquitectura hasta deploy, con estructura sólida, testing y lista para producción.',
    about:'El equipo más completo para construir una web app de cero a producción. Cubre cada capa: arquitectura, backend, frontend, UX, testing e integraciones. Ideal cuando no podés permitirte deuda técnica desde el primer sprint.',
    when:['Arrancás un proyecto web serio y querés hacerlo bien desde el día 1','El producto va a escalar y necesitás separar responsabilidades desde el inicio','Tenés un equipo que va a crecer y la arquitectura debe soportarlo'],
    examples:['SaaS B2C con autenticación, suscripciones y panel de administración','Marketplace con roles diferenciados (comprador / vendedor / admin)','Dashboard interno con múltiples integraciones a sistemas externos','Plataforma con microservicios y API pública documentada'],
@@ -1306,43 +1330,117 @@ const STARTER_KITS=[
 
   {id:'zero-to-launch',name:'Zero to Launch',team:'Startup MVP',
    desc:'Velocidad sobre perfección. De la idea al producto funcional en semanas, con foco en validar antes de escalar.',
+   objective:'Lanzar un MVP funcional al mercado en el menor tiempo posible, validando el problema antes de escalar la solución.',
    about:'Para founders que necesitan llegar al mercado rápido sin construir lo que nadie va a usar. El equipo equilibra visión disruptiva (Bautista), estructura técnica (Facundo) y go-to-market desde el día 1 (Tomás G. y Daniela). El objetivo es aprender, no perfeccionar.',
    when:['Tenés una idea y necesitás validarla con usuarios reales en semanas','El budget es limitado y cada sprint tiene que generar aprendizaje','Vas a levantar capital pronto y necesitás un MVP que sea presentable'],
    examples:['App de gestión de tareas para un nicho específico (abogados, médicos, etc.)','Marketplace vertical con 10 sellers y 50 buyers como prueba de concepto','Tool B2B con plan gratuito + trial de 14 días para validar conversión','SaaS de nicho con landing + waitlist + onboarding en 3 semanas'],
    agents:['bautista','facundo','matias','santiago','tomas-g','daniela-p']},
 
+  {id:'pocket-product',name:'Pocket Product',team:'App Mobile',
+   desc:'App nativa o cross-platform lista para stores. UX mobile-first, integraciones y monetización desde el diseño.',
+   objective:'Desarrollar una app mobile nativa lista para publicar en App Store y Google Play, con UX fluida y monetización integrada.',
+   agents:['jimena','sofia-m','lucas-and','lucia','tomas','gonzalo']},
+
+  {id:'enterprise-ready',name:'Enterprise Ready',team:'SaaS B2B',
+   desc:'SaaS con compliance, pricing, infraestructura y arquitectura escalable. Listo para clientes corporativos.',
+   objective:'Construir un SaaS B2B con arquitectura escalable, compliance, pricing por tiers y listo para cerrar clientes enterprise.',
+   agents:['facundo','matias','santiago','victoria','felipe-fin','diego']},
+
+  {id:'the-connector',name:'The Connector',team:'API & Integraciones',
+   desc:'Construir o conectar sistemas: REST, GraphQL, webhooks y CI/CD con contratos claros y tests robustos.',
+   objective:'Diseñar e integrar APIs robustas entre sistemas, con contratos claros, webhooks, CI/CD y cobertura de tests completa.',
+   agents:['gonzalo','matias','federico','diego','tomas']},
+
+  {id:'data-engine',name:'Data Engine',team:'Producto de Datos',
+   desc:'Pipeline completo de datos: scraping, storage, análisis, ML y dashboard. De los datos crudos al insight accionable.',
+   objective:'Construir un pipeline de datos end-to-end: desde scraping y storage hasta análisis, modelo ML y dashboard ejecutivo.',
+   agents:['nicolas-data','camila','juliana','patricia-bi','roberto-r','leandro']},
+
   {id:'ai-foundry',name:'AI Foundry',team:'Agente IA Custom',
    desc:'Construir y evaluar agentes IA desde cero: prompts, RAG, arquitectura multi-agente y evals en producción.',
+   objective:'Diseñar, construir y evaluar un agente de IA personalizado, desde la arquitectura de prompts hasta los evals en producción.',
    about:'El kit especializado para productos donde la IA es el core, no un feature. Cubre desde el diseño de prompts y skills (Simón) hasta pipelines de voz (Valeria V.), RAG, evals y arquitectura multi-agente. Para equipos que construyen sobre modelos de lenguaje, no solo los consumen.',
    when:['Estás construyendo un producto donde la IA es la propuesta de valor central','Necesitás un agente que opere de forma autónoma con herramientas y memoria','Querés evaluar y mejorar el comportamiento del agente en producción'],
    examples:['Asistente de ventas con acceso a CRM, historial de cliente y capacidad de agendar','Agente de soporte que escala a humano cuando detecta frustración en el tono','Pipeline de voz: llamada entrante → transcripción → respuesta → CRM update','Sistema multi-agente donde un orquestador delega a especialistas por dominio'],
    agents:['max','vera','inaki','simon-sk','valeria-v','axel']},
 
+  {id:'the-shield',name:'The Shield',team:'Seguridad & Auditoría',
+   desc:'Auditoría completa, pentest, autenticación robusta y hardening de endpoints. Seguridad sin compromisos.',
+   objective:'Auditar y blindar la seguridad de un producto digital con pentest, autenticación robusta, hardening y remediación completa.',
+   agents:['ezequiel','marina','celeste','matias','tomas']},
+
+  {id:'shop-builder',name:'Shop Builder',team:'E-commerce',
+   desc:'Tienda con UX optimizada para conversión. Psicología del comprador integrada desde el diseño hasta el checkout.',
+   objective:'Construir una tienda online optimizada para conversión, con UX de compra fluida, psicología del consumidor y backend sólido.',
+   agents:['matias','santiago','lucia','cesar','gonzalo','valentina']},
+
+  {id:'content-machine',name:'The Content Machine',team:'Contenido & Growth',
+   desc:'Máquina de contenido: copy, social, comunidad y distribución. Para marcas que necesitan presencia constante.',
+   objective:'Diseñar y ejecutar una máquina de contenido multicanal con calendario editorial, copy, distribución y métricas de impacto.',
+   agents:['valentina','florencia','ignacio','ramiro','clara','bruno-m']},
+
   {id:'launch-pad',name:'Launch Pad',team:'Lanzamiento de Producto',
    desc:'Go-to-market completo: posicionamiento, narrativa, canales y stakeholders. Para lanzar con impacto real.',
+   objective:'Ejecutar el go-to-market completo de un producto: posicionamiento, narrativa de marca, canales de distribución y lanzamiento coordinado.',
    about:'No alcanza con tener el producto listo. Launch Pad arma la estrategia completa de salida al mercado: el mensaje, los canales, el timing y quién habla con quién. Bautista aporta el ángulo disruptivo, Adriana la identidad de marca, Tomás G. ejecuta el GTM y Valentina convierte todo en contenido que circula.',
    when:['Tenés un producto listo y necesitás que el mercado lo sepa','Hiciste un lanzamiento anterior sin tracción y querés hacerlo diferente','Vas a anunciar una feature importante o una nueva categoría de producto'],
    examples:['Lanzamiento en Product Hunt con campaña previa de 4 semanas y comunidad activada','Go-to-market de SaaS B2B: secuencia de outreach + contenido LinkedIn + PR','Relanzamiento de marca con nuevo nombre, identidad y mensaje de posicionamiento','Anuncio de producto con embargo: prensa, influencers tech y early access coordinados'],
    agents:['bautista','adriana','valentina','ignacio','tomas-g','martin']},
 
-  {id:'pocket-product',name:'Pocket Product',team:'App Mobile',desc:'App nativa o cross-platform lista para stores. UX mobile-first, integraciones y monetización desde el diseño.',agents:['jimena','sofia-m','lucas-and','lucia','tomas','gonzalo']},
-  {id:'enterprise-ready',name:'Enterprise Ready',team:'SaaS B2B',desc:'SaaS con compliance, pricing, infraestructura y arquitectura escalable. Listo para clientes corporativos.',agents:['facundo','matias','santiago','victoria','felipe-fin','diego']},
-  {id:'the-connector',name:'The Connector',team:'API & Integraciones',desc:'Construir o conectar sistemas: REST, GraphQL, webhooks y CI/CD con contratos claros y tests robustos.',agents:['gonzalo','matias','federico','diego','tomas']},
-  {id:'data-engine',name:'Data Engine',team:'Producto de Datos',desc:'Pipeline completo de datos: scraping, storage, análisis, ML y dashboard. De los datos crudos al insight accionable.',agents:['nicolas-data','camila','juliana','patricia-bi','roberto-r','leandro']},
-  {id:'the-shield',name:'The Shield',team:'Seguridad & Auditoría',desc:'Auditoría completa, pentest, autenticación robusta y hardening de endpoints. Seguridad sin compromisos.',agents:['ezequiel','marina','celeste','matias','tomas']},
-  {id:'shop-builder',name:'Shop Builder',team:'E-commerce',desc:'Tienda con UX optimizada para conversión. Psicología del comprador integrada desde el diseño hasta el checkout.',agents:['matias','santiago','lucia','cesar','gonzalo','valentina']},
-  {id:'content-machine',name:'The Content Machine',team:'Contenido & Growth',desc:'Máquina de contenido: copy, social, comunidad y distribución. Para marcas que necesitan presencia constante.',agents:['valentina','florencia','ignacio','ramiro','clara','bruno-m']},
-  {id:'brand-studio',name:'Brand Studio',team:'Brand & Identidad',desc:'Identidad completa: estrategia de marca, visual, narrativa y arquitectura de mensaje. Para marcas que quieren ser reconocibles.',agents:['adriana','patricio','ramiro','valentina','isabella']},
-  {id:'the-amplifier',name:'The Amplifier',team:'Comunidad & Redes',desc:'Presencia digital multicanal desde cero: comunidad, social, YouTube y podcast con estrategia de growth.',agents:['clara','florencia','sofia-r','emilio-b','ignacio','elena']},
-  {id:'design-system',name:'The Design System',team:'Sistema de Diseño',desc:'Sistema de diseño completo: tokens, componentes, documentación y accesibilidad. Para productos que escalan en equipo.',agents:['lucia','isabella','florencia-d','renata','santiago','sofia']},
-  {id:'ux-lab',name:'The UX Lab',team:'UX Research & Rediseño',desc:'Rediseño basado en evidencia: research, arquitectura de información, UI y psicología del usuario integrada.',agents:['mariana','lucia','isabella','valentin','cesar']},
-  {id:'first-impression',name:'First Impression',team:'Landing de Alta Conversión',desc:'Landing que convierte: psicología conductual, copy persuasivo, motion y UX sin fricción. Para productos que venden.',agents:['santiago','lucia','cesar','valentina','camilo','valentina-b']},
-  {id:'game-dev-squad',name:'Game Dev Squad',team:'Juego Indie',desc:'Equipo indie completo: diseño de juego, desarrollo, narrativa, arte, economía y QA. De la idea al build.',agents:['enzo','dante','kai','silvia','rex','luna']},
-  {id:'legal-layer',name:'Legal Layer',team:'Cobertura Legal Digital',desc:'Blindaje legal completo para producto digital: privacidad, contratos, IP, políticas y regulación.',agents:['victoria','andres','paloma','nora','emilio']},
-  {id:'money-matters',name:'Money Matters',team:'Fintech & Finanzas',desc:'Producto financiero sólido: modelado financiero, compliance, backend y regulación. Para fintech que necesita base real.',agents:['luciana','felipe-fin','matias','victoria','sebastian-f','emilio']},
-  {id:'the-academy',name:'The Academy',team:'Plataforma Educativa',desc:'Curso o plataforma de aprendizaje: guión, copy, UX, frontend, podcast y video. Contenido que enseña y retiene.',agents:['ramiro','valentina','lucia','santiago','veronica-edu','mateo-edu']},
-  {id:'conversion-lab',name:'The Conversion Lab',team:'Conversión & Comportamiento',desc:'Optimización desde la psicología del usuario: por qué compra, cómo retener, cómo convertir. Data meets behavior.',agents:['cesar','valentina-b','ignacio','lucia','valentina']},
-  {id:'people-first',name:'People First',team:'Cultura & Organización',desc:'Construir equipos humanos: cultura, talent acquisition, people ops y agile. Para founders que construyen para las personas.',agents:['andrea','mia','pablo-hr','hernan','valeria']},
+  {id:'brand-studio',name:'Brand Studio',team:'Brand & Identidad',
+   desc:'Identidad completa: estrategia de marca, visual, narrativa y arquitectura de mensaje. Para marcas que quieren ser reconocibles.',
+   objective:'Construir la identidad completa de una marca: estrategia, sistema visual, narrativa de posicionamiento y guía de voz.',
+   agents:['adriana','patricio','ramiro','valentina','isabella']},
+
+  {id:'the-amplifier',name:'The Amplifier',team:'Comunidad & Redes',
+   desc:'Presencia digital multicanal desde cero: comunidad, social, YouTube y podcast con estrategia de growth.',
+   objective:'Desarrollar una presencia digital multicanal desde cero con estrategia de comunidad, redes sociales, YouTube y podcast.',
+   agents:['clara','florencia','sofia-r','emilio-b','ignacio','elena']},
+
+  {id:'design-system',name:'The Design System',team:'Sistema de Diseño',
+   desc:'Sistema de diseño completo: tokens, componentes, documentación y accesibilidad. Para productos que escalan en equipo.',
+   objective:'Crear un sistema de diseño completo con tokens, librería de componentes, documentación y cobertura de accesibilidad WCAG.',
+   agents:['lucia','isabella','florencia-d','renata','santiago','sofia']},
+
+  {id:'ux-lab',name:'The UX Lab',team:'UX Research & Rediseño',
+   desc:'Rediseño basado en evidencia: research, arquitectura de información, UI y psicología del usuario integrada.',
+   objective:'Rediseñar un producto digital basado en investigación de usuarios, nueva arquitectura de información y UI validada.',
+   agents:['mariana','lucia','isabella','valentin','cesar']},
+
+  {id:'first-impression',name:'First Impression',team:'Landing de Alta Conversión',
+   desc:'Landing que convierte: psicología conductual, copy persuasivo, motion y UX sin fricción. Para productos que venden.',
+   objective:'Diseñar y construir una landing page de alta conversión con copy persuasivo, motion y UX sin fricción desde el primer scroll.',
+   agents:['santiago','lucia','cesar','valentina','camilo','valentina-b']},
+
+  {id:'game-dev-squad',name:'Game Dev Squad',team:'Juego Indie',
+   desc:'Equipo indie completo: diseño de juego, desarrollo, narrativa, arte, economía y QA. De la idea al build.',
+   objective:'Desarrollar un juego indie completo desde el concepto hasta el build final: diseño, código, narrativa, arte y economía de juego.',
+   agents:['enzo','dante','kai','silvia','rex','luna']},
+
+  {id:'legal-layer',name:'Legal Layer',team:'Cobertura Legal Digital',
+   desc:'Blindaje legal completo para producto digital: privacidad, contratos, IP, políticas y regulación.',
+   objective:'Cubrir legalmente un producto digital con política de privacidad, contratos, propiedad intelectual y regulación del sector.',
+   agents:['victoria','andres','paloma','nora','emilio']},
+
+  {id:'money-matters',name:'Money Matters',team:'Fintech & Finanzas',
+   desc:'Producto financiero sólido: modelado financiero, compliance, backend y regulación. Para fintech que necesita base real.',
+   objective:'Construir un producto fintech con modelado financiero robusto, compliance regulatorio, backend seguro y pitch para inversores.',
+   agents:['luciana','felipe-fin','matias','victoria','sebastian-f','emilio']},
+
+  {id:'the-academy',name:'The Academy',team:'Plataforma Educativa',
+   desc:'Curso o plataforma de aprendizaje: guión, copy, UX, frontend, podcast y video. Contenido que enseña y retiene.',
+   objective:'Diseñar y construir una plataforma educativa completa con currículo, contenido multimedia, UX de aprendizaje y distribución.',
+   agents:['ramiro','valentina','lucia','santiago','veronica-edu','mateo-edu']},
+
+  {id:'conversion-lab',name:'The Conversion Lab',team:'Conversión & Comportamiento',
+   desc:'Optimización desde la psicología del usuario: por qué compra, cómo retener, cómo convertir. Data meets behavior.',
+   objective:'Optimizar la conversión y retención de un producto usando psicología conductual, análisis de datos y experimentos validados.',
+   agents:['cesar','valentina-b','ignacio','lucia','valentina']},
+
+  {id:'people-first',name:'People First',team:'Cultura & Organización',
+   desc:'Construir equipos humanos: cultura, talent acquisition, people ops y agile. Para founders que construyen para las personas.',
+   objective:'Construir la cultura y estructura organizacional de un equipo: valores, talent acquisition, people ops y metodología ágil.',
+   agents:['andrea','mia','pablo-hr','hernan','valeria']},
 ];
 
 const PERSONALITY_TRAITS=[
