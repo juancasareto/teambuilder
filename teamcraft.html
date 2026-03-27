@@ -1607,12 +1607,13 @@ function renderTeam(){
 
   app.innerHTML=`
 <div>
-  <!-- Header -->
-  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:${S.activeKit?'.75rem':'1.25rem'}">
-    <button id="nav-catalog" class="d" style="font-size:13px">← /catalogo</button>
-    <span class="d" style="font-size:13px">/</span>
-    <span class="g" style="font-size:13px">mi-equipo</span>
-    ${S.activeKit?`<span style="margin-left:auto;font-size:11px;color:#3ECF8E;border:1px solid rgba(62,207,142,.3);padding:.2rem .6rem;border-radius:99px;letter-spacing:.04em">● ${S.activeKit}</span>`:''}
+  <!-- Header — SK style -->
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+    <button id="nav-catalog" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← CATÁLOGO</button>
+    <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
+    <span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">${isSolo?'AGENTE':'MI EQUIPO'}</span>
+    ${S.activeKit?`<span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);padding:.1rem .5rem;border-radius:99px;letter-spacing:.04em;white-space:nowrap">● ${S.activeKit}</span>`:''}
+    <span class="d" style="font-size:12px;white-space:nowrap">${isSolo?'1 agente':others.length+'/'+MAX_TEAM+' agentes'}</span>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
