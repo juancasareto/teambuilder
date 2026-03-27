@@ -708,45 +708,45 @@ function renderBoot(){
   <div id="boot-lines" style="margin-bottom:1.75rem;line-height:1.8"></div>
   <div id="boot-menu" style="display:none">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem">
-      <button id="btn-solo" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">SOLO</div>
-          <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">1 AGENTE</span>
-        </div>
-        <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
-          Un agente, conversación directa. Output: prompt listo para pegar.
-        </div>
-        <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Elegir agente →</div>
-      </button>
       <button id="btn-equipo" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">EQUIPO</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">Team Craft</div>
           <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">HASTA 8</span>
         </div>
         <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
-          Equipo coordinado por Rodrigo (PM). Output: prompt con roles, banco y handoff.
+          Armá un equipo de especialistas para tu proyecto. Cada agente aporta su expertise y trabajan coordinados.
         </div>
         <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Armar equipo →</div>
       </button>
-      <button id="btn-crear" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">CREAR AGENTE</div>
-          <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">CUSTOM</span>
-        </div>
-        <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
-          Describís el agente, recibís skills recomendadas. Output: prompt personalizado.
-        </div>
-        <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Diseñar agente →</div>
-      </button>
       <button id="btn-kits" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
-          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">STARTER KITS</div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">Starter Kits</div>
           <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">22 KITS</span>
         </div>
         <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
-          22 equipos prearmados listos para usar. Elegí uno y personalizá antes de activar.
+          22 equipos prearmados por tipo de proyecto. Activá uno y empezá con el contexto listo.
         </div>
         <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Ver kits →</div>
+      </button>
+      <button id="btn-solo" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">Agente</div>
+          <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">1 AGENTE</span>
+        </div>
+        <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
+          Un especialista para conversación directa. Elegís el perfil y obtenés el prompt configurado.
+        </div>
+        <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Elegir agente →</div>
+      </button>
+      <button id="btn-crear" class="card" style="display:flex;flex-direction:column;text-align:left;border:1px solid #1A1A1A;min-height:170px;gap:0" onmouseenter="this.style.borderColor='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em">Crear Agente</div>
+          <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.4);padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0">CUSTOM</span>
+        </div>
+        <div style="font-size:12px;color:#888888;line-height:1.6;flex:1">
+          Describís el rol que necesitás y el sistema recomienda skills y genera el prompt.
+        </div>
+        <div style="margin-top:.85rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.45rem .75rem;border-radius:4px;letter-spacing:.06em;text-align:center">Diseñar agente →</div>
       </button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;color:#888888;font-size:13px">
@@ -1502,19 +1502,15 @@ function renderCatalog(){
   const teamCount=teamSize;
   app.innerHTML=`
 <div>
-  <!-- Header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
-    <div style="display:flex;align-items:center;gap:.5rem">
-      <button id="nav-home" class="d" style="font-size:14px">← inicio</button>
-      <span class="d">/</span>
-      <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:600;color:#E0E0E0">Catálogo</span>
-      <span style="font-size:12px;color:#3ECF8E;background:rgba(62,207,142,.12);padding:.1rem .45rem;border-radius:99px;margin-left:.25rem">${isSolo?'SOLO':'EQUIPO'}</span>
-    </div>
-    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p">${isSolo?'activar agente':'activar equipo ['+teamCount+'/'+MAX_TEAM+']'}</button>`:''}
+  <!-- Header — SK style -->
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+    <button id="nav-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
+    <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
+    <span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">${isSolo?'AGENTE':'TEAM CRAFT'}</span>
+    <span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);padding:.1rem .45rem;border-radius:99px;letter-spacing:.05em">${isSolo?'SOLO':'EQUIPO'}</span>
+    <span class="d" style="font-size:12px">${AGENTS.length-1} agentes</span>
+    ${teamCount>0?`<button id="nav-team" class="term-btn term-btn-p" style="margin-left:.25rem">${isSolo?'activar agente':'activar ['+teamCount+'/'+MAX_TEAM+'] →'}</button>`:''}
   </div>
-
-  <!-- Rodrigo notice -->
-  <div style="font-size:13px;color:#333333;margin-bottom:1rem">${isSolo?'⚡ Elegí un agente para conversación directa':'🤝 Rodrigo (PM) siempre activo · sumá hasta '+MAX_TEAM+' agentes adicionales'}</div>
 
   <!-- Filter pills + Search -->
   <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem">
