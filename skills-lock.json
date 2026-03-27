@@ -1,0 +1,195 @@
+{
+  "version": 1,
+  "skills": {
+    "agile-ceremonies": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "24333e474c8cd1388d5c5917cfffbb5c7a60a85ff4a33449470063778fa57f90"
+    },
+    "api-design-principles": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "3316239df2bdcb41e992857b8142e0239e6964564dd5d7224e470c2ab350a03c"
+    },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "8df9b47092524833138b58682d03f2e153a242e550d1693657afdbee0cc9cdb0"
+    },
+    "budget-analyzer": {
+      "source": "dkyazzentwatwa/chatgpt-skills",
+      "sourceType": "github",
+      "computedHash": "0363fb4ba0a577230ee6692f8b34ac18338162efed0e969659adb46077f920fc"
+    },
+    "code-review": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "4f1df6298a9e9bf310742f1528946613fad99443ecb7c22404cbf9abe5c402b5"
+    },
+    "crypto-ta-analyzer": {
+      "source": "dkyazzentwatwa/chatgpt-skills",
+      "sourceType": "github",
+      "computedHash": "0b636dcb06703cc920e605d1d6798b3b0021667d7d38b9f7fa25b78b0bc2bae0"
+    },
+    "database-optimization": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "07c54799bd00f05ce540e67e40760989601b9523c5294739222d2891f2ebf01e"
+    },
+    "database-schema-designer": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "6a26ca15216bb4bfee66ebf813edcb1e31a8002f3f641f16f550df814b522217"
+    },
+    "developer-growth-analysis": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "d798a987031b80c37173d2482d6e704a82c63e4033cca9047396787bc4be2791"
+    },
+    "devops-runbooks": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "5f3f1314502b2d089024593914908fedbfb01cba6a3820bfc6c872b1251f0a4b"
+    },
+    "difficult-workplace-conversations": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "08b4833493e79d09c048d388d837bb7b4bde0fc545f656ff22539f3a4aa0c40a"
+    },
+    "documentation": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "7539feba7994ff5ec56779c7d542eb9fbd7fe109e22726219cf269182c645659"
+    },
+    "executing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "2f709d1a2c7564f8ce6a9bb707e7f5451117ba80f8e8e2302662c29bc61246a6"
+    },
+    "financial-calculator": {
+      "source": "dkyazzentwatwa/chatgpt-skills",
+      "sourceType": "github",
+      "computedHash": "cac31865b6fad9cce2b66cc104407a926d59a5247dd1412677448b12f1d7a306"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "d31e234f0c90694a670222cdd1dafa853e051d7066beda389f1097c22dadd461"
+    },
+    "git-workflow": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "6d7665fdc5452bd218a84d615a56d28d75ff66ada6ff7b37832f891ffdefac5e"
+    },
+    "karpathy-guidelines": {
+      "source": "forrestchang/andrej-karpathy-skills",
+      "sourceType": "github",
+      "computedHash": "41e8ca055bbde13d240776a14a076a59614057200340c243130a76ba4e64cac8"
+    },
+    "lead-research-assistant": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "db0bba787ec6616ae7bba46baa7fe44d0bef9201e9337447d0d96a38109f4655"
+    },
+    "lesson-learned": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "2bdf72af18ccc97c8c5580f252769610d2c0d814c36433ea7dd3f25c822ff6b7"
+    },
+    "meeting-insights-analyzer": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "3581bd692a5589d6fad352a815db16d24b21c976651806294bf8708073ed4680"
+    },
+    "performance": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "4cff01d33a2d9568246797030eb0807180e0ee99fa1498deea28515da72a819b"
+    },
+    "pricing-strategy": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "4312095789cc328883428b1f9bd61549ca44b376aeda8d62bb977efad017e594"
+    },
+    "professional-communication": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "4ecfeba923ab6dea1ac6e4a3d05a1a7f23b2af3dce690f4aad8167ae92b14397"
+    },
+    "qa-test-planner": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "c7a27e535b0a21a9ed22578ca0e37a00a00f43b775efe791a2d4be849ce8ffa9"
+    },
+    "requirements-clarity": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "27ab2b19ebb31ff719c2e19d1ae3c4122f37d964a447b180bfb838d7b2198a02"
+    },
+    "requirements-elicitation": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "7a508dff28e704f080d984c33f2ca7c3c4d39c4597f9697bb82476e30df46bcc"
+    },
+    "revops": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "d6efa402972662f23d8b052c8f4c79d1e9b9c0a4d9bebf11468462c6d682f0db"
+    },
+    "roi-calculator": {
+      "source": "dkyazzentwatwa/chatgpt-skills",
+      "sourceType": "github",
+      "computedHash": "4981078ae49e62526504f8b2c9b2514cb7a1217444505261f660d709c647f763"
+    },
+    "security-engineering": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "e5419df5e6977063ac8a62e07fba41ff331fe5649f08fa0480103762d5b9dc3c"
+    },
+    "solodit": {
+      "source": "bowtiedswan/solodit-api-skill",
+      "sourceType": "github",
+      "computedHash": "e13c8ddd748f387c4b787187fff7e7642df08fe121de106d715236a535a52cbd"
+    },
+    "stock-screener": {
+      "source": "dkyazzentwatwa/chatgpt-skills",
+      "sourceType": "github",
+      "computedHash": "bb2b84f779c495c60b600b26f1316c826536effb1eaf72a8e1297277ffb895e3"
+    },
+    "technical-research": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "ae3d6ba144aacb488d4d06bab64130ec4271e2b2fc062bf6cab1ed6a63275fd1"
+    },
+    "test-driven-development": {
+      "source": "89jobrien/steve",
+      "sourceType": "github",
+      "computedHash": "ca691977d59044d8040da6f37c63d622a7f93a07bfc027acee25a99b7c619859"
+    },
+    "vercel": {
+      "source": "openhands/skills",
+      "sourceType": "github",
+      "computedHash": "bacba314540ebbb63c73d38d17ceebf154946e7969d4881d02aadb7b62a40688"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "writing-clearly-and-concisely": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "136a0413255aa82d800459c775eabf041620b2e9cbf2d713b739bf1b87a3db3a"
+    },
+    "writing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "bfaed11054ad8021c66860244e2d2e0d1eca483ae9f5fbfcb956e99c61f5c3d7"
+    },
+    "writing-skills": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "c0a92e629e39ea91b1f54da67a6aa92723008a8ef5b500c6de078f55485937c7"
+    }
+  }
+}

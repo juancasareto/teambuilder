@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TEAMCRAFT AI</title>
+<title>Easy Crew AI</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -76,7 +76,7 @@ function buildPrompt(teamIds,project){
   const bankAgents=AGENTS.filter(a=>!teamIds.includes(a.id)&&a.id!=='rodrigo');
   const lines=[];
 
-  lines.push('Sos un equipo de agentes IA especializados configurado por TeamCraft AI.');
+  lines.push('Sos un equipo de agentes IA especializados configurado por Easy Crew AI.');
   lines.push('Coordinador permanente: RODRIGO (Project Manager).');
   lines.push('');
 
@@ -151,7 +151,7 @@ function buildPrompt(teamIds,project){
   lines.push('## CLAUDE.md \u2014 ESCRIB\u00cd ESTE ARCHIVO EN LA RA\u00cdZ DEL PROYECTO');
   lines.push('```');
   lines.push('# '+(project.nombre||'PROYECTO'));
-  lines.push('> Sesi\u00f3n configurada por TeamCraft AI');
+  lines.push('> Sesi\u00f3n configurada por Easy Crew AI');
   lines.push('');
   lines.push('## PROYECTO');
   if(project.nombre)   lines.push('Nombre: '+project.nombre);
@@ -243,7 +243,7 @@ function buildPrompt(teamIds,project){
 // ─── DOWNLOAD AGENTS BANK ──────────────────────────────────────────────────────
 function downloadBank(){
   const lines=[];
-  lines.push('# TEAMCRAFT AI — BANCO DE AGENTES');
+  lines.push('# EASY CREW AI — BANCO DE AGENTES');
   lines.push('> Archivo de referencia para sesiones de Claude Code.');
   lines.push('> Cargalo con: @agents-bank.md o pegá su contenido como contexto.');
   lines.push('');
@@ -398,7 +398,7 @@ const LOGO=`████████╗███████╗ █████�
 `.trim();
 
 const BOOT_LINES=[
-  {text:'TEAMCRAFT AI v0.3',color:'#3ECF8E',delay:0},
+  {text:'EASY CREW',color:'#3ECF8E',delay:0},
   {text:'─'.repeat(48),color:'#333333',delay:80},
   {text:'Initializing agent registry...',color:'#888888',delay:160},
   {text:'[OK] '+AGENTS.length+' agents loaded',color:'#3ECF8E',delay:280},
@@ -457,7 +457,7 @@ function renderBoot(){
       </button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;color:#888888;font-size:13px">
-      <span>teamcraft.ai · v0.3</span>
+      <span>easycrew.ai · v0.3</span>
       <div style="display:flex;align-items:center;gap:1rem">
         <button id="btn-about" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:#444444;letter-spacing:.08em;padding:0;transition:color .15s" onmouseenter="this.style.color='#3ECF8E'" onmouseleave="this.style.color='#444444'">about</button>
         <span class="g blink" style="font-size:16px">█</span>
@@ -565,20 +565,20 @@ function renderAbout(){
     <button id="about-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
     <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
     <span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">ABOUT</span>
-    <span class="d" style="font-size:12px">TeamCraft AI</span>
+    <span class="d" style="font-size:12px">Easy Crew AI</span>
   </div>
 
   <!-- 01 · Qué es -->
   <div class="card" style="margin-bottom:.75rem">
-    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Qué es TeamCraft AI</div>
-    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">TeamCraft AI es una herramienta de configuración de equipos de agentes IA para Claude Code. El usuario arma un equipo de especialistas (o elige uno prearmado), describe su proyecto y obtiene un prompt listo para pegar en Claude Code que configura a Claude para responder desde cada rol con personalidad, expertise y skills propios.</p>
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Qué es Easy Crew AI</div>
+    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">Easy Crew AI es una herramienta de configuración de equipos de agentes IA para Claude Code. El usuario arma un equipo de especialistas (o elige uno prearmado), describe su proyecto y obtiene un prompt listo para pegar en Claude Code que configura a Claude para responder desde cada rol con personalidad, expertise y skills propios.</p>
     <p style="font-size:12px;color:#666666;line-height:1.65">El producto es un archivo HTML autónomo. Sin servidor, sin instalación, sin conexión a internet. Se abre en cualquier browser con doble click.</p>
   </div>
 
   <!-- 02 · El problema -->
   <div class="card" style="margin-bottom:.75rem">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">El problema que resuelve</div>
-    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">Claude Code es una herramienta poderosa pero genérica. Por defecto responde como un asistente sin rol ni especialidad definida. TeamCraft AI configura una sesión para que Claude opere como un equipo de personas con identidades propias, en lugar de responder desde el mismo perfil neutro.</p>
+    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">Claude Code es una herramienta poderosa pero genérica. Por defecto responde como un asistente sin rol ni especialidad definida. Easy Crew AI configura una sesión para que Claude opere como un equipo de personas con identidades propias, en lugar de responder desde el mismo perfil neutro.</p>
     <p style="font-size:12px;color:#666666;line-height:1.65">El resultado es un prompt estructurado que incluye quiénes están en el equipo, cómo invocar a cada uno, cuáles son sus reglas de coordinación, qué banco de agentes tiene disponible y qué skills ejecutar al arrancar.</p>
   </div>
 
@@ -659,8 +659,8 @@ function renderAbout(){
   <div class="card" style="margin-bottom:2rem">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Archivos del producto</div>
     <div style="background:#0D0D0D;border:1px solid #1A1A1A;border-radius:6px;padding:.9rem 1.1rem;font-family:'Geist Mono',monospace;font-size:11.5px;color:#555555;line-height:1.8;margin-bottom:.65rem">
-      TeamCraft-AI/<br>
-      ├── <span style="color:#3ECF8E">teamcraft.html</span> &nbsp;&nbsp;&nbsp;← la app completa<br>
+      EasyCrew-AI/<br>
+      ├── <span style="color:#3ECF8E">easycrew.html</span> &nbsp;&nbsp;&nbsp;← la app completa<br>
       ├── <span style="color:#3ECF8E">agents-bank.md</span> &nbsp;&nbsp;← banco de 101 agentes en texto plano<br>
       └── <span style="color:#3ECF8E">START-HERE.txt</span> &nbsp;&nbsp;← instrucciones de uso
     </div>
@@ -669,7 +669,7 @@ function renderAbout(){
 
   <!-- Footer -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #1A1A1A;margin-bottom:2rem">
-    <span style="font-size:11px;color:#333333;letter-spacing:.08em;font-family:'Geist Mono',monospace">teamcraft.ai · 2026</span>
+    <span style="font-size:11px;color:#333333;letter-spacing:.08em;font-family:'Geist Mono',monospace">easycrew.ai · 2026</span>
     <button id="about-home-2" class="term-btn" style="font-size:12px">← volver</button>
   </div>
 
