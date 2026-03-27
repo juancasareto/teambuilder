@@ -110,6 +110,7 @@ const S={
   copied:false,
   modal:null,
   personality:[],    // selected personality traits for creator
+  activeKit:null,    // name of selected starter kit
 };
 
 function col(cat){return CAT_COLOR[cat]||'#C96442'}
@@ -407,6 +408,7 @@ function render(){
   else if(S.screen==='creator') renderCreator();
   else if(S.screen==='catalog') renderCatalog();
   else if(S.screen==='team') renderTeam();
+  else if(S.screen==='starter-kits') renderStarterKits();
 }
 
 // ─── BOOT SCREEN ──────────────────────────────────────────────────────────────
@@ -457,6 +459,13 @@ function renderBoot(){
         </div>
         <div style="margin-top:1rem;background:#C96442;color:#0F0B09;font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:4px;letter-spacing:.06em">Diseñar agente →</div>
       </button>
+      <button id="btn-kits" class="card" style="display:flex;flex-direction:column;text-align:center;border:1px solid #2D2218;min-height:160px" onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#F0EAE2;margin-bottom:.75rem;letter-spacing:-.01em">STARTER KITS</div>
+        <div style="font-size:13px;color:#7A6E68;line-height:1.6;flex:1">
+          22 equipos prearmados listos para usar.<br>Elegí uno y personalizá antes de activar.
+        </div>
+        <div style="margin-top:1rem;background:#C96442;color:#0F0B09;font-size:13px;font-weight:700;padding:.5rem 1rem;border-radius:4px;letter-spacing:.06em">Ver kits →</div>
+      </button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;color:#7A6E68;font-size:13px">
       <span>teamcraft.ai · v0.2</span>
@@ -484,17 +493,69 @@ function renderBoot(){
           document.getElementById('boot-cursor').style.display='none';
           document.getElementById('boot-menu').style.display='block';
           document.getElementById('btn-solo').addEventListener('click',()=>{
-            S.mode='solo'; S.team=[]; S.screen='catalog'; render();
+            S.mode='solo'; S.team=[]; S.activeKit=null; S.screen='catalog'; render();
           });
           document.getElementById('btn-equipo').addEventListener('click',()=>{
-            S.mode='equipo'; S.team=['rodrigo']; S.screen='catalog'; render();
+            S.mode='equipo'; S.team=['rodrigo']; S.activeKit=null; S.screen='catalog'; render();
           });
           document.getElementById('btn-crear').addEventListener('click',()=>{
             S.mode='crear'; S.screen='creator'; render();
           });
+          document.getElementById('btn-kits').addEventListener('click',()=>{
+            S.screen='starter-kits'; render();
+          });
         },200);
       }
     },line.delay);
+  });
+}
+
+
+
+// ─── STARTER KITS SCREEN ───────────────────────────────────────────────────────
+function renderStarterKits(){
+  app.innerHTML=`
+<div style="max-width:900px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+    <button id="sk-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
+    <span class="d" style="font-size:13px">─────────────────────────</span>
+    <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">STARTER KITS</span>
+    <span class="d" style="font-size:12px;margin-left:auto">${STARTER_KITS.length} equipos prearmados</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem">
+    ${STARTER_KITS.map(kit=>{
+      const agents=kit.agents.map(id=>AGENTS.find(a=>a.id===id)).filter(Boolean);
+      return \`<div class="card" data-kit="\${kit.id}" style="border:1px solid #2D2218;cursor:pointer;display:flex;flex-direction:column;gap:.6rem"
+        onmouseenter="this.style.borderColor='#C96442'" onmouseleave="this.style.borderColor='#2D2218'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:#F0EAE2;letter-spacing:-.01em">\${kit.name}</div>
+          <span style="font-size:10px;color:#7A6E68;border:1px solid #2D2218;padding:.15rem .4rem;border-radius:3px;white-space:nowrap;flex-shrink:0">\${kit.team}</span>
+        </div>
+        <div style="font-size:12px;color:#7A6E68;line-height:1.5;flex:1">\${kit.desc}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.2rem">
+          \${agents.map(a=>\`<span style="font-size:11px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);color:#C96442;padding:.15rem .45rem;border-radius:99px">\${icon(a.cat)}\${a.name}</span>\`).join('')}
+        </div>
+        <div style="margin-top:.4rem;background:#C96442;color:#0F0B09;font-size:12px;font-weight:700;padding:.4rem .75rem;border-radius:4px;text-align:center;letter-spacing:.06em">
+          Armar este equipo →
+        </div>
+      </div>\`;
+    }).join('')}
+  </div>
+</div>\`;
+
+  document.getElementById('sk-home').addEventListener('click',()=>{S.screen='boot';render()});
+
+  document.querySelectorAll('[data-kit]').forEach(card=>{
+    card.addEventListener('click',()=>{
+      const kit=STARTER_KITS.find(k=>k.id===card.dataset.kit);
+      if(!kit) return;
+      S.team=['rodrigo',...kit.agents];
+      S.activeKit=kit.name;
+      S.mode='equipo';
+      S.screen='team';
+      render();
+    });
   });
 }
 
@@ -815,6 +876,31 @@ const FILTERS=[
   {key:'web3',tag:'WEB3'},
   {key:'psicologia',tag:'PSY'},
 ];
+const STARTER_KITS=[
+  {id:'full-stack',name:'The Full Stack',team:'Web App Completa',desc:'Ciclo completo desde arquitectura hasta QA. Para proyectos web serios que necesitan estructura desde el día 1.',agents:['facundo','matias','santiago','lucia','tomas','gonzalo']},
+  {id:'zero-to-launch',name:'Zero to Launch',team:'Startup MVP',desc:'Velocidad sobre perfección. De la idea al producto funcional en semanas, con foco en validar antes de escalar.',agents:['bautista','facundo','matias','santiago','paula','martin']},
+  {id:'pocket-product',name:'Pocket Product',team:'App Mobile',desc:'App nativa o cross-platform lista para stores. UX mobile-first, integraciones y monetización desde el diseño.',agents:['jimena','santiago','lucia','tomas','gonzalo','gael']},
+  {id:'enterprise-ready',name:'Enterprise Ready',team:'SaaS B2B',desc:'SaaS con compliance, pricing, infraestructura y arquitectura escalable. Listo para clientes corporativos.',agents:['facundo','matias','santiago','victoria','felipe-fin','diego']},
+  {id:'the-connector',name:'The Connector',team:'API & Integraciones',desc:'Construir o conectar sistemas: REST, GraphQL, webhooks y CI/CD con contratos claros y tests robustos.',agents:['gonzalo','matias','federico','diego','tomas']},
+  {id:'data-engine',name:'Data Engine',team:'Producto de Datos',desc:'Pipeline completo de datos: scraping, storage, análisis, ML y dashboard. De los datos crudos al insight accionable.',agents:['nicolas-data','camila','juliana','facundo','leandro']},
+  {id:'ai-foundry',name:'AI Foundry',team:'Agente IA Custom',desc:'Construir y evaluar agentes IA desde cero: prompts, RAG, arquitectura multi-agente y evals en producción.',agents:['max','vera','inaki','nadia','axel']},
+  {id:'the-shield',name:'The Shield',team:'Seguridad & Auditoría',desc:'Auditoría completa, pentest, autenticación robusta y hardening de endpoints. Seguridad sin compromisos.',agents:['ezequiel','marina','celeste','matias','tomas']},
+  {id:'shop-builder',name:'Shop Builder',team:'E-commerce',desc:'Tienda con UX optimizada para conversión. Psicología del comprador integrada desde el diseño hasta el checkout.',agents:['matias','santiago','lucia','cesar','gonzalo','valentina']},
+  {id:'content-machine',name:'The Content Machine',team:'Contenido & Growth',desc:'Máquina de contenido: copy, social, comunidad y distribución. Para marcas que necesitan presencia constante.',agents:['valentina','florencia','ignacio','ramiro','clara']},
+  {id:'launch-pad',name:'Launch Pad',team:'Lanzamiento de Producto',desc:'Go-to-market completo: posicionamiento, narrativa, canales y stakeholders. Para lanzar con impacto real.',agents:['bautista','adriana','valentina','ignacio','martin','valeria']},
+  {id:'brand-studio',name:'Brand Studio',team:'Brand & Identidad',desc:'Identidad completa: estrategia de marca, visual, narrativa y arquitectura de mensaje. Para marcas que quieren ser reconocibles.',agents:['adriana','patricio','ramiro','valentina','isabella']},
+  {id:'the-amplifier',name:'The Amplifier',team:'Comunidad & Redes',desc:'Presencia digital multicanal desde cero: comunidad, social, YouTube y podcast con estrategia de growth.',agents:['clara','florencia','agustina','ignacio','elena']},
+  {id:'design-system',name:'The Design System',team:'Sistema de Diseño',desc:'Sistema de diseño completo: tokens, componentes, documentación y accesibilidad. Para productos que escalan en equipo.',agents:['lucia','isabella','florencia-d','renata','santiago','sofia']},
+  {id:'ux-lab',name:'The UX Lab',team:'UX Research & Rediseño',desc:'Rediseño basado en evidencia: research, arquitectura de información, UI y psicología del usuario integrada.',agents:['mariana','lucia','isabella','valentin','cesar']},
+  {id:'first-impression',name:'First Impression',team:'Landing de Alta Conversión',desc:'Landing que convierte: psicología conductual, copy persuasivo, motion y UX sin fricción. Para productos que venden.',agents:['santiago','lucia','cesar','valentina','camilo','valentina-b']},
+  {id:'game-dev-squad',name:'Game Dev Squad',team:'Juego Indie',desc:'Equipo indie completo: diseño de juego, desarrollo, narrativa, arte, economía y QA. De la idea al build.',agents:['enzo','dante','kai','silvia','rex','luna']},
+  {id:'legal-layer',name:'Legal Layer',team:'Cobertura Legal Digital',desc:'Blindaje legal completo para producto digital: privacidad, contratos, IP, políticas y regulación.',agents:['victoria','andres','paloma','nora','emilio']},
+  {id:'money-matters',name:'Money Matters',team:'Fintech & Finanzas',desc:'Producto financiero sólido: modelado financiero, compliance, backend y regulación. Para fintech que necesita base real.',agents:['luciana','felipe-fin','matias','victoria','emilio','juliana']},
+  {id:'the-academy',name:'The Academy',team:'Plataforma Educativa',desc:'Curso o plataforma de aprendizaje: guión, copy, UX, frontend, podcast y video. Contenido que enseña y retiene.',agents:['ramiro','valentina','lucia','santiago','elena','joaquin']},
+  {id:'conversion-lab',name:'The Conversion Lab',team:'Conversión & Comportamiento',desc:'Optimización desde la psicología del usuario: por qué compra, cómo retener, cómo convertir. Data meets behavior.',agents:['cesar','valentina-b','ignacio','lucia','valentina']},
+  {id:'people-first',name:'People First',team:'Cultura & Organización',desc:'Construir equipos humanos: cultura, talent acquisition, people ops y agile. Para founders que construyen para las personas.',agents:['andrea','mia','pablo-hr','hernan','valeria']},
+];
+
 const PERSONALITY_TRAITS=[
   'analítico','directo','creativo','empático','metódico',
   'disruptivo','detallista','estratégico','escéptico','pragmático',
@@ -976,10 +1062,11 @@ function renderTeam(){
   app.innerHTML=`
 <div>
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:${S.activeKit?'.75rem':'1.25rem'}">
     <button id="nav-catalog" class="d" style="font-size:13px">← /catalogo</button>
     <span class="d" style="font-size:13px">/</span>
     <span class="g" style="font-size:13px">mi-equipo</span>
+    ${S.activeKit?`<span style="margin-left:auto;font-size:11px;color:#C96442;border:1px solid rgba(201,100,66,.3);padding:.2rem .6rem;border-radius:99px;letter-spacing:.04em">● ${S.activeKit}</span>`:''}
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
