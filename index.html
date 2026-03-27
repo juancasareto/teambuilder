@@ -11,16 +11,16 @@
 :root{
   --accent:#3ECF8E;--amber:#E8A04A;--cyan:#06B6D4;--red:#EF4444;
   --purple:#A855F7;--pink:#FF6EB4;--violet:#C084FC;
-  --bg:#0A0A0A;--dim:#888888;--muted:#888888;--base:#E0E0E0;
-  --border:#1A1A1A;--border2:#111111;
+  --bg:#0A0A0A;--dim:#888888;--base:#E0E0E0;
+  --border:#1A1A1A;
   --surface:#111111;--surface2:#0D0D0D;
 }
 html,body{background:var(--bg);color:var(--base);font-family:'Geist','Inter',sans-serif;font-size:15px;min-height:100vh;line-height:1.6}
 #app{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem;min-height:100vh}
 button{cursor:pointer;background:none;border:none;font-family:inherit;font-size:inherit;color:inherit}
 input,textarea{font-family:inherit;font-size:inherit;background:none;color:var(--base);border:none;outline:none}
-.g{color:var(--accent)} .a{color:var(--amber)} .d{color:var(--dim)} .m{color:var(--muted)} .r{color:var(--red)} .c{color:var(--cyan)}
-.term-btn{border:1px solid var(--dim);color:var(--muted);padding:.3rem .75rem;transition:all .15s;font-size:13px;display:inline-block;border-radius:4px}
+.g{color:var(--accent)} .a{color:var(--amber)} .d{color:var(--dim)} .m{color:var(--dim)} .r{color:var(--red)} .c{color:var(--cyan)}
+.term-btn{border:1px solid var(--dim);color:var(--dim);padding:.3rem .75rem;transition:all .15s;font-size:13px;display:inline-block;border-radius:4px}
 .term-btn:hover{border-color:var(--accent);color:var(--accent)}
 .term-btn-p{border-color:var(--accent);color:var(--accent)}
 .term-btn-p:hover{background:rgba(62,207,142,.10)}
@@ -796,7 +796,7 @@ function renderBoot(){
 
 // ─── STARTER KITS SCREEN ───────────────────────────────────────────────────────
 function renderStarterKits(){
-  app.innerHTML='<div style="max-width:900px;margin:0 auto"><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem"><button id="sk-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">\u2190 HOME</button><span class="d" style="font-size:13px">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span><span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">STARTER KITS</span><span class="d" style="font-size:12px;margin-left:auto">'+STARTER_KITS.length+' equipos prearmados</span></div><div id="sk-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem"></div></div>';
+  app.innerHTML='<div style="max-width:900px;margin:0 auto"><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem"><button id="sk-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">\u2190 HOME</button><span class="d" style="font-size:13px;flex:1;overflow:hidden">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span><span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">STARTER KITS</span><span class="d" style="font-size:12px">'+STARTER_KITS.length+' equipos prearmados</span></div><div id="sk-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem"></div></div>';
 
   const grid=document.getElementById('sk-grid');
   STARTER_KITS.forEach(kit=>{
@@ -984,10 +984,10 @@ function openKitModal(id){
     render();
   });
   const cancelBtn=document.createElement('button');
-  cancelBtn.style.cssText='background:none;border:1px solid #333333;color:#666666;font-size:13px;padding:.65rem .9rem;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s';
+  cancelBtn.style.cssText='background:none;border:1px solid #1A1A1A;color:#888888;font-size:13px;padding:.65rem .9rem;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s';
   cancelBtn.textContent='cerrar';
-  cancelBtn.addEventListener('mouseenter',()=>{cancelBtn.style.borderColor='#555';cancelBtn.style.color='#888'});
-  cancelBtn.addEventListener('mouseleave',()=>{cancelBtn.style.borderColor='#333333';cancelBtn.style.color='#666666'});
+  cancelBtn.addEventListener('mouseenter',()=>{cancelBtn.style.borderColor='#3ECF8E';cancelBtn.style.color='#E0E0E0'});
+  cancelBtn.addEventListener('mouseleave',()=>{cancelBtn.style.borderColor='#1A1A1A';cancelBtn.style.color='#888888'});
   cancelBtn.addEventListener('click',closeKitModal);
   footer.appendChild(activateBtn);
   footer.appendChild(cancelBtn);
@@ -1121,7 +1121,7 @@ function renderCreator(){
 <div style="max-width:640px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
     <button id="nav-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
-    <span class="d" style="font-size:13px">─────────────────────────</span>
+    <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
     <span class="g" style="font-size:13px;letter-spacing:.1em;font-weight:700">CREAR AGENTE</span>
   </div>
 
@@ -1148,7 +1148,7 @@ function renderCreator(){
       <div id="personality-chips" style="display:flex;flex-wrap:wrap;gap:.4rem">
         ${PERSONALITY_TRAITS.map(t=>{const sel=S.personality.includes(t);return '<button class=\"personality-chip\" data-trait=\"'+t+'\" style=\"font-size:12px;padding:.25rem .65rem;border-radius:99px;border:1px solid '+(sel?'#3ECF8E':'#1A1A1A')+';color:'+(sel?'#3ECF8E':'#888888')+';background:'+(sel?'rgba(62,207,142,.10)':'transparent')+';cursor:pointer;transition:all .15s\">'+t+'</button>';}).join('')}
       </div>
-      <div id="personality-count" style="font-size:11px;color:#333333;margin-top:.4rem">${S.personality.length}/5 seleccionados</div>
+      <div id="personality-count" style="font-size:11px;color:#888888;margin-top:.4rem">${S.personality.length}/5 seleccionados</div>
     </div>
 
     <button id="btn-match" class="g" style="background:none;border:1px solid #3ECF8E;color:#3ECF8E;font-family:'Geist','Inter',sans-serif;font-size:13px;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.1em;width:100%;transition:all .15s" onmouseenter="this.style.background='#3ECF8E';this.style.color='#0A0A0A'" onmouseleave="this.style.background='none';this.style.color='#3ECF8E'">
@@ -1475,7 +1475,7 @@ function renderCatalog(){
     const tagPills=topTags.map(tg=>'<span style="font-size:10px;color:#888888;border:1px solid #1A1A1A;padding:.12rem .4rem;border-radius:99px">'+esc(tg)+'</span>').join('');
     let ctaHtml;
     if(inTeam){
-      ctaHtml='<button class="remove-agent" data-id="'+a.id+'" style="width:100%;font-size:12px;font-weight:600;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);background:rgba(62,207,142,.07);padding:.45rem .75rem;border-radius:4px;cursor:pointer;text-align:center;letter-spacing:.04em;transition:all .15s" onclick="event.stopPropagation()" onmouseenter="this.style.color=\'#EF4444\';this.style.borderColor=\'#EF4444\'" onmouseleave="this.style.color=\'#3ECF8E\';this.style.borderColor=\'rgba(62,207,142,.35)\'">✓ en equipo — quitar</button>';
+      ctaHtml='<button class="remove-agent" data-id="'+a.id+'" style="width:100%;font-size:12px;font-weight:600;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);background:rgba(62,207,142,.07);padding:.45rem .75rem;border-radius:4px;cursor:pointer;text-align:center;letter-spacing:.05em;transition:all .15s" onclick="event.stopPropagation()" onmouseenter="this.style.color=\'#EF4444\';this.style.borderColor=\'#EF4444\'" onmouseleave="this.style.color=\'#3ECF8E\';this.style.borderColor=\'rgba(62,207,142,.35)\'">✓ en equipo — quitar</button>';
     } else if(canAdd){
       ctaHtml='<button class="add-agent" data-id="'+a.id+'" style="width:100%;font-size:12px;font-weight:700;color:#0A0A0A;background:#3ECF8E;border:none;padding:.45rem .75rem;border-radius:4px;cursor:pointer;text-align:center;letter-spacing:.05em;transition:opacity .15s" onclick="event.stopPropagation()" onmouseenter="this.style.opacity=\'.85\'" onmouseleave="this.style.opacity=\'1\'">+ agregar →</button>';
     } else {
@@ -1492,7 +1492,7 @@ function renderCatalog(){
         '</div>'+
         '<span style="font-size:10px;color:'+c+';border:1px solid '+c+';opacity:.65;padding:.1rem .4rem;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-top:.1rem;letter-spacing:.05em">'+t+'</span>'+
       '</div>'+
-      '<div style="font-size:12px;color:#888888;line-height:1.55;margin-bottom:.55rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+esc(a.description)+'</div>'+
+      '<div style="font-size:12px;color:#888888;line-height:1.55;margin-bottom:.5rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+esc(a.description)+'</div>'+
       '<div style="font-size:11px;color:#333333;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.6rem">&ldquo;'+esc(voiceQ)+'&rdquo;</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:.25rem;flex:1;align-content:flex-start;margin-bottom:.7rem">'+tagPills+'</div>'+
       ctaHtml+
@@ -1532,7 +1532,7 @@ function renderCatalog(){
   <div style="margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between">
     <div style="display:flex;align-items:center;gap:.75rem">
       <span class="d" style="font-size:13px">${filtered.length} agentes · ${teamCount}/${isSolo?1:MAX_TEAM} seleccionados</span>
-      <button onclick="downloadBank()" style="border:1px solid #333333;color:#444444;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:12px;background:none;border-radius:4px" onmouseenter="this.style.borderColor='#3ECF8E';this.style.color='#3ECF8E'" onmouseleave="this.style.borderColor='#333333';this.style.color='#444444'">[↓ banco]</button>
+      <button onclick="downloadBank()" style="border:1px solid #1A1A1A;color:#888888;padding:.15rem .5rem;cursor:pointer;font-family:inherit;font-size:12px;background:none;border-radius:4px" onmouseenter="this.style.borderColor='#3ECF8E';this.style.color='#3ECF8E'" onmouseleave="this.style.borderColor='#1A1A1A';this.style.color='#888888'">[↓ banco]</button>
     </div>
     ${teamCount>0?`<button id="nav-team-2" class="term-btn term-btn-p">activar equipo →</button>`:''}
   </div>
@@ -1612,7 +1612,7 @@ function renderTeam(){
     <button id="nav-catalog" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← CATÁLOGO</button>
     <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
     <span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">${isSolo?'AGENTE':'MI EQUIPO'}</span>
-    ${S.activeKit?`<span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);padding:.1rem .5rem;border-radius:99px;letter-spacing:.04em;white-space:nowrap">● ${S.activeKit}</span>`:''}
+    ${S.activeKit?`<span style="font-size:10px;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);padding:.1rem .45rem;border-radius:99px;letter-spacing:.05em;white-space:nowrap">● ${S.activeKit}</span>`:''}
     <span class="d" style="font-size:12px;white-space:nowrap">${isSolo?'1 agente':others.length+'/'+MAX_TEAM+' agentes'}</span>
   </div>
 
@@ -1625,7 +1625,7 @@ function renderTeam(){
         <div class="d" style="font-size:13px;margin-bottom:.5rem">${isSolo?'agente seleccionado':'equipo — '+others.length+'/'+MAX_TEAM}</div>
 
         <!-- Column headers -->
-        <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#333333;font-size:12px;border-bottom:1px solid #1A1A1A;margin-bottom:.2rem">
+        <div style="display:flex;align-items:center;gap:.6rem;padding:.2rem 0;color:#888888;font-size:12px;border-bottom:1px solid #1A1A1A;margin-bottom:.2rem">
           <span style="width:14px;flex-shrink:0"> </span>
           <span style="width:90px;flex-shrink:0">NAME</span>
           <span style="width:50px;flex-shrink:0">CAT</span>
@@ -1826,7 +1826,7 @@ function openModal(id){
 
   const overlay=document.createElement('div');
   overlay.id='agent-modal-overlay';
-  overlay.style.cssText='position:fixed;inset:0;background:rgba(8,8,8,0.94);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem';
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
 
   const tagsHtml=(agent.tags||[]).map(t=>`<span style="font-size:12px;padding:.15rem .4rem;border:1px solid #1E1E1E;color:#888888;margin:.15rem .15rem 0 0;display:inline-block">${t}</span>`).join('');
@@ -1863,7 +1863,7 @@ function openModal(id){
 
     <div style="padding-top:.75rem;border-top:1px solid #1A1A1A;display:flex;gap:.5rem">
       ${actionHtml}
-      <button onclick="closeModal()" style="border:1px solid #333333;color:#444444;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:13px;background:none">[cerrar]</button>
+      <button onclick="closeModal()" style="border:1px solid #1A1A1A;color:#888888;padding:.2rem .6rem;cursor:pointer;font-family:inherit;font-size:13px;background:none">[cerrar]</button>
     </div>
   </div>`;
 
