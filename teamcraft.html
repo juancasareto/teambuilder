@@ -503,15 +503,6 @@ function buildPrompt(teamIds,project){
   lines.push('```');
   lines.push('');
 
-  lines.push('## ESTRUCTURA DE CARPETAS');
-  lines.push('```');
-  lines.push('/agents/{un directorio por agente del equipo}');
-  lines.push('/shared/context/');
-  lines.push('/shared/memory/project-state.json');
-  lines.push('/skills/');
-  lines.push('TEAM.md');
-  lines.push('```');
-  lines.push('');
 
   // Skills base universales + karpathy para equipos con agentes t\u00e9cnicos
   const techCats = ['tecnico','datos','seguridad','ai-eng','ops','web3'];
@@ -547,7 +538,7 @@ function buildPrompt(teamIds,project){
   lines.push('Si todo está OK: una sola línea "Todos los skills instalados correctamente."');
   lines.push('');
   lines.push('**Paso 4 — Setup del proyecto**');
-  lines.push('Creá la estructura de carpetas, escribí CLAUDE.md y project-state.json.');
+  lines.push('Escribí CLAUDE.md en la raíz y creá shared/memory/project-state.json.');
   lines.push('');
   lines.push('**Paso 5 — Arrancar**');
   lines.push('Adoptá el rol de Rodrigo. Saludá brevemente y confirmá el equipo activo.');
