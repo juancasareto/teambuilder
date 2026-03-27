@@ -679,6 +679,7 @@ function render(){
   else if(S.screen==='catalog') renderCatalog();
   else if(S.screen==='team') renderTeam();
   else if(S.screen==='starter-kits') renderStarterKits();
+  else if(S.screen==='about') renderAbout();
 }
 
 // ─── BOOT SCREEN ──────────────────────────────────────────────────────────────
@@ -751,7 +752,10 @@ function renderBoot(){
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;color:#888888;font-size:13px">
       <span>teamcraft.ai · v0.2</span>
-      <span class="g blink" style="font-size:16px">█</span>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button id="btn-about" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:#444444;letter-spacing:.08em;padding:0;transition:color .15s" onmouseenter="this.style.color='#3ECF8E'" onmouseleave="this.style.color='#444444'">about</button>
+        <span class="g blink" style="font-size:16px">█</span>
+      </div>
     </div>
   </div>
   <div id="boot-cursor" class="g blink" style="font-size:15px">_</div>
@@ -786,6 +790,9 @@ function renderBoot(){
           document.getElementById('btn-kits').addEventListener('click',()=>{
             S.screen='starter-kits'; render();
           });
+          document.getElementById('btn-about').addEventListener('click',()=>{
+            S.screen='about'; render();
+          });
         },200);
       }
     },line.delay);
@@ -793,6 +800,173 @@ function renderBoot(){
 }
 
 
+
+// ─── ABOUT SCREEN ──────────────────────────────────────────────────────────────
+function renderAbout(){
+  const catRows=[
+    ['estratégico','#A855F7','STRAT',9],['técnico','#3ECF8E','TECH',18],
+    ['creativo','#E8A04A','CREAT',7],['datos','#C084FC','DATA',7],
+    ['social','#FF6EB4','SOC',6],['diseño','#00E5FF','DSGN',12],
+    ['seguridad','#EF4444','SEC',3],['ai-eng','#A855F7','AI',7],
+    ['gaming','#F97316','GAME',10],['legal','#0EA5E9','LEGAL',5],
+    ['finanzas','#22C55E','FIN',4],['rrhh','#F43F5E','RRHH',2],
+    ['ops','#78716C','OPS',3],['web3','#7C3AED','WEB3',2],
+    ['psicología','#EC4899','PSY',3],['educación','#06B6D4','EDU',3],
+  ];
+
+  const catGrid=catRows.map(([cat,color,tag,count])=>
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem .6rem;background:#0D0D0D;border-radius:4px">'+
+      '<div style="display:flex;align-items:center;gap:.5rem">'+
+        '<span style="font-size:10px;color:'+color+';border:1px solid '+color+';opacity:.7;padding:.08rem .35rem;border-radius:99px;letter-spacing:.05em">'+tag+'</span>'+
+        '<span style="font-size:12px;color:#C0C0C0">'+cat+'</span>'+
+      '</div>'+
+      '<span style="font-size:12px;color:'+color+';font-weight:600">'+count+'</span>'+
+    '</div>'
+  ).join('');
+
+  const promptSections=[
+    ['01','IDENTIDAD','Qué es el equipo, quién es Rodrigo, coordinador permanente.'],
+    ['02','PROYECTO','Nombre, objetivo y stack. Pre-cargado desde el kit o ingresado por el usuario.'],
+    ['03','EQUIPO ACTIVO','Cada agente con nombre, categoría, rol, personalidad y expertise.'],
+    ['04','REGLAS','Cómo invocar, cómo delegar, cómo incorporar agentes del banco.'],
+    ['05','PROTOCOLO DE HANDOFF','Rodrigo transfiere. @Nombre invoca directamente. "Rodrigo retoma" vuelve al PM.'],
+    ['06','BANCO','Referencia a agents-bank.md. Se lee antes de incorporar cualquier agente.'],
+    ['07','SKILLS','Comandos npx del equipo. Se ejecutan con bash antes de responder.'],
+    ['08','CLAUDE.md','Bloque listo para copiar como CLAUDE.md en la raíz del proyecto.'],
+    ['09','PROJECT-STATE.JSON','Estado inicial: nombre, objetivo, stack, stage, decisions, last_updated.'],
+  ];
+
+  const promptList=promptSections.map(([num,title,desc])=>
+    '<div style="display:flex;gap:.75rem;align-items:flex-start;padding:.55rem 0;border-bottom:1px solid #1A1A1A">'+
+      '<span style="font-family:\'Geist Mono\',monospace;font-size:10px;color:#3ECF8E;opacity:.5;min-width:22px;padding-top:.15rem">'+num+'</span>'+
+      '<div>'+
+        '<div style="font-size:12px;font-weight:600;color:#E0E0E0;letter-spacing:.04em;margin-bottom:.2rem">'+title+'</div>'+
+        '<div style="font-size:12px;color:#666666;line-height:1.55">'+desc+'</div>'+
+      '</div>'+
+    '</div>'
+  ).join('');
+
+  app.innerHTML=`
+<div style="max-width:900px;margin:0 auto">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+    <button id="about-home" class="g" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:.08em">← HOME</button>
+    <span class="d" style="font-size:13px;flex:1;overflow:hidden">─────────────────────────────</span>
+    <span style="font-size:13px;letter-spacing:.1em;font-weight:700;color:#3ECF8E">ABOUT</span>
+    <span class="d" style="font-size:12px">TeamCraft AI</span>
+  </div>
+
+  <!-- 01 · Qué es -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Qué es TeamCraft AI</div>
+    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">TeamCraft AI es una herramienta de configuración de equipos de agentes IA para Claude Code. El usuario arma un equipo de especialistas (o elige uno prearmado), describe su proyecto y obtiene un prompt listo para pegar en Claude Code que configura a Claude para responder desde cada rol con personalidad, expertise y skills propios.</p>
+    <p style="font-size:12px;color:#666666;line-height:1.65">El producto es un archivo HTML autónomo. Sin servidor, sin instalación, sin conexión a internet. Se abre en cualquier browser con doble click.</p>
+  </div>
+
+  <!-- 02 · El problema -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">El problema que resuelve</div>
+    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.65rem">Claude Code es una herramienta poderosa pero genérica. Por defecto responde como un asistente sin rol ni especialidad definida. TeamCraft AI configura una sesión para que Claude opere como un equipo de personas con identidades propias, en lugar de responder desde el mismo perfil neutro.</p>
+    <p style="font-size:12px;color:#666666;line-height:1.65">El resultado es un prompt estructurado que incluye quiénes están en el equipo, cómo invocar a cada uno, cuáles son sus reglas de coordinación, qué banco de agentes tiene disponible y qué skills ejecutar al arrancar.</p>
+  </div>
+
+  <!-- 03 · Los 4 modos -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:1rem">Los 4 modos de uso</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.6rem">
+      ${[
+        ['Team Craft','HASTA 8','Armás un equipo de hasta 8 agentes. Rodrigo coordina y no ocupa lugar en el cupo.'],
+        ['Starter Kits','22 KITS','22 equipos prearmados por caso de uso. Click en uno, revisá y activalo.'],
+        ['Agente','1 AGENTE','Un solo especialista para conversación directa. Sin overhead de equipo.'],
+        ['Crear Agente','CUSTOM','Describís el rol y el sistema sugiere un agente personalizado con skills.'],
+      ].map(([title,badge,desc])=>
+        '<div style="background:#0D0D0D;border:1px solid #1A1A1A;border-radius:6px;padding:.9rem 1rem">'+
+          '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.5rem">'+
+            '<div style="font-family:\'Bricolage Grotesque\',sans-serif;font-size:13px;font-weight:700;color:#E0E0E0">'+title+'</div>'+
+            '<span style="font-size:9px;color:#3ECF8E;border:1px solid rgba(62,207,142,.35);padding:.08rem .35rem;border-radius:99px;white-space:nowrap;flex-shrink:0;letter-spacing:.05em">'+badge+'</span>'+
+          '</div>'+
+          '<div style="font-size:11.5px;color:#666666;line-height:1.55">'+desc+'</div>'+
+        '</div>'
+      ).join('')}
+    </div>
+  </div>
+
+  <!-- 04 · El catálogo -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="display:flex;align-items:baseline;gap:.75rem;margin-bottom:.85rem">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em">El catálogo</div>
+      <span style="font-size:11px;color:#888888">101 agentes · 16 categorías</span>
+    </div>
+    <p style="font-size:12px;color:#666666;line-height:1.65;margin-bottom:.85rem">Cada agente tiene: nombre, rol, categoría, personalidad, descripción, frases características, tags de expertise, ejemplos de uso, skills npx y aliases de invocación.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.35rem">
+      ${catGrid}
+    </div>
+  </div>
+
+  <!-- 05 · Starter Kits -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="display:flex;align-items:baseline;gap:.75rem;margin-bottom:.85rem">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em">Los 22 Starter Kits</div>
+      <span style="font-size:11px;color:#888888">equipos prearmados por caso de uso</span>
+    </div>
+    <p style="font-size:12px;color:#666666;line-height:1.65;margin-bottom:.85rem">Todos tienen objetivo (que se pre-carga en el prompt al activar), descripción, cuándo usarlo y ejemplos concretos accesibles desde el modal de detalle.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.35rem">
+      ${STARTER_KITS.map(k=>
+        '<div style="background:#0D0D0D;border:1px solid #1A1A1A;border-radius:4px;padding:.5rem .75rem;display:flex;align-items:center;justify-content:space-between">'+
+          '<div>'+
+            '<div style="font-size:12px;font-weight:600;color:#C0C0C0">'+k.name+'</div>'+
+            '<div style="font-size:10.5px;color:#555555;margin-top:.1rem">'+k.team+'</div>'+
+          '</div>'+
+          '<span style="font-size:11px;color:#3ECF8E;font-weight:600;flex-shrink:0">'+k.agents.length+'</span>'+
+        '</div>'
+      ).join('')}
+    </div>
+  </div>
+
+  <!-- 06 · El prompt de salida -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.85rem">El prompt de salida</div>
+    <p style="font-size:12px;color:#666666;line-height:1.65;margin-bottom:.75rem">Bloque de texto estructurado que Claude Code interpreta al inicio de sesión. Tiene 9 secciones fijas:</p>
+    <div>${promptList}</div>
+  </div>
+
+  <!-- 07 · Skills -->
+  <div class="card" style="margin-bottom:.75rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Sistema de skills</div>
+    <p style="font-size:13px;color:#C0C0C0;line-height:1.75;margin-bottom:.75rem">Cada agente tiene skills[] con comandos npx skillsadd reales de repositorios verificados. El prompt los incluye todos con instrucción de ejecutarlos con bash antes de responder.</p>
+    <p style="font-size:12px;color:#888888;margin-bottom:.5rem">Skills base en todos los prompts:</p>
+    <div style="background:#0D0D0D;border:1px solid #1A1A1A;border-radius:6px;padding:.9rem 1.1rem;font-family:'Geist Mono',monospace;font-size:11.5px;color:#555555;line-height:1.8">
+      npx skillsadd vercel-labs/skills/find-skills<br>
+      npx skillsadd obra/superpowers/writing-plans<br>
+      npx skillsadd obra/superpowers/executing-plans<br>
+      <span style="color:#444444">npx skillsadd karpathy-guidelines &nbsp; ← técnicos, datos, seguridad, ai-eng, ops, web3</span>
+    </div>
+  </div>
+
+  <!-- 08 · Archivos -->
+  <div class="card" style="margin-bottom:2rem">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:#3ECF8E;letter-spacing:-.01em;margin-bottom:.75rem">Archivos del producto</div>
+    <div style="background:#0D0D0D;border:1px solid #1A1A1A;border-radius:6px;padding:.9rem 1.1rem;font-family:'Geist Mono',monospace;font-size:11.5px;color:#555555;line-height:1.8;margin-bottom:.65rem">
+      TeamCraft-AI/<br>
+      ├── <span style="color:#3ECF8E">teamcraft.html</span> &nbsp;&nbsp;&nbsp;← la app completa<br>
+      ├── <span style="color:#3ECF8E">agents-bank.md</span> &nbsp;&nbsp;← banco de 101 agentes en texto plano<br>
+      └── <span style="color:#3ECF8E">START-HERE.txt</span> &nbsp;&nbsp;← instrucciones de uso
+    </div>
+    <p style="font-size:12px;color:#444444;line-height:1.65">El PM (Rodrigo) va a solicitar agents-bank.md al iniciar sesión para conocer el equipo disponible. Subilo a la sesión de Claude Code o copialo a la carpeta raíz de tu proyecto.</p>
+  </div>
+
+  <!-- Footer -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #1A1A1A;margin-bottom:2rem">
+    <span style="font-size:11px;color:#333333;letter-spacing:.08em;font-family:'Geist Mono',monospace">teamcraft.ai · 2026</span>
+    <button id="about-home-2" class="term-btn" style="font-size:12px">← volver</button>
+  </div>
+
+</div>`;
+
+  document.getElementById('about-home').addEventListener('click',()=>{S.screen='boot';render()});
+  document.getElementById('about-home-2').addEventListener('click',()=>{S.screen='boot';render()});
+}
 
 // ─── STARTER KITS SCREEN ───────────────────────────────────────────────────────
 function renderStarterKits(){
