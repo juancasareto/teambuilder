@@ -520,26 +520,48 @@ function buildPrompt(teamIds,project){
   lines.push('npx skills add vercel-labs/skills --skill find-skills -y');
   lines.push('npx skills add obra/superpowers --skill writing-plans -y');
   lines.push('npx skills add obra/superpowers --skill executing-plans -y');
-  if(hasTech) lines.push('npx playbooks add skill forrestchang/andrej-karpathy-skills --skill karpathy-guidelines');
+  if(hasTech) lines.push('npx skills add forrestchang/andrej-karpathy-skills --skill karpathy-guidelines -y');
   lines.push('');
 
-  lines.push('## ARRANQUE');
-  lines.push('Al recibir este prompt, ejecut\u00e1 estos pasos en orden:');
-  lines.push('1. Us\u00e1 tu herramienta bash para correr cada comando de la secci\u00f3n SKILLS, uno por uno. No los muestres como texto \u2014 ej\u00e9cotalos.');
-  lines.push('2. Cre\u00e1 la estructura de carpetas definida arriba.');
-  lines.push('3. Escrib\u00ed el CLAUDE.md en la ra\u00edz del proyecto.');
-  lines.push('4. Cre\u00e1 shared/memory/project-state.json con el contenido de arriba.');
-  lines.push('5. Adopt\u00e1 el rol de Rodrigo. Salud\u00e1 brevemente y confirm\u00e1 el equipo activo.');
-  lines.push('6. Antes de avanzar, pedile al usuario que cargue el archivo agents-bank.md como contexto.');
-  lines.push('   Dec\u00edl exactamente: "Para que pueda conocer el banco completo de agentes, adjunt\u00e1 agents-bank.md en tu pr\u00f3ximo mensaje."');
-  lines.push('7. Una vez cargado el archivo, continu\u00e1:');
+  lines.push('## ARRANQUE — EJECUTÁ EN ORDEN');
+  lines.push('');
+  lines.push('**Paso 1 — Instalar skills**');
+  lines.push('Usá bash para ejecutar cada comando de las secciones SKILLS y SKILLS BASE, uno por uno. No los muestres como texto — ejécotalos.');
+  lines.push('');
+  lines.push('**Paso 2 — Verificar instalación (automático)**');
+  lines.push('Ejecutá: `npx skills list`');
+  lines.push('Cruzá el resultado contra los skills del equipo. Por cada skill faltante:');
+  lines.push('  a. `npx skills find [tema]` para buscar alternativa');
+  lines.push('  b. Instalá la alternativa encontrada');
+  lines.push('  c. Si no existe alternativa, continuá sin ese skill');
+  lines.push('');
+  lines.push('**Paso 3 — Reportar estado (sin que el usuario lo pida)**');
+  lines.push('Antes del saludo, mostrá una tabla como esta:');
+  lines.push('');
+  lines.push('  Agente      Skill                  Estado');
+  lines.push('  ──────────────────────────────────────────────────────');
+  lines.push('  Rodrigo     writing-plans          ✅');
+  lines.push('  Matías      api-design-principles  ✅');
+  lines.push('  Lucía       web-design-guidelines  ⚠️ reemplazado por alternativa');
+  lines.push('');
+  lines.push('Si todo está OK: una sola línea "Todos los skills instalados correctamente."');
+  lines.push('');
+  lines.push('**Paso 4 — Setup del proyecto**');
+  lines.push('Creá la estructura de carpetas, escribí CLAUDE.md y project-state.json.');
+  lines.push('');
+  lines.push('**Paso 5 — Arrancar**');
+  lines.push('Adoptá el rol de Rodrigo. Saludá brevemente y confirmá el equipo activo.');
+  lines.push('Antes de avanzar, pedile al usuario que cargue agents-bank.md.');
+  lines.push('Decíl exactamente: "Para que pueda conocer el banco completo de agentes, adjuntá agents-bank.md en tu próximo mensaje."');
+  lines.push('');
   if(!project.stack){
-    lines.push('   - Abr\u00ed una ronda de recomendaciones de stack: cada agente relevante opina y propone herramientas con trade-offs.');
-    lines.push('   - Rodrigo consolida y presenta las 2-3 mejores opciones. Esper\u00e1 la decisi\u00f3n antes de continuar.');
+    lines.push('Una vez cargado el archivo:');
+    lines.push('- Abrí una ronda de recomendaciones de stack: cada agente relevante opina y propone herramientas con trade-offs.');
+    lines.push('- Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.');
   } else {
-    lines.push('   - Pregunt\u00e1 por d\u00f3nde arrancamos.');
+    lines.push('Una vez cargado el archivo, preguntá por dónde arrancamos.');
   }
-  lines.push('No expliques qu\u00e9 est\u00e1s haciendo. Ejecut\u00e1 y present\u00e1te.');
+  lines.push('No expliques qué estás haciendo. Ejecutá y presentáte.');
   return lines.join('\n');
 }
 
@@ -657,15 +679,25 @@ function buildPromptSolo(agentId, project){
   lines.push('npx skills add vercel-labs/skills --skill find-skills -y');
   lines.push('npx skills add obra/superpowers --skill writing-plans -y');
   lines.push('npx skills add obra/superpowers --skill executing-plans -y');
-  if(techCatsSolo.includes(agent.cat)) lines.push('npx playbooks add skill forrestchang/andrej-karpathy-skills --skill karpathy-guidelines');
+  if(techCatsSolo.includes(agent.cat)) lines.push('npx skills add forrestchang/andrej-karpathy-skills --skill karpathy-guidelines -y');
   lines.push('');
 
-  lines.push('## ARRANQUE');
-  lines.push('Al recibir este prompt, ejecut\u00e1 estos pasos en orden:');
-  lines.push('1. Us\u00e1 tu herramienta bash para correr cada comando de la secci\u00f3n SKILLS, uno por uno. No los muestres como texto \u2014 ej\u00e9cotalos.');
-  lines.push('2. Adopt\u00e1 el rol de '+agent.name+' completamente.');
-  lines.push('3. Salud\u00e1 brevemente present\u00e1ndote y esper\u00e1 la consulta.');
-  lines.push('No expliques qu\u00e9 est\u00e1s haciendo. Present\u00e1te y esper\u00e1.');
+  lines.push('## ARRANQUE — EJECUTÁ EN ORDEN');
+  lines.push('');
+  lines.push('**Paso 1 — Instalar skills**');
+  lines.push('Usá bash para ejecutar cada comando de las secciones SKILLS y SKILLS BASE, uno por uno.');
+  lines.push('');
+  lines.push('**Paso 2 — Verificar instalación (automático)**');
+  lines.push('Ejecutá: `npx skills list`');
+  lines.push('Por cada skill faltante: `npx skills find [tema]` → instalá la alternativa.');
+  lines.push('');
+  lines.push('**Paso 3 — Reportar estado (sin que el usuario lo pida)**');
+  lines.push('Mostrá una línea por skill: nombre + ✅ o ⚠️ con el reemplazo usado.');
+  lines.push('Si todo OK: "Todos los skills instalados correctamente."');
+  lines.push('');
+  lines.push('**Paso 4 — Arrancar**');
+  lines.push('Adoptá el rol de '+agent.name+' completamente. Saludá brevemente y esperá la consulta.');
+  lines.push('No expliques qué estás haciendo. Presentáte y esperá.');
 
   return lines.join('\n');
 }
