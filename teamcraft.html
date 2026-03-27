@@ -816,13 +816,7 @@ function renderStarterKits(){
       '<div style="margin-top:.4rem;background:#3ECF8E;color:#0A0A0A;font-size:12px;font-weight:700;padding:.4rem .75rem;border-radius:4px;text-align:center;letter-spacing:.06em">Armar este equipo \u2192</div>';
     card.addEventListener('mouseenter',()=>card.style.borderColor='#3ECF8E');
     card.addEventListener('mouseleave',()=>card.style.borderColor='#1A1A1A');
-    card.addEventListener('click',()=>{
-      S.team=['rodrigo',...kit.agents];
-      S.activeKit=kit.name;
-      S.mode='equipo';
-      S.screen='team';
-      render();
-    });
+    card.addEventListener('click',()=>openKitModal(kit.id));
     grid.appendChild(card);
   });
 
@@ -830,6 +824,160 @@ function renderStarterKits(){
 }
 
 
+
+// ─── KIT MODAL ────────────────────────────────────────────────────────────────
+function openKitModal(id){
+  const kit=STARTER_KITS.find(k=>k.id===id);
+  if(!kit) return;
+  const agents=kit.agents.map(aid=>AGENTS.find(a=>a.id===aid)).filter(Boolean);
+
+  const overlay=document.createElement('div');
+  overlay.id='kit-modal-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem';
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeKitModal()});
+
+  const modal=document.createElement('div');
+  modal.style.cssText='background:#0A0A0A;border:1px solid #252525;border-radius:8px;padding:1.5rem;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;font-family:\'Geist\',\'Inter\',sans-serif;display:flex;flex-direction:column;gap:1.25rem';
+
+  // Header
+  const header=document.createElement('div');
+  header.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #1A1A1A';
+  const headerLeft=document.createElement('div');
+  const title=document.createElement('div');
+  title.style.cssText='font-family:\'Bricolage Grotesque\',sans-serif;font-size:18px;font-weight:700;color:#E0E0E0;letter-spacing:-.01em;margin-bottom:.35rem';
+  title.textContent=kit.name;
+  const teamBadge=document.createElement('span');
+  teamBadge.style.cssText='font-size:12px;color:#888888';
+  teamBadge.textContent=kit.team;
+  headerLeft.appendChild(title);
+  headerLeft.appendChild(teamBadge);
+  const closeBtn=document.createElement('button');
+  closeBtn.style.cssText='background:none;border:none;color:#888888;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0;margin-left:1rem;padding:.2rem .4rem';
+  closeBtn.textContent='[esc]';
+  closeBtn.addEventListener('click',closeKitModal);
+  header.appendChild(headerLeft);
+  header.appendChild(closeBtn);
+  modal.appendChild(header);
+
+  // About
+  const aboutBlock=document.createElement('div');
+  const aboutLabel=document.createElement('div');
+  aboutLabel.style.cssText='font-size:11px;color:#3ECF8E;letter-spacing:.1em;margin-bottom:.5rem;text-transform:uppercase;font-weight:600';
+  aboutLabel.textContent='Sobre este kit';
+  const aboutP=document.createElement('p');
+  aboutP.style.cssText='font-size:13px;color:#C0C0C0;line-height:1.75;margin:0';
+  aboutP.textContent=kit.about||kit.desc;
+  aboutBlock.appendChild(aboutLabel);
+  aboutBlock.appendChild(aboutP);
+  modal.appendChild(aboutBlock);
+
+  // When (only if has data)
+  if(kit.when&&kit.when.length){
+    const whenBlock=document.createElement('div');
+    const whenLabel=document.createElement('div');
+    whenLabel.style.cssText='font-size:11px;color:#3ECF8E;letter-spacing:.1em;margin-bottom:.5rem;text-transform:uppercase;font-weight:600';
+    whenLabel.textContent='Ideal cuando';
+    whenBlock.appendChild(whenLabel);
+    kit.when.forEach(w=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;gap:.5rem;font-size:13px;color:#888888;line-height:1.65;margin-bottom:.35rem';
+      const arrow=document.createElement('span');
+      arrow.style.cssText='color:#3ECF8E;flex-shrink:0';
+      arrow.textContent='›';
+      const text=document.createElement('span');
+      text.textContent=w;
+      row.appendChild(arrow);
+      row.appendChild(text);
+      whenBlock.appendChild(row);
+    });
+    modal.appendChild(whenBlock);
+  }
+
+  // Examples (only if has data)
+  if(kit.examples&&kit.examples.length){
+    const exBlock=document.createElement('div');
+    exBlock.style.cssText='padding-top:1rem;border-top:1px solid #1A1A1A';
+    const exLabel=document.createElement('div');
+    exLabel.style.cssText='font-size:11px;color:#3ECF8E;letter-spacing:.1em;margin-bottom:.5rem;text-transform:uppercase;font-weight:600';
+    exLabel.textContent='Casos de uso';
+    exBlock.appendChild(exLabel);
+    kit.examples.forEach(ex=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;gap:.5rem;font-size:13px;color:#888888;line-height:1.65;margin-bottom:.35rem';
+      const arrow=document.createElement('span');
+      arrow.style.cssText='color:#3ECF8E;flex-shrink:0';
+      arrow.textContent='›';
+      const text=document.createElement('span');
+      text.textContent=ex;
+      row.appendChild(arrow);
+      row.appendChild(text);
+      exBlock.appendChild(row);
+    });
+    modal.appendChild(exBlock);
+  }
+
+  // Team members
+  const teamBlock=document.createElement('div');
+  teamBlock.style.cssText='padding-top:1rem;border-top:1px solid #1A1A1A';
+  const teamLabel=document.createElement('div');
+  teamLabel.style.cssText='font-size:11px;color:#3ECF8E;letter-spacing:.1em;margin-bottom:.6rem;text-transform:uppercase;font-weight:600';
+  teamLabel.textContent='Equipo · '+agents.length+' agentes + Rodrigo (PM)';
+  teamBlock.appendChild(teamLabel);
+  const teamGrid=document.createElement('div');
+  teamGrid.style.cssText='display:flex;flex-wrap:wrap;gap:.4rem';
+  agents.forEach(a=>{
+    const badge=document.createElement('div');
+    badge.style.cssText='display:flex;align-items:center;gap:.35rem;font-size:12px;border:1px solid #1A1A1A;padding:.3rem .6rem;border-radius:6px;color:#C0C0C0';
+    const ic=document.createElement('span');
+    ic.textContent=icon(a.cat);
+    const nm=document.createElement('span');
+    nm.style.cssText='font-weight:500';
+    nm.textContent=a.name;
+    const rl=document.createElement('span');
+    rl.style.cssText='color:#555555;font-size:11px';
+    rl.textContent='· '+a.role;
+    badge.appendChild(ic);
+    badge.appendChild(nm);
+    badge.appendChild(rl);
+    teamGrid.appendChild(badge);
+  });
+  teamBlock.appendChild(teamGrid);
+  modal.appendChild(teamBlock);
+
+  // Footer actions
+  const footer=document.createElement('div');
+  footer.style.cssText='display:flex;gap:.6rem;padding-top:1rem;border-top:1px solid #1A1A1A';
+  const activateBtn=document.createElement('button');
+  activateBtn.style.cssText='flex:1;background:#3ECF8E;color:#0A0A0A;font-size:13px;font-weight:700;padding:.65rem 1rem;border:none;border-radius:6px;cursor:pointer;letter-spacing:.04em;transition:opacity .15s';
+  activateBtn.textContent='Activar este equipo →';
+  activateBtn.addEventListener('mouseenter',()=>activateBtn.style.opacity='.85');
+  activateBtn.addEventListener('mouseleave',()=>activateBtn.style.opacity='1');
+  activateBtn.addEventListener('click',()=>{
+    S.team=['rodrigo',...kit.agents];
+    S.activeKit=kit.name;
+    S.mode='equipo';
+    S.screen='team';
+    closeKitModal();
+    render();
+  });
+  const cancelBtn=document.createElement('button');
+  cancelBtn.style.cssText='background:none;border:1px solid #333333;color:#666666;font-size:13px;padding:.65rem .9rem;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s';
+  cancelBtn.textContent='cerrar';
+  cancelBtn.addEventListener('mouseenter',()=>{cancelBtn.style.borderColor='#555';cancelBtn.style.color='#888'});
+  cancelBtn.addEventListener('mouseleave',()=>{cancelBtn.style.borderColor='#333333';cancelBtn.style.color='#666666'});
+  cancelBtn.addEventListener('click',closeKitModal);
+  footer.appendChild(activateBtn);
+  footer.appendChild(cancelBtn);
+  modal.appendChild(footer);
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
+function closeKitModal(){
+  const el=document.getElementById('kit-modal-overlay');
+  if(el) el.remove();
+}
 
 // ─── SKILLS CATALOG (para CREAR AGENTE) ────────────────────────────────────────
 const SKILLS_CAT=[
@@ -1149,17 +1297,41 @@ const FILTERS=[
   {key:'educacion',tag:'EDU'},
 ];
 const STARTER_KITS=[
-  {id:'full-stack',name:'The Full Stack',team:'Web App Completa',desc:'Ciclo completo desde arquitectura hasta QA. Para proyectos web serios que necesitan estructura desde el día 1.',agents:['facundo','matias','santiago','lucia','tomas','gonzalo']},
-  {id:'zero-to-launch',name:'Zero to Launch',team:'Startup MVP',desc:'Velocidad sobre perfección. De la idea al producto funcional en semanas, con foco en validar antes de escalar.',agents:['bautista','facundo','matias','santiago','tomas-g','daniela-p']},
+  {id:'full-stack',name:'The Full Stack',team:'Web App Completa',
+   desc:'Ciclo completo desde arquitectura hasta QA. Para proyectos web serios que necesitan estructura desde el día 1.',
+   about:'El equipo más completo para construir una web app de cero a producción. Cubre cada capa: arquitectura, backend, frontend, UX, testing e integraciones. Ideal cuando no podés permitirte deuda técnica desde el primer sprint.',
+   when:['Arrancás un proyecto web serio y querés hacerlo bien desde el día 1','El producto va a escalar y necesitás separar responsabilidades desde el inicio','Tenés un equipo que va a crecer y la arquitectura debe soportarlo'],
+   examples:['SaaS B2C con autenticación, suscripciones y panel de administración','Marketplace con roles diferenciados (comprador / vendedor / admin)','Dashboard interno con múltiples integraciones a sistemas externos','Plataforma con microservicios y API pública documentada'],
+   agents:['facundo','matias','santiago','lucia','tomas','gonzalo']},
+
+  {id:'zero-to-launch',name:'Zero to Launch',team:'Startup MVP',
+   desc:'Velocidad sobre perfección. De la idea al producto funcional en semanas, con foco en validar antes de escalar.',
+   about:'Para founders que necesitan llegar al mercado rápido sin construir lo que nadie va a usar. El equipo equilibra visión disruptiva (Bautista), estructura técnica (Facundo) y go-to-market desde el día 1 (Tomás G. y Daniela). El objetivo es aprender, no perfeccionar.',
+   when:['Tenés una idea y necesitás validarla con usuarios reales en semanas','El budget es limitado y cada sprint tiene que generar aprendizaje','Vas a levantar capital pronto y necesitás un MVP que sea presentable'],
+   examples:['App de gestión de tareas para un nicho específico (abogados, médicos, etc.)','Marketplace vertical con 10 sellers y 50 buyers como prueba de concepto','Tool B2B con plan gratuito + trial de 14 días para validar conversión','SaaS de nicho con landing + waitlist + onboarding en 3 semanas'],
+   agents:['bautista','facundo','matias','santiago','tomas-g','daniela-p']},
+
+  {id:'ai-foundry',name:'AI Foundry',team:'Agente IA Custom',
+   desc:'Construir y evaluar agentes IA desde cero: prompts, RAG, arquitectura multi-agente y evals en producción.',
+   about:'El kit especializado para productos donde la IA es el core, no un feature. Cubre desde el diseño de prompts y skills (Simón) hasta pipelines de voz (Valeria V.), RAG, evals y arquitectura multi-agente. Para equipos que construyen sobre modelos de lenguaje, no solo los consumen.',
+   when:['Estás construyendo un producto donde la IA es la propuesta de valor central','Necesitás un agente que opere de forma autónoma con herramientas y memoria','Querés evaluar y mejorar el comportamiento del agente en producción'],
+   examples:['Asistente de ventas con acceso a CRM, historial de cliente y capacidad de agendar','Agente de soporte que escala a humano cuando detecta frustración en el tono','Pipeline de voz: llamada entrante → transcripción → respuesta → CRM update','Sistema multi-agente donde un orquestador delega a especialistas por dominio'],
+   agents:['max','vera','inaki','simon-sk','valeria-v','axel']},
+
+  {id:'launch-pad',name:'Launch Pad',team:'Lanzamiento de Producto',
+   desc:'Go-to-market completo: posicionamiento, narrativa, canales y stakeholders. Para lanzar con impacto real.',
+   about:'No alcanza con tener el producto listo. Launch Pad arma la estrategia completa de salida al mercado: el mensaje, los canales, el timing y quién habla con quién. Bautista aporta el ángulo disruptivo, Adriana la identidad de marca, Tomás G. ejecuta el GTM y Valentina convierte todo en contenido que circula.',
+   when:['Tenés un producto listo y necesitás que el mercado lo sepa','Hiciste un lanzamiento anterior sin tracción y querés hacerlo diferente','Vas a anunciar una feature importante o una nueva categoría de producto'],
+   examples:['Lanzamiento en Product Hunt con campaña previa de 4 semanas y comunidad activada','Go-to-market de SaaS B2B: secuencia de outreach + contenido LinkedIn + PR','Relanzamiento de marca con nuevo nombre, identidad y mensaje de posicionamiento','Anuncio de producto con embargo: prensa, influencers tech y early access coordinados'],
+   agents:['bautista','adriana','valentina','ignacio','tomas-g','martin']},
+
   {id:'pocket-product',name:'Pocket Product',team:'App Mobile',desc:'App nativa o cross-platform lista para stores. UX mobile-first, integraciones y monetización desde el diseño.',agents:['jimena','sofia-m','lucas-and','lucia','tomas','gonzalo']},
   {id:'enterprise-ready',name:'Enterprise Ready',team:'SaaS B2B',desc:'SaaS con compliance, pricing, infraestructura y arquitectura escalable. Listo para clientes corporativos.',agents:['facundo','matias','santiago','victoria','felipe-fin','diego']},
   {id:'the-connector',name:'The Connector',team:'API & Integraciones',desc:'Construir o conectar sistemas: REST, GraphQL, webhooks y CI/CD con contratos claros y tests robustos.',agents:['gonzalo','matias','federico','diego','tomas']},
   {id:'data-engine',name:'Data Engine',team:'Producto de Datos',desc:'Pipeline completo de datos: scraping, storage, análisis, ML y dashboard. De los datos crudos al insight accionable.',agents:['nicolas-data','camila','juliana','patricia-bi','roberto-r','leandro']},
-  {id:'ai-foundry',name:'AI Foundry',team:'Agente IA Custom',desc:'Construir y evaluar agentes IA desde cero: prompts, RAG, arquitectura multi-agente y evals en producción.',agents:['max','vera','inaki','simon-sk','valeria-v','axel']},
   {id:'the-shield',name:'The Shield',team:'Seguridad & Auditoría',desc:'Auditoría completa, pentest, autenticación robusta y hardening de endpoints. Seguridad sin compromisos.',agents:['ezequiel','marina','celeste','matias','tomas']},
   {id:'shop-builder',name:'Shop Builder',team:'E-commerce',desc:'Tienda con UX optimizada para conversión. Psicología del comprador integrada desde el diseño hasta el checkout.',agents:['matias','santiago','lucia','cesar','gonzalo','valentina']},
   {id:'content-machine',name:'The Content Machine',team:'Contenido & Growth',desc:'Máquina de contenido: copy, social, comunidad y distribución. Para marcas que necesitan presencia constante.',agents:['valentina','florencia','ignacio','ramiro','clara','bruno-m']},
-  {id:'launch-pad',name:'Launch Pad',team:'Lanzamiento de Producto',desc:'Go-to-market completo: posicionamiento, narrativa, canales y stakeholders. Para lanzar con impacto real.',agents:['bautista','adriana','valentina','ignacio','tomas-g','martin']},
   {id:'brand-studio',name:'Brand Studio',team:'Brand & Identidad',desc:'Identidad completa: estrategia de marca, visual, narrativa y arquitectura de mensaje. Para marcas que quieren ser reconocibles.',agents:['adriana','patricio','ramiro','valentina','isabella']},
   {id:'the-amplifier',name:'The Amplifier',team:'Comunidad & Redes',desc:'Presencia digital multicanal desde cero: comunidad, social, YouTube y podcast con estrategia de growth.',agents:['clara','florencia','sofia-r','emilio-b','ignacio','elena']},
   {id:'design-system',name:'The Design System',team:'Sistema de Diseño',desc:'Sistema de diseño completo: tokens, componentes, documentación y accesibilidad. Para productos que escalan en equipo.',agents:['lucia','isabella','florencia-d','renata','santiago','sofia']},
