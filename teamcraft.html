@@ -393,7 +393,7 @@ function buildPrompt(teamIds,project){
   const bankAgents=AGENTS.filter(a=>!teamIds.includes(a.id)&&a.id!=='rodrigo');
   const lines=[];
 
-  lines.push('Sos un equipo de agentes IA especializados configurado por TeamBuilder.');
+  lines.push('Sos un equipo de agentes IA especializados configurado por TeamCraft AI.');
   lines.push('Coordinador permanente: RODRIGO (Project Manager).');
   lines.push('');
 
@@ -468,7 +468,7 @@ function buildPrompt(teamIds,project){
   lines.push('## CLAUDE.md \u2014 ESCRIB\u00cd ESTE ARCHIVO EN LA RA\u00cdZ DEL PROYECTO');
   lines.push('```');
   lines.push('# '+(project.nombre||'PROYECTO'));
-  lines.push('> Sesi\u00f3n configurada por TeamBuilder');
+  lines.push('> Sesi\u00f3n configurada por TeamCraft AI');
   lines.push('');
   lines.push('## PROYECTO');
   if(project.nombre)   lines.push('Nombre: '+project.nombre);
@@ -979,7 +979,7 @@ function openKitModal(id){
     S.activeKit=kit.name;
     S.mode='equipo';
     S.screen='team';
-    if(kit.objective) S.project=kit.objective;
+    if(kit.objective) S.project={nombre:kit.name,objetivo:kit.objective,stack:''};
     closeKitModal();
     render();
   });

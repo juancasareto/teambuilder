@@ -1,0 +1,103 @@
+
+╔══════════════════════════════════════════════════════════════════╗
+║                        TEAMCRAFT AI                              ║
+║              Armá tu equipo. Generá el prompt. Lanzá.           ║
+╚══════════════════════════════════════════════════════════════════╝
+
+────────────────────────────────────────────────────────────────────
+  QUÉ HAY EN ESTA CARPETA
+────────────────────────────────────────────────────────────────────
+
+  teamcraft.html    →  La app completa. Abrila en cualquier browser.
+  agents-bank.md    →  El banco de 101 agentes en texto plano.
+  START-HERE.txt    →  Esto que estás leyendo.
+
+Sin instalación. Sin servidor. Sin conexión a internet.
+
+────────────────────────────────────────────────────────────────────
+  CÓMO EMPEZAR
+────────────────────────────────────────────────────────────────────
+
+  1. Abrí teamcraft.html en tu browser (doble click alcanza).
+
+  2. Elegí cómo querés trabajar:
+
+       TEAM CRAFT      →  Armás un equipo de hasta 8 agentes.
+                          Ideal para proyectos que necesitan múltiples
+                          perspectivas trabajando en paralelo.
+
+       STARTER KITS    →  22 equipos prearmados por caso de uso.
+                          Hacé click en uno, revisá quién está incluido
+                          y activalo con un click.
+
+       AGENTE          →  Un solo agente, conversación directa.
+                          Para tareas específicas sin overhead de equipo.
+
+       CREAR AGENTE    →  Describí lo que necesitás y la app sugiere
+                          un agente personalizado con skills recomendados.
+
+  3. Describí tu proyecto en el campo de texto.
+
+  4. Copiá el prompt generado.
+
+  5. Pegalo al iniciar una sesión de Claude Code.
+
+  → El agente PM (Rodrigo) va a solicitar el banco de agentes
+    para conocer el equipo disponible. Tenés dos opciones:
+
+      a) Subí agents-bank.md directamente a la sesión de Claude Code.
+      b) Copiá agents-bank.md a la carpeta raíz de tu proyecto.
+
+────────────────────────────────────────────────────────────────────
+  CÓMO USAR EL PROMPT EN CLAUDE CODE
+────────────────────────────────────────────────────────────────────
+
+  Opción A — Al arrancar una sesión nueva:
+
+    Abrí tu proyecto en la terminal y ejecutá:
+
+      claude
+
+    Pegá el prompt como primer mensaje. Claude adoptará el rol
+    del equipo inmediatamente.
+
+  Opción B — Como CLAUDE.md (persistente):
+
+    Copiá el prompt generado y pegalo en un archivo CLAUDE.md
+    en la raíz de tu proyecto:
+
+      /tu-proyecto/CLAUDE.md
+
+    Claude Code lo va a leer automáticamente en cada sesión.
+    El equipo queda configurado de forma permanente para ese proyecto.
+
+  Opción C — Mid-sesión:
+
+    Si ya tenés una sesión activa, pegá el prompt como mensaje
+    y pedile que adopte los roles del equipo.
+
+────────────────────────────────────────────────────────────────────
+  TIPS
+────────────────────────────────────────────────────────────────────
+
+  · El campo "Describí tu proyecto" va directo al prompt. Cuanto
+    más específico, mejor la calidad del contexto que recibe el equipo.
+
+  · Podés usar los Starter Kits como punto de partida y después
+    agregar o quitar agentes según lo que necesite tu proyecto.
+
+  · Siempre podés incorporar nuevos agentes mid-sesión. Para eso
+    es importante que el banco esté disponible: subí agents-bank.md
+    a la sesión o tenelo en la carpeta del proyecto. Rodrigo lo va
+    a usar para sugerir e incorporar agentes cuando el proyecto
+    lo requiera.
+
+  · Los skills de cada agente (comandos npx) están incluidos en
+    el prompt generado. Ejecutalos en Claude Code para ampliar
+    las capacidades del agente.
+
+────────────────────────────────────────────────────────────────────
+
+  teamcraft.ai
+
+────────────────────────────────────────────────────────────────────
