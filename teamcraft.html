@@ -1211,7 +1211,7 @@ function renderCatalog(){
     } else {
       ctaHtml='<div style="width:100%;font-size:11px;color:#444444;text-align:center;padding:.45rem .75rem;border:1px solid #111111;border-radius:4px">'+( teamSize>=maxAllowed?(isSolo?'ya elegiste uno':'equipo lleno'):'')+'</div>';
     }
-    return '<div class="agent-card'+( inTeam?' in-team':'')+'" data-id="'+a.id+'" onclick="openModal(\'"+a.id+"\')" style="display:flex;flex-direction:column;gap:0">'+
+    return '<div class="agent-card'+( inTeam?' in-team':'')+'" data-id="'+a.id+'" style="display:flex;flex-direction:column;gap:0;cursor:pointer">'+
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.55rem">'+
         '<div style="display:flex;align-items:center;gap:.45rem">'+
           '<span style="font-size:19px;line-height:1">'+icon(a.cat)+'</span>'+
@@ -1279,6 +1279,10 @@ function renderCatalog(){
 
   document.querySelectorAll('.filter-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{S.filter=btn.dataset.key;render()});
+  });
+
+  document.querySelectorAll('.agent-card').forEach(card=>{
+    card.addEventListener('click',()=>openModal(card.dataset.id));
   });
 
   document.getElementById('search-input')?.addEventListener('input',e=>{
