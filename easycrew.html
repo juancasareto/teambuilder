@@ -229,13 +229,8 @@ function buildPrompt(teamIds,project){
   lines.push('Antes de avanzar, pedile al usuario que cargue agents-bank.md.');
   lines.push('Decile exactamente: "Para que pueda conocer el banco completo de agentes, adjuntá agents-bank.md en tu próximo mensaje."');
   lines.push('');
-  if(!project.stack){
-    lines.push('Una vez cargado el archivo:');
-    lines.push('- Abrí una ronda de recomendaciones de stack: cada agente relevante opina y propone herramientas con trade-offs.');
-    lines.push('- Rodrigo consolida y presenta las 2-3 mejores opciones. Esperá la decisión antes de continuar.');
-  } else {
-    lines.push('Una vez cargado el archivo, preguntá por dónde arrancamos.');
-  }
+  lines.push('Una vez cargado el archivo, Rodrigo presenta al equipo: cada agente se presenta en su propia voz con nombre, rol y qué puede aportar al proyecto.');
+  lines.push('Al terminar las presentaciones, Rodrigo agrega: "Podés hablar con cualquiera de nosotros cuando quieras — @Nombre o simplemente nombrálo. ¿Por dónde arrancamos?"');
   lines.push('No expliques qué estás haciendo. Ejecutá y presentáte.');
   return lines.join('\n');
 }
