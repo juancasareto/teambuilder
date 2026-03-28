@@ -102,7 +102,6 @@ function buildPrompt(teamIds,project){
     lines.push('**'+a.name.toUpperCase()+'** ['+t+'] \u00b7 '+a.role);
     if(a.personality) lines.push('  '+a.personality);
     if(a.tags&&a.tags.length) lines.push('  Expertise: '+a.tags.join(', '));
-    if(a.skills&&a.skills.length) lines.push('  Skills: '+a.skills.join(' | '));
     lines.push('');
   });
 
@@ -121,20 +120,14 @@ function buildPrompt(teamIds,project){
   lines.push('- Para volver a Rodrigo: "**Rodrigo retoma.**"');
   lines.push('');
 
-  lines.push('## BANCO');
-  lines.push('Perfiles completos de todos los agentes disponibles en agents-bank.md.');
-  lines.push('Us\u00e1 ese archivo para conocer personalidad, expertise y skills de cada uno antes de incorporarlos.');
-  lines.push('**Al incorporar un agente del banco: ejecut\u00e1 sus skills con bash INMEDIATAMENTE, antes de adoptar su rol.**');
-  lines.push('Sus skills est\u00e1n listados en agents-bank.md junto a su perfil.');
-  lines.push('');
-  lines.push('## INCORPORAR AGENTES MID-SESI\u00d3N');
-  lines.push('El usuario puede sumar agentes del banco en cualquier momento de la sesi\u00f3n.');
+  lines.push('## BANCO Y AGENTES DISPONIBLES');
+  lines.push('Perfiles completos en agents-bank.md: personalidad, expertise y skills de cada agente.');
+  lines.push('El usuario puede sumar agentes en cualquier momento de la sesi\u00f3n.');
   lines.push('Cuando lo pida, Rodrigo debe:');
-  lines.push('  1. Buscarlo en agents-bank.md y leer su perfil completo.');
-  lines.push('  2. Ejecutar sus skills con bash antes de adoptar su rol.');
-  lines.push('  3. Presentarlo al equipo con su nombre, rol y personalidad.');
-  lines.push('Frases que activan esto: "Quiero incorporar a [Nombre]", "Sum\u00e9mos a [Nombre]", "\u00bfQu\u00e9 agentes puedo sumar?"');
-  lines.push('Si el usuario pregunta por agentes disponibles, Rodrigo lista el banco desde agents-bank.md.');
+  lines.push('  1. Leer el perfil completo desde agents-bank.md.');
+  lines.push('  2. Ejecutar sus skills con bash ANTES de adoptar su rol.');
+  lines.push('  3. Presentarlo al equipo con nombre, rol y personalidad.');
+  lines.push('Frases que activan incorporaci\u00f3n: "Quiero incorporar a [Nombre]", "Sumemos a [Nombre]", "\u00bfQu\u00e9 agentes puedo sumar?"');
   lines.push('');
 
   const allSkills=agents.flatMap(a=>a.skills).filter(Boolean);
@@ -235,8 +228,9 @@ function buildPrompt(teamIds,project){
   lines.push('');
   lines.push('**Paso 5 — Arrancar**');
   lines.push('Adoptá el rol de Rodrigo. Saludá brevemente y confirmá el equipo activo.');
-  lines.push('Antes de avanzar, pedile al usuario que cargue agents-bank.md.');
-  lines.push('Decile exactamente: "Para que pueda conocer el banco completo de agentes, adjuntá agents-bank.md en tu próximo mensaje."');
+  lines.push('Si agents-bank.md no está disponible en el proyecto, pedile al usuario que lo adjunte antes de continuar.');
+  lines.push('Decile: "Para conocer el banco completo de agentes, adjuntá agents-bank.md en tu próximo mensaje."');
+  lines.push('Si ya está disponible (@agents-bank.md o en la raíz del proyecto), continuá sin pedirlo.');
   lines.push('');
   lines.push('Una vez cargado el archivo, Rodrigo presenta al equipo: cada agente se presenta en su propia voz con nombre, rol y qué puede aportar al proyecto.');
   lines.push('Al terminar las presentaciones, Rodrigo agrega: "Podés hablar con cualquiera de nosotros cuando quieras — @Nombre o simplemente nombrálo. ¿Por dónde arrancamos?"');
@@ -252,7 +246,7 @@ function downloadBank(){
   lines.push('> Archivo de referencia para sesiones de Claude Code.');
   lines.push('> Cargalo con: @agents-bank.md o pegá su contenido como contexto.');
   lines.push('');
-  lines.push('Total: '+AGENTS.length+' agentes · 7 categorías');
+  lines.push('Total: '+AGENTS.length+' agentes · '+Object.keys(CAT_TAG).length+' categorías');
   lines.push('');
   lines.push('---');
   lines.push('');
@@ -403,7 +397,7 @@ const LOGO=`███████╗ █████╗ ███████╗
 `.trim();
 
 const BOOT_LINES=[
-  {text:'EASY CREW v1.1.24',color:'#3ECF8E',delay:0},
+  {text:'EASY CREW v1.1.25',color:'#3ECF8E',delay:0},
   {text:'─'.repeat(48),color:'#333333',delay:80},
   {text:'Initializing agent registry...',color:'#888888',delay:160},
   {text:'[OK] '+AGENTS.length+' agents loaded',color:'#3ECF8E',delay:280},
