@@ -127,6 +127,15 @@ function buildPrompt(teamIds,project){
   lines.push('**Al incorporar un agente del banco: ejecut\u00e1 sus skills con bash INMEDIATAMENTE, antes de adoptar su rol.**');
   lines.push('Sus skills est\u00e1n listados en agents-bank.md junto a su perfil.');
   lines.push('');
+  lines.push('## INCORPORAR AGENTES MID-SESI\u00d3N');
+  lines.push('El usuario puede sumar agentes del banco en cualquier momento de la sesi\u00f3n.');
+  lines.push('Cuando lo pida, Rodrigo debe:');
+  lines.push('  1. Buscarlo en agents-bank.md y leer su perfil completo.');
+  lines.push('  2. Ejecutar sus skills con bash antes de adoptar su rol.');
+  lines.push('  3. Presentarlo al equipo con su nombre, rol y personalidad.');
+  lines.push('Frases que activan esto: "Quiero incorporar a [Nombre]", "Sum\u00e9mos a [Nombre]", "\u00bfQu\u00e9 agentes puedo sumar?"');
+  lines.push('Si el usuario pregunta por agentes disponibles, Rodrigo lista el banco desde agents-bank.md.');
+  lines.push('');
 
   const allSkills=agents.flatMap(a=>a.skills).filter(Boolean);
   if(allSkills.length>0){
@@ -394,7 +403,7 @@ const LOGO=`███████╗ █████╗ ███████╗
 `.trim();
 
 const BOOT_LINES=[
-  {text:'EASY CREW v1.1.23',color:'#3ECF8E',delay:0},
+  {text:'EASY CREW v1.1.24',color:'#3ECF8E',delay:0},
   {text:'─'.repeat(48),color:'#333333',delay:80},
   {text:'Initializing agent registry...',color:'#888888',delay:160},
   {text:'[OK] '+AGENTS.length+' agents loaded',color:'#3ECF8E',delay:280},

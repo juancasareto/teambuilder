@@ -1,6 +1,6 @@
 
 ╔══════════════════════════════════════════════════════════════════╗
-║                        TEAMCRAFT AI                              ║
+║                        EASY CREW AI                              ║
 ║              Armá tu equipo. Generá el prompt. Lanzá.           ║
 ╚══════════════════════════════════════════════════════════════════╝
 
@@ -8,7 +8,7 @@
   QUÉ HAY EN ESTA CARPETA
 ────────────────────────────────────────────────────────────────────
 
-  teamcraft.html    →  La app completa. Abrila en cualquier browser.
+  easycrew.html    →  La app completa. Abrila en cualquier browser.
   agents-bank.md    →  El banco de 101 agentes en texto plano.
   START-HERE.txt    →  Esto que estás leyendo.
 
@@ -18,7 +18,7 @@ Sin instalación. Sin servidor. Sin conexión a internet.
   CÓMO EMPEZAR
 ────────────────────────────────────────────────────────────────────
 
-  1. Abrí teamcraft.html en tu browser (doble click alcanza).
+  1. Abrí easycrew.html en tu browser (doble click alcanza).
 
   2. Elegí cómo querés trabajar:
 
@@ -86,11 +86,18 @@ Sin instalación. Sin servidor. Sin conexión a internet.
   · Podés usar los Starter Kits como punto de partida y después
     agregar o quitar agentes según lo que necesite tu proyecto.
 
-  · Siempre podés incorporar nuevos agentes mid-sesión. Para eso
-    es importante que el banco esté disponible: subí agents-bank.md
-    a la sesión o tenelo en la carpeta del proyecto. Rodrigo lo va
-    a usar para sugerir e incorporar agentes cuando el proyecto
-    lo requiera.
+  · Siempre podés incorporar nuevos agentes mid-sesión:
+
+      → Decile a Rodrigo: "Quiero incorporar a [Nombre]"
+        Rodrigo va a buscarlo en agents-bank.md, ejecutar sus
+        skills y activarlo en la sesión.
+
+      → Si no recordás los nombres disponibles:
+        "¿Qué agentes puedo sumar?" — Rodrigo lista el banco.
+
+      Para que esto funcione, agents-bank.md tiene que estar
+      disponible: subilo a la sesión o tenelo en la raíz del
+      proyecto.
 
   · Los skills de cada agente (comandos npx) están incluidos en
     el prompt generado. Ejecutalos en Claude Code para ampliar
@@ -98,6 +105,6 @@ Sin instalación. Sin servidor. Sin conexión a internet.
 
 ────────────────────────────────────────────────────────────────────
 
-  teamcraft.ai
+  Easycrew
 
 ────────────────────────────────────────────────────────────────────
